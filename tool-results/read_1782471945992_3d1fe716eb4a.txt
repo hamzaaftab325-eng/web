@@ -1,0 +1,302 @@
+     1→MASTER BUILD PROMPT — Aura Living E-Commerce Website
+     2→0. NON-NEGOTIABLE RULES (READ FIRST)
+     3→ZERO inline styles. Every visual property MUST live in a CSS class, a CSS custom property, a Tailwind utility, or a styled-component / CSS module. If you catch yourself writing style={{...}} or style="...", stop and create a proper class. No exceptions. This is a hard constraint enforced across every file, every component, every line.
+     4→ZERO placeholder content. Every product name, description, price, category label, hero headline, testimonial, FAQ answer, and UI microcopy must be real, contextually accurate copy written specifically for Aura Living's home décor brand. No "Lorem ipsum," no "Sample text," no "Your text here."
+     5→ZERO "todo" comments or stub sections. Every feature described below must be fully implemented, wired end-to-end, and functional. If a section says "cart drawer," build the complete cart drawer — not a placeholder div with a comment saying "add cart logic here."
+     6→Production-grade or nothing. This is not a prototype. This is not a template. This is a shipped product. Every interaction must feel finished, every edge case handled, every state accounted for.
+     7→1. BRAND IDENTITY — AURA LIVING
+     8→Brand: Aura LivingCategory: Premium Home Décor (lamps, mirrors, indoor plants, planters, decorative accessories, vases, candles, trays, sculptural objects, wall art)Explicitly EXCLUDED: Furniture (sofas, tables, chairs, beds, shelving units), bedroom accessories (bedding, pillows, throws, duvets), kitchen appliances, bathroom fixtures
+     9→
+    10→Brand Voice: Warm, refined, understated luxury. Speaks to someone who curates their space intentionally — not maximalist, not minimalist, but considered. Think: editorial still-life photography, natural materials, soft ambient lighting, quiet confidence.
+    11→
+    12→Brand Personality Keywords: Warm minimalism, artisanal, tactile, organic, serene, curated, lived-in elegance
+    13→
+    14→Design Philosophy:
+    15→
+    16→Space breathes. Generous whitespace is a feature, not wasted space.
+    17→Texture is visible — grain, weave, glaze, patina — through photography treatment and subtle UI textures.
+    18→Color is restrained. The palette feels like a sun-warmed stone, dried botanicals, and linen in afternoon light.
+    19→Typography does the heavy lifting. Large, confident headlines with refined body text.
+    20→Nothing screams. Every element whispers quality.
+    21→2. DESIGN SYSTEM & TOKENS
+    22→Build a complete design token system using CSS custom properties (variables) on :root. Every color, spacing value, border radius, shadow, transition duration, and font size MUST be a token. No magic numbers anywhere in any stylesheet.
+    23→
+    24→2.1 Color Palette
+    25→--color-bg-primary: #F7F4EF          /* Warm off-white, main background */--color-bg-secondary: #EDE8E0        /* Slightly deeper warm beige, cards/sections */--color-bg-tertiary: #E3DDD3         /* Deeper warm tone, hover states, borders */--color-bg-inverse: #1A1714           /* Near-black warm brown, dark sections */--color-bg-inverse-elevated: #252119  /* Slightly lighter dark, cards on dark bg */--color-text-primary: #1A1714         /* Main body text */--color-text-secondary: #6B635A       /* Muted text, subtitles */--color-text-tertiary: #9B938A        /* Very muted, timestamps, labels */--color-text-inverse: #F7F4EF         /* Text on dark backgrounds */--color-accent-primary: #B8977E       /* Warm bronze/caramel, CTAs, highlights */--color-accent-primary-hover: #A6846C /* Darker bronze on hover */--color-accent-secondary: #8B9E82     /* Sage green, nature/plant accents */--color-accent-secondary-hover: #7A8C72--color-border-default: #E3DDD3       /* Standard borders */--color-border-subtle: #EDE8E0        /* Very subtle dividers */--color-border-strong: #C7BFB3        /* Emphasized borders */--color-success: #7A9E6E--color-error: #C47A6E--color-warning: #C4A86E--color-info: #6E8EC4--color-overlay: rgba(26, 23, 20, 0.5)--color-overlay-heavy: rgba(26, 23, 20, 0.75)--color-product-shadow: rgba(26, 23, 20, 0.08)--color-elevated-shadow: rgba(26, 23, 20, 0.12)--color-modal-shadow: rgba(26, 23, 20, 0.25)
+    26→2.2 Typography Scale
+    27→Use a modular type scale (ratio ~1.25). All values as CSS custom properties. Use clamp() for fluid responsiveness on every single typographic token — no breakpoint-only font sizing.
+    28→
+    29→--font-family-display: 'Cormorant Garamond', serif--font-family-body: 'DM Sans', sans-serif--font-family-mono: 'JetBrains Mono', monospace  /* for prices, SKUs, labels */--font-size-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem)--font-size-sm: clamp(0.8rem, 0.75rem + 0.3vw, 0.875rem)--font-size-base: clamp(0.9rem, 0.85rem + 0.3vw, 1rem)--font-size-md: clamp(1rem, 0.9rem + 0.5vw, 1.125rem)--font-size-lg: clamp(1.15rem, 1rem + 0.75vw, 1.375rem)--font-size-xl: clamp(1.35rem, 1.15rem + 1vw, 1.75rem)--font-size-2xl: clamp(1.75rem, 1.4rem + 1.75vw, 2.5rem)--font-size-3xl: clamp(2.25rem, 1.75rem + 2.5vw, 3.5rem)--font-size-4xl: clamp(2.75rem, 2rem + 3.75vw, 5rem)--font-size-5xl: clamp(3.5rem, 2.5rem + 5vw, 7rem)--font-weight-light: 300--font-weight-regular: 400--font-weight-medium: 500--font-weight-semibold: 600--font-weight-bold: 700--line-height-tight: 1.1--line-height-snug: 1.25--line-height-normal: 1.5--line-height-relaxed: 1.65--line-height-loose: 1.8--letter-spacing-tight: -0.03em--letter-spacing-normal: -0.01em--letter-spacing-wide: 0.05em--letter-spacing-wider: 0.1em--letter-spacing-widest: 0.2em
+    30→2.3 Spacing Scale
+    31→8px base grid. All spacing as tokens.
+    32→
+    33→--space-0: 0--space-1: 0.25rem   /* 4px */--space-2: 0.5rem    /* 8px */--space-3: 0.75rem   /* 12px */--space-4: 1rem      /* 16px */--space-5: 1.25rem   /* 20px */--space-6: 1.5rem    /* 24px */--space-8: 2rem      /* 32px */--space-10: 2.5rem   /* 40px */--space-12: 3rem     /* 48px */--space-16: 4rem     /* 64px */--space-20: 5rem     /* 80px */--space-24: 6rem     /* 96px */--space-32: 8rem     /* 128px */--space-40: 10rem    /* 160px */--space-48: 12rem    /* 192px */
+    34→2.4 Additional Tokens
+    35→--radius-sm: 4px--radius-md: 8px--radius-lg: 12px--radius-xl: 16px--radius-2xl: 24px--radius-full: 9999px--shadow-xs: 0 1px 2px var(--color-product-shadow)--shadow-sm: 0 2px 8px var(--color-product-shadow)--shadow-md: 0 4px 16px var(--color-elevated-shadow)--shadow-lg: 0 8px 32px var(--color-elevated-shadow)--shadow-xl: 0 16px 48px var(--color-modal-shadow)--shadow-product: 0 8px 24px var(--color-product-shadow)--shadow-product-hover: 0 12px 40px var(--color-elevated-shadow)--transition-fast: 150ms cubic-bezier(0.25, 0.1, 0.25, 1)--transition-base: 250ms cubic-bezier(0.25, 0.1, 0.25, 1)--transition-slow: 400ms cubic-bezier(0.25, 0.1, 0.25, 1)--transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1)--transition-smooth: 600ms cubic-bezier(0.16, 1, 0.3, 1)--z-base: 0--z-above: 10--z-sticky: 100--z-overlay: 500--z-modal: 1000--z-toast: 1100--z-tooltip: 1200
+    36→3. TECHNICAL ARCHITECTURE
+    37→3.1 Stack
+    38→Framework: Next.js 14+ (App Router)
+    39→Styling: Tailwind CSS v3.4+ with the design tokens mapped to tailwind.config.js theme extensions. CSS Modules for complex component-specific styles that Tailwind can't express elegantly. NO inline styles, ever.
+    40→Animations: GSAP 3.12+ (ScrollTrigger, SplitText-equivalent via SplitType), Framer Motion 11+ (layout animations, AnimatePresence for page/mount transitions, gesture-based interactions)
+    41→Smooth Scrolling: Lenis 1.0+ (integrated with GSAP ScrollTrigger via lenis.on('scroll', ScrollTrigger.update))
+    42→Text Splitting: SplitType for character/word/line-level text animations
+    43→Carousels: Embla Carousel (product image galleries, category carousels, testimonial carousels, related product carousels)
+    44→Lottie Animations: @lottiefiles/react-lottie-player or lottie-web for interactive messages, loading states, empty states, success states, add-to-cart confirmations, wishlist animations
+    45→Icons: Lucide React
+    46→Image Optimization: Next.js <Image> with proper sizes, priority, placeholder="blur", and blurDataURL
+    47→State Management: React Context + useReducer for cart/wishlist. Zustand is acceptable as an alternative.
+    48→Form Handling: React Hook Form + Zod validation
+    49→Data: Static JSON/TypeScript data files with full product catalog (minimum 24 products across all categories), collections, testimonials, FAQ data
+    50→3.2 Project Structure
+    51→src/├── app/│   ├── layout.tsx                    /* Root layout: fonts, Lenis provider, global providers */│   ├── page.tsx                      /* Homepage */│   ├── shop/│   │   ├── page.tsx                  /* Shop all / catalog page */│   │   └── [category]/│   │       └── page.tsx              /* Category-filtered view */│   ├── product/│   │   └── [slug]/│   │       └── page.tsx              /* Product detail page */│   ├── collections/│   │   └── [slug]/│   │       └── page.tsx              /* Curated collection page */│   ├── about/│   │   └── page.tsx                  /* Brand story page */│   ├── cart/│   │   └── page.tsx                  /* Full cart page */│   └── globals.css                   /* Design tokens, base resets, utility classes */├── components/│   ├── ui/                           /* Primitive, reusable UI components */│   │   ├── Button.tsx│   │   ├── ButtonLink.tsx│   │   ├── Input.tsx│   │   ├── Textarea.tsx│   │   ├── Select.tsx│   │   ├── Badge.tsx│   │   ├── Tag.tsx│   │   ├── Divider.tsx│   │   ├── Skeleton.tsx│   │   ├── Tooltip.tsx│   │   ├── Toast.tsx│   │   └── LottieAnimation.tsx       /* Reusable Lottie wrapper component */│   ├── layout/                       /* Structural layout components */│   │   ├── Header.tsx│   │   ├── MobileNav.tsx│   │   ├── Footer.tsx│   │   ├── PageTransition.tsx│   │   └── Section.tsx               /* Reusable section wrapper with consistent padding */│   ├── commerce/                     /* E-commerce specific components */│   │   ├── ProductCard.tsx│   │   ├── ProductGrid.tsx│   │   ├── ProductGallery.tsx        /* Embla-based image carousel */│   │   ├── ProductInfo.tsx│   │   ├── ProductVariants.tsx│   │   ├── AddToCartButton.tsx│   │   ├── WishlistButton.tsx│   │   ├── PriceDisplay.tsx│   │   ├── CartDrawer.tsx│   │   ├── CartItem.tsx│   │   ├── CartSummary.tsx│   │   ├── QuantitySelector.tsx│   │   ├── CategoryCard.tsx│   │   ├── FilterSidebar.tsx│   │   ├── SortDropdown.tsx│   │   ├── ActiveFilters.tsx│   │   └── EmptyState.tsx            /* Lottie-powered empty cart/wishlist */│   ├── sections/                     /* Homepage and page-specific sections */│   │   ├── HeroSection.tsx│   │   ├── CategoryShowcase.tsx│   │   ├── FeaturedProducts.tsx│   │   ├── CuratedCollection.tsx│   │   ├── TestimonialSection.tsx│   │   ├── NewsletterSection.tsx│   │   ├── BrandValues.tsx│   │   ├── InstagramFeed.tsx│   │   └── FAQSection.tsx│   └── animation/                    /* Animation utility components */│       ├── RevealOnScroll.tsx        /* GSAP ScrollTrigger wrapper */│       ├── SplitTextReveal.tsx       /* SplitType + GSAP animation */│       ├── TextBlurReveal.tsx        /* Blur-in text animation */│       ├── StaggerReveal.tsx         /* Staggered children reveal */│       ├── ParallaxElement.tsx│       ├── MagneticElement.tsx       /* Magnetic hover effect for buttons */│       └── PageLoader.tsx            /* Lottie-powered page loading animation */├── context/│   ├── CartContext.tsx│   ├── WishlistContext.tsx│   └── UIContext.tsx                 /* Toast, modals, mobile nav state */├── data/│   ├── products.ts                   /* Full product catalog */│   ├── categories.ts│   ├── collections.ts│   ├── testimonials.ts│   ├── faq.ts│   └── navigation.ts├── hooks/│   ├── useLenis.ts│   ├── useGSAP.ts│   ├── useMediaQuery.ts│   ├── useScrollProgress.ts│   └── useLottie.ts├── lib/│   ├── animations.ts                 /* GSAP timeline presets, shared animation configs */│   ├── utils.ts                      /* cn() helper, formatPrice, etc. */│   └── embla-utils.ts               /* Embla carousel shared configs */├── types/│   └── index.ts                      /* Product, CartItem, Category, Collection, etc. */└── public/    ├── lottie/                       /* All Lottie JSON files */    │   ├── loading.json    │   ├── empty-cart.json    │   ├── empty-wishlist.json    │   ├── add-to-cart-success.json    │   ├── wishlist-added.json    │   ├── order-success.json    │   ├── newsletter-success.json    │   └── search-empty.json    └── images/                       /* Product and lifestyle images */
+    52→3.3 Utility Classes (globals.css)
+    53→Create a comprehensive set of utility classes beyond what Tailwind provides. These live in globals.css and are used throughout the project:
+    54→
+    55→/* Text gradient utilities */.text-gradient-warm { background: linear-gradient(135deg, var(--color-accent-primary), #D4A574); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }.text-gradient-sage { background: linear-gradient(135deg, var(--color-accent-secondary), #A8BF9E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }/* Reveal animation base states — GSAP adds the active state */.reveal-blur { opacity: 0; filter: blur(8px); transform: translateY(20px); }.reveal-up { opacity: 0; transform: translateY(40px); }.reveal-down { opacity: 0; transform: translateY(-40px); }.reveal-left { opacity: 0; transform: translateX(-40px); }.reveal-right { opacity: 0; transform: translateX(40px); }.reveal-scale { opacity: 0; transform: scale(0.95); }.reveal-fade { opacity: 0; }/* Split text animation states */.split-char { display: inline-block; overflow: hidden; }.split-word { display: inline-block; overflow: hidden; }.split-line { display: block; overflow: hidden; }.split-char-inner,.split-word-inner,.split-line-inner { display: inline-block; transform: translateY(110%); }/* Image reveal */.image-reveal { position: relative; overflow: hidden; }.image-reveal::after { content: ''; position: absolute; inset: 0; background: var(--color-bg-primary); transform-origin: left; }.image-reveal.revealed::after { transform: scaleX(0); transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }/* Hover lift for product cards */.hover-lift { transition: transform var(--transition-base), box-shadow var(--transition-base); }.hover-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-product-hover); }/* Line draw animation */.line-draw { stroke-dasharray: 1000; stroke-dashoffset: 1000; }.line-draw.revealed { stroke-dashoffset: 0; transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1); }/* Marquee */.marquee-track { display: flex; animation: marquee 30s linear infinite; }@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }/* Smooth underline */.smooth-underline { position: relative; }.smooth-underline::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform var(--transition-base); }.smooth-underline:hover::after { transform: scaleX(1); transform-origin: left; }/* Glass morphism */.glass { background: rgba(247, 244, 239, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }.glass-dark { background: rgba(26, 23, 20, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }/* Focus visible */.focus-ring:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; border-radius: var(--radius-sm); }/* Selection */::selection { background: var(--color-accent-primary); color: var(--color-text-inverse); }/* Scrollbar styling */.scrollbar-thin { scrollbar-width: thin; scrollbar-color: var(--color-border-strong) transparent; }.scrollbar-thin::-webkit-scrollbar { width: 6px; }.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: var(--radius-full); }/* Noise texture overlay */.noise-overlay::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: var(--z-tooltip); opacity: 0.03; background-image: url("data:image/svg+xml,..."); /* inline SVG noise */ }
+    56→4. ANIMATION SYSTEM — DETAILED SPECIFICATIONS
+    57→This is the heart of the premium feel. Every animation must be purposeful, performant, and polished.
+    58→
+    59→4.1 Lenis Smooth Scrolling Setup
+    60→Initialize Lenis in a client-side provider wrapping the entire app
+    61→Duration: 1.2s, easing: 0.075, 0.1, 0.1, 1 (smooth ease-out)
+    62→Sync with GSAP ScrollTrigger: lenis.on('scroll', ScrollTrigger.update) and gsap.ticker.add((time) => lenis.raf(time * 1000))
+    63→Disable on mobile when user prefers-reduced-motion is set
+    64→Smooth scroll to anchors when navigation links are clicked
+    65→Scroll to top on route change
+    66→4.2 Text Animations (SplitType + GSAP)
+    67→SplitTextReveal Component:
+    68→
+    69→Accepts props: text, type ('char' | 'word' | 'line'), animation ('slideUp' | 'fadeIn' | 'blurIn' | 'stagger'), stagger (number), duration (number), delay (number), trigger ('scroll' | 'mount')
+    70→On scroll trigger: uses ScrollTrigger with start: 'top 85%', once: true
+    71→On mount trigger: plays immediately with optional delay
+    72→Default stagger: 0.03s for chars, 0.06s for words, 0.1s for lines
+    73→Default duration: 0.8s
+    74→Easing: power3.out
+    75→TextBlurReveal Component:
+    76→
+    77→Text starts with opacity: 0, filter: blur(10px), transform: translateY(15px)
+    78→Animates to opacity: 1, filter: blur(0px), transform: translateY(0)
+    79→Duration: 0.9s, easing: power2.out
+    80→Can be used on individual elements or as a stagger parent
+    81→Scroll-triggered by default
+    82→Headline Animation Standard:
+    83→
+    84→Every H1 on the site uses SplitTextReveal with type='line', animation='slideUp', stagger=0.12
+    85→Every H2 on the site uses TextBlurReveal
+    86→Every H3 uses RevealOnScroll with direction='up', distance=20
+    87→4.3 Scroll-Triggered Reveals (RevealOnScroll Component)
+    88→A versatile wrapper component:
+    89→
+    90→interface RevealOnScrollProps {  children: React.ReactNode  direction?: 'up' | 'down' | 'left' | 'right' | 'none'  distance?: number       // default: 30  duration?: number       // default: 0.8  delay?: number          // default: 0  stagger?: number        // staggers direct children, default: 0.1  blur?: boolean          // adds blur to the reveal, default: false  once?: boolean          // default: true  start?: string          // ScrollTrigger start, default: 'top 85%'  scroller?: string       // for nested scroll containers}
+    91→Uses GSAP ScrollTrigger
+    92→Children start in their CSS class state (e.g., .reveal-up)
+    93→GSAP animates to final state
+    94→stagger prop staggers direct children (useful for product grids, feature lists)
+    95→4.4 Page Transitions (Framer Motion AnimatePresence)
+    96→Wrap page content in <PageTransition> component
+    97→Exit animation: content fades out and slides up 20px, duration 0.3s
+    98→Enter animation: content fades in and slides up from 20px, duration 0.5s, delay 0.15s
+    99→Use AnimatePresence mode="wait"
+   100→During transition, show a subtle Lottie loading animation (small, elegant — not a full-screen loader, just a minimal indicator)
+   101→Header and footer are OUTSIDE the page transition wrapper — they persist
+   102→4.5 Product Card Micro-Interactions (Framer Motion)
+   103→Hover: Card lifts (y: -4px), shadow intensifies, image scales subtly (scale: 1.03) — all via whileHover
+   104→Quick-add button: Fades in from bottom of card image on hover (opacity: 0 → 1, y: 10 → 0)
+   105→Wishlist button: Top-right corner, heart icon. On click: scales to 1.3, fills with accent color, springs back. Uses Framer Motion spring physics
+   106→Add to cart success: Brief green checkmark Lottie plays overlaying the button, then fades. Duration: 1.2s total
+   107→Layout animation: When filtering causes products to rearrange, use Framer Motion layout prop for smooth position transitions
+   108→4.6 Cart Drawer Animation (Framer Motion)
+   109→Drawer slides in from right: x: '100%' → x: 0, duration 0.5s, easing: [0.16, 1, 0.3, 1]
+   110→Overlay fades in: opacity: 0 → 1, duration 0.3s
+   111→Cart items animate in with stagger: each item slides in from right with 0.05s stagger
+   112→When item is removed: item slides out right and collapses height (layout animation)
+   113→When quantity changes: number animates (counter animation)
+   114→Empty cart state: items fade out, Lottie empty-cart animation fades in
+   115→4.7 Product Gallery (Embla Carousel)
+   116→Main image carousel with slide transition (not fade)
+   117→Thumbnail strip below (or to the right on desktop) — synced with main carousel
+   118→Slide transition: duration: 500ms, easing: cubic-bezier(0.16, 1, 0.3, 1)
+   119→On slide change: new image has a subtle scale-in from 0.98 to 1.0
+   120→Drag enabled on mobile, snap to nearest slide
+   121→Keyboard navigable
+   122→Optional: pinch-to-zoom on mobile (nice-to-have)
+   123→4.8 Magnetic Hover Effect (MagneticElement Component)
+   124→Used on primary CTA buttons and key interactive elements
+   125→On mouse move within element bounds: element shifts slightly toward cursor
+   126→Max displacement: 8px
+   127→Spring-back on mouse leave
+   128→Uses requestAnimationFrame for performance
+   129→Disabled on touch devices
+   130→4.9 Parallax (ParallaxElement Component)
+   131→Used on hero section background images, decorative elements, and the brand values section
+   132→Speed prop: -1 to 1 (negative = moves opposite to scroll)
+   133→Uses GSAP ScrollTrigger scrub: true
+   134→Subtle — max parallax offset ~60px. This is not a parallax website; it's used sparingly for depth
+   135→4.10 Lottie Integration Points
+   136→Create a reusable <LottieAnimation> component that accepts: src (path to JSON), loop (boolean), autoplay (boolean), width, height, className.
+   137→
+   138→Use Lottie at these specific points:
+   139→
+   140→Location        Lottie File     Behavior
+   141→Initial page load       loading.json    Plays once, minimal and elegant (a subtle line drawing or pulse), disappears after 1.5s
+   142→Empty cart      empty-cart.json Looping, gentle animation of an empty bag/basket with floating particles
+   143→Empty wishlist  empty-wishlist.json     Looping, heart fading in and out with gentle bounce
+   144→Add to cart success     add-to-cart-success.json        Plays once, quick checkmark with a subtle burst, 1.2s duration
+   145→Wishlist added  wishlist-added.json     Plays once, heart fills and emits small particles, 1s duration
+   146→Newsletter subscribe    newsletter-success.json Plays once, envelope opens or checkmark appears, 1.5s duration
+   147→Search no results       search-empty.json       Looping, magnifying glass with question mark, subtle float
+   148→Order/checkout success  order-success.json      Plays once, celebratory but restrained — confetti is too much, think elegant checkmark with radiating lines
+   149→All Lottie files should be described as: warm color palette matching the brand, line-art style or soft filled style, no harsh colors, minimal and refined.
+   150→
+   151→5. COMPONENT LIBRARY — DETAILED SPECS
+   152→5.1 UI Primitives
+   153→Button:
+   154→
+   155→Variants: primary (filled accent), secondary (outlined), ghost (text only), dark (filled inverse)
+   156→Sizes: sm, md, lg
+   157→States: default, hover, active/pressed, focus-visible, disabled, loading
+   158→Loading state: replaces text with a small spinning animation (CSS-only, not Lottie — keep it minimal)
+   159→Uses MagneticElement wrapper when variant is primary or dark
+   160→Full-width prop
+   161→As link prop (renders as <Link> with button styling)
+   162→Icon prop (icon before or after text)
+   163→Ripple effect on click (CSS animation, not JS-heavy)
+   164→Input:
+   165→
+   166→Variants: default, floating-label
+   167→States: default, focus, error, disabled
+   168→Error state shows error message below with --color-error color and shake animation on submit attempt
+   169→Label animates up on focus (floating variant)
+   170→Consistent border-radius --radius-md, border 1px solid var(--color-border-default), focus border --color-accent-primary
+   171→Badge:
+   172→
+   173→Variants: default (subtle bg), accent (accent bg), outline, sold-out (red-ish)
+   174→Used for: "New", "Bestseller", "Sale", "Sold Out" on product cards
+   175→Small, uppercase, letter-spacing-wide, font-size-xs
+   176→Divider:
+   177→
+   178→Variants: line (simple hr), dotted, ornamental (small decorative element centered)
+   179→Ornamental: a small diamond or dot with lines extending from both sides
+   180→Skeleton:
+   181→
+   182→Matches the exact dimensions of the content it replaces
+   183→Subtle shimmer animation (gradient moving left to right)
+   184→Uses --color-bg-tertiary and --color-bg-secondary
+   185→Toast:
+   186→
+   187→Positions: bottom-right (default), top-center
+   188→Variants: success, error, info
+   189→Auto-dismiss after 4s
+   190→Slide-in animation from right
+   191→Can include Lottie icon for success state
+   192→Stack multiple toasts
+   193→LottieAnimation:
+   194→
+   195→Props: src, loop, autoplay, width, height, className, onComplete, ariaLabel
+   196→Lazy-loads the Lottie JSON
+   197→Respects prefers-reduced-motion — shows static first frame if user prefers reduced motion
+   198→Properly cleaned up on unmount
+   199→5.2 Layout Components
+   200→Header:
+   201→
+   202→Sticky on scroll with glass-morphism effect after scrolling past hero
+   203→Contains: logo (left), main navigation (center), utility icons (right — search, wishlist, cart with item count badge)
+   204→Mobile: hamburger menu, no bottom tab bar
+   205→Nav links: Shop (mega menu dropdown), Collections, About, Journal (link only, no page needed)
+   206→Mega menu: appears on hover (desktop) / tap (mobile), shows category cards with images
+   207→Cart icon shows item count in a small circle badge
+   208→Wishlist icon shows count
+   209→Active nav link has a subtle underline animation
+   210→Height: 72px desktop, 60px mobile
+   211→z-index: --z-sticky
+   212→Transition between transparent (top of page) and glass state should be smooth
+   213→MobileNav:
+   214→
+   215→Full-screen overlay from right
+   216→Same navigation structure as desktop
+   217→Each nav item animates in with stagger
+   218→Close button top-right
+   219→Background overlay fades in
+   220→Body scroll locked when open
+   221→Footer:
+   222→
+   223→Background: --color-bg-inverse
+   224→Text: --color-text-inverse
+   225→4-column layout on desktop: Shop (category links), Company (About, Contact, Careers), Support (FAQ, Shipping, Returns), Connect (social icons, newsletter mini-form)
+   226→Stacked on mobile
+   227→Bottom bar: copyright, payment icons, legal links
+   228→All links use smooth-underline class on hover
+   229→Newsletter input in footer uses the dark variant styling
+   230→Section:
+   231→
+   232→Reusable wrapper: consistent vertical padding (--space-20 on mobile, --space-32 on desktop)
+   233→Max-width container centered
+   234→Optional: background color prop, dark mode prop, no-bottom-padding prop
+   235→Used by every section on every page for consistency
+   236→PageTransition:
+   237→
+   238→Wraps {children} in Framer Motion motion.div
+   239→Handles exit/enter animations
+   240→Includes minimal Lottie loading indicator during transition
+   241→5.3 Commerce Components
+   242→ProductCard:
+   243→
+   244→Image container with 4:5 aspect ratio
+   245→Hover: image scales to 1.03, quick-add button fades in at bottom of image, subtle shadow lift
+   246→Top-left: Badge (if applicable — "New", "Sale", etc.)
+   247→Top-right: WishlistButton (heart icon, outlined by default, filled when wishlisted)
+   248→Below image: Product name (font-weight-medium, font-size-base), Price (font-family-mono, font-size-sm), optional subtitle (color variant or material, font-size-xs, text-secondary)
+   249→Quick-add button: "Quick Add" text button, full width of image, semi-transparent bg
+   250→Click on card (not button) navigates to product page
+   251→Uses RevealOnScroll with stagger when in a grid
+   252→Framer Motion layout prop for smooth repositioning during filter
+   253→ProductGrid:
+   254→
+   255→Responsive grid: 2 columns mobile, 3 columns tablet, 4 columns desktop
+   256→Gap: --space-6
+   257→Accepts products array, renders ProductCard for each
+   258→Stagger animation on the grid children
+   259→ProductGallery:
+   260→
+   261→Embla Carousel for main images
+   262→Thumbnail navigation below (4-5 visible thumbnails, scrollable)
+   263→Main image: aspect ratio 4:5 on mobile, 3:4 on desktop
+   264→Slide indicators (dots) on mobile only
+   265→Keyboard navigation
+   266→Active thumbnail has accent border
+   267→ProductInfo:
+   268→
+   269→Product name: H1, font-size-3xl, font-family-display, font-weight-light, letter-spacing-tight
+   270→Price: font-family-mono, font-size-xl, font-weight-medium
+   271→Short description: font-size-base, text-secondary, line-height-relaxed
+   272→Variant selector (color/material): visual swatches or text buttons in a row
+   273→Quantity selector + Add to Cart button in a row
+   274→Add to Cart button: full-width, variant="primary", size="lg", includes Lottie success animation on click
+   275→Expandable sections below: Description (full), Materials & Care, Dimensions, Shipping & Returns — accordion style with smooth height animation
+   276→Wishlist button (text link with heart icon) below add-to-cart
+   277→AddToCartButton:
+   278→
+   279→Wraps Button with cart-specific logic
+   280→On click:
+   281→Button enters loading state briefly (300ms simulated)
+   282→Lottie add-to-cart-success.json plays overlaid on button
+   283→Cart count in header increments with a small bounce animation
+   284→Toast appears: "{Product name} added to cart"
+   285→If out of stock: button is disabled with "Sold Out" text
+   286→WishlistButton:
+   287→
+   288→Heart icon (Lucide Heart)
+   289→Outlined when not wishlisted, filled when wishlisted
+   290→On click: Lottie wishlist-added.json plays, icon fills, brief scale bounce
+   291→If removing: icon returns to outlined with a subtle fade
+   292→Accessible: aria-label changes based on state
+   293→CartDrawer:
+   294→
+   295→Slides in from right, 420px wide on desktop, full-width on mobile
+   296→Header: "Your Cart" title + close button
+   297→Cart items list: scrollable
+   298→Each CartItem: small image (80x80), name, variant, QuantitySelector, line total, remove button
+   299→Below list: CartSummary (subtotal, shipping estimate, total) + "Checkout" button + "View Full Cart" link
+   300→Empty state: Lottie empty-cart.json + "Your cart is empty" text + "Continue Shopping" button
+
+[showing lines 1-300 of 589; use offset=301 with limit to continue reading]
