@@ -15,11 +15,11 @@ export function SearchOverlay() {
 
   const [query, setQuery] = useState("");
 
-  // Reset query when overlay closes — track previous open state in a ref so
-  // we only reset on actual transition, not on every render.
-  const prevOpenRef = useRef(true);
-  if (open !== prevOpenRef.current) {
-    prevOpenRef.current = open;
+  // Reset query when overlay closes — using the documented "store information
+  // from previous render" pattern to avoid setState-in-effect warnings.
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (!open) setQuery("");
   }
 

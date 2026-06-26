@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, ChevronDown, ArrowRight } from "lucide-react";
 import { products } from "@/data/products";
@@ -115,12 +115,12 @@ export function ShopView() {
   const visible = filteredProducts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProducts.length;
 
-  // Reset pagination when filters change — track previous filter signature
-  // so we only reset on actual change, not on every render.
+  // Reset pagination when filters change — using the documented "store
+  // information from previous render" pattern to avoid setState-in-effect.
   const filterSignature = `${activeCategory}|${activeCollection}|${filters.length}|${sort}`;
-  const prevSigRef = useRef(filterSignature);
-  if (filterSignature !== prevSigRef.current) {
-    prevSigRef.current = filterSignature;
+  const [prevSig, setPrevSig] = useState(filterSignature);
+  if (filterSignature !== prevSig) {
+    setPrevSig(filterSignature);
     setVisibleCount(12);
   }
 

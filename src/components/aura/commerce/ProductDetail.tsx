@@ -195,7 +195,7 @@ export function ProductDetail() {
                 aria-label="Close product"
                 className="absolute top-4 right-4 z-10 p-2.5 bg-paper/90 backdrop-blur-sm rounded-full hover:bg-cream transition-colors"
               >
-                <X size={20} strokeWidth={1.25} c-ink />
+                <X size={20} strokeWidth={1.25} className="c-ink" />
               </button>
 
               <div className="grid grid-cols-1 md:grid-cols-12">

@@ -97,7 +97,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             <Heart
               size={18}
               strokeWidth={1.25}
-              className={cn(isWish ? "fill-gold c-gold" : "c-ink")}
+              className={cn(isWished ? "fill-gold c-gold" : "c-ink")}
             />
           </motion.span>
         </button>

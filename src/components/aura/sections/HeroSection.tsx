@@ -26,7 +26,6 @@ export function HeroSection() {
           src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=1920&h=1080&fit=crop&q=80"
           alt="A sun-warm living room with a brass arc lamp, an arched oak mirror, and ceramics arranged on a low shelf."
           className="w-full h-full object-cover opacity-70"
-          priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent" />
       </motion.div>
