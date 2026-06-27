@@ -85,7 +85,8 @@ export type ViewKey =
   | "account" | "account-orders" | "account-order-detail"
   | "account-addresses" | "account-wishlist" | "account-preferences"
   | "lookbook" | "collections" | "artisans" | "sustainability"
-  | "trade" | "gifts" | "care";
+  | "trade" | "gifts" | "care"
+  | "product-detail";
 
 export interface ActiveFilter {
   field: "category" | "material" | "price";

@@ -9,7 +9,8 @@ import { MobileNav } from "./MobileNav";
 import { SearchOverlay } from "./SearchOverlay";
 import { CartDrawer } from "@/components/aura/commerce/CartDrawer";
 import { WishlistDrawer } from "@/components/aura/commerce/WishlistDrawer";
-import { ProductDetail } from "@/components/aura/commerce/ProductDetail";
+import { ProductDetailPage } from "@/components/aura/commerce/ProductDetailPage";
+import { productBySlug } from "@/data/products";
 
 import { HeroSlider } from "@/components/aura/sections/HeroSlider";
 import { CategoryShowcase } from "@/components/aura/sections/CategoryShowcase";
@@ -39,11 +40,15 @@ import { ResetPasswordView } from "@/components/aura/auth/ResetPasswordView";
 
 export function SiteShell() {
   const view = useUIStore((s) => s.view);
+  const activeProductSlug = useUIStore((s) => s.activeProductSlug);
+  const openProduct = useUIStore((s) => s.openProduct);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
   }, [view, prefersReducedMotion]);
+
+  const activeProduct = activeProductSlug ? productBySlug(activeProductSlug) : undefined;
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
@@ -52,7 +57,6 @@ export function SiteShell() {
       <SearchOverlay />
       <CartDrawer />
       <WishlistDrawer />
-      <ProductDetail />
 
       <main id="main" className="flex-1">
         <AnimatePresence mode="wait">
@@ -90,6 +94,12 @@ export function SiteShell() {
             {view === "signup" && <SignupView />}
             {view === "forgot-password" && <ForgotPasswordView />}
             {view === "reset-password" && <ResetPasswordView />}
+            {view === "product-detail" && activeProduct && (
+              <ProductDetailPage
+                product={activeProduct}
+                onBack={() => openProduct(null)}
+              />
+            )}
           </motion.div>
         </AnimatePresence>
       </main>

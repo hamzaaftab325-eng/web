@@ -24,6 +24,8 @@ interface UIState {
   setCategory: (c: CategorySlug | "all") => void;
   setCollection: (slug: string | null) => void;
   openProduct: (slug: string | null) => void;
+  /** Open the full-page product detail view (replaces the quick-view modal). */
+  openProductPage: (slug: string) => void;
   setQuickViewProduct: (slug: string | null) => void;
   openArticle: (slug: string | null) => void;
   openOrder: (id: string | null) => void;
@@ -57,7 +59,13 @@ export const useUIStore = create<UIState>((set) => ({
   setView: (v) => set({ view: v, mobileNavOpen: false, filterDrawerOpen: false, activeProductSlug: null, searchOpen: false }),
   setCategory: (c) => set({ activeCategory: c, view: "shop" }),
   setCollection: (slug) => set({ activeCollection: slug, view: "shop", activeCategory: "all" }),
-  openProduct: (slug) => set({ activeProductSlug: slug }),
+  // openProduct now routes to the full-page PDP. Passing null closes the
+  // PDP and returns the shopper to the shop view.
+  openProduct: (slug) =>
+    set(slug ? { activeProductSlug: slug, view: "product-detail" } : { activeProductSlug: null, view: "shop" }),
+  // openProductPage is an explicit alias kept for readability at call sites.
+  openProductPage: (slug) =>
+    set({ activeProductSlug: slug, view: "product-detail" }),
   setQuickViewProduct: (slug) => set({ quickViewProductSlug: slug }),
   openArticle: (slug) => set({ activeArticleSlug: slug }),
   openOrder: (id) => set({ activeOrderId: id, view: "account-order-detail" }),
