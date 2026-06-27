@@ -11,7 +11,7 @@ import { CartDrawer } from "@/components/aura/commerce/CartDrawer";
 import { WishlistDrawer } from "@/components/aura/commerce/WishlistDrawer";
 import { ProductDetail } from "@/components/aura/commerce/ProductDetail";
 
-import { HeroSection } from "@/components/aura/sections/HeroSection";
+import { HeroSlider } from "@/components/aura/sections/HeroSlider";
 import { CategoryShowcase } from "@/components/aura/sections/CategoryShowcase";
 import { BrandMarquee } from "@/components/aura/sections/BrandMarquee";
 import { FeaturedProducts } from "@/components/aura/sections/FeaturedProducts";
@@ -53,7 +53,7 @@ export function SiteShell() {
           >
             {view === "home" && (
               <>
-                <HeroSection />
+                <HeroSlider />
                 <CategoryShowcase />
                 <BrandMarquee />
                 <FeaturedProducts />

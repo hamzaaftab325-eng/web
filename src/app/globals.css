@@ -405,6 +405,21 @@
   .divider-animated::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--gold), transparent); transform: translateX(-100%); animation: divider-sweep 4s ease-in-out infinite; }
   @keyframes divider-sweep { 0%, 100% { transform: translateX(-100%); } 50% { transform: translateX(100%); } }
 
+  /* Progress origin for slider */
+  .progress-origin-left { transform-origin: left center; }
+
+  /* Z-index utilities */
+  .z-base { z-index: 0; }
+  .z-above { z-index: 10; }
+  .z-sticky { z-index: 100; }
+  .z-overlay { z-index: 500; }
+  .z-drawer { z-index: 600; }
+  .z-modal { z-index: 1000; }
+  .z-modal-elevated { z-index: 1100; }
+  .z-toast { z-index: 1200; }
+  .z-search { z-index: 1300; }
+  .z-tooltip { z-index: 1400; }
+
   /* Layout helpers */
   .container-aura {
     width: 100%;
