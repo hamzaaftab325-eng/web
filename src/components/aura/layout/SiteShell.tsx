@@ -29,7 +29,6 @@ export function SiteShell() {
   const view = useUIStore((s) => s.view);
   const prefersReducedMotion = useReducedMotion();
 
-  // Scroll to top on view change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
   }, [view, prefersReducedMotion]);
