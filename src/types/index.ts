@@ -1,7 +1,3 @@
-/**
- * Aura Living — Type definitions
- */
-
 export type CategorySlug =
   | "lamps-lighting"
   | "mirrors"
@@ -11,7 +7,6 @@ export type CategorySlug =
   | "wall-art";
 
 export type CollectionSlug = "warm-tones" | "the-plant-edit" | "gift-guide-under-150";
-
 export type BadgeKind = "New" | "Bestseller" | "Sale" | "Sold Out";
 
 export interface ProductVariant {
@@ -84,7 +79,13 @@ export interface CartLine {
   quantity: number;
 }
 
-export type ViewKey = "home" | "shop" | "about" | "journal";
+export type ViewKey =
+  | "home" | "shop" | "about" | "journal"
+  | "login" | "signup" | "forgot-password" | "reset-password"
+  | "account" | "account-orders" | "account-order-detail"
+  | "account-addresses" | "account-wishlist" | "account-preferences"
+  | "lookbook" | "collections" | "artisans" | "sustainability"
+  | "trade" | "gifts" | "care";
 
 export interface ActiveFilter {
   field: "category" | "material" | "price";
