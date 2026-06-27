@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
+import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
+import { useAuthStore } from "@/store/use-auth-store";
 import { categories } from "@/data/categories";
 import { collections } from "@/data/collections";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,8 @@ export function Header() {
 
   const wishCount = useWishlistStore((s) => s.slugs.length);
   const openWishlist = useWishlistStore((s) => s.openDrawer);
+
+  const user = useAuthStore((s) => s.user);
 
   const prefersReducedMotion = useReducedMotion();
 
@@ -150,6 +153,14 @@ export function Header() {
 
           {/* Utility icons */}
           <div className="flex items-center gap-4 md:gap-5">
+            <button
+              onClick={() => setView(user ? "account" : "login")}
+              aria-label={user ? "Account" : "Sign in"}
+              className="text-ink hover:text-gold transition-colors p-1 relative"
+            >
+              <User size={20} strokeWidth={1.25} />
+            </button>
+
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="Search"

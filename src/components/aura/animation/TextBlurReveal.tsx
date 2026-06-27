@@ -1,13 +1,14 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
+import type { ReactNode, ElementType } from "react";
 import { cn } from "@/lib/utils";
 
 interface TextBlurRevealProps {
   children: ReactNode;
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "div";
   className?: string;
+  id?: string;
   duration?: number;
   delay?: number;
   trigger?: "scroll" | "mount";
@@ -22,6 +23,7 @@ export function TextBlurReveal({
   children,
   as = "h2",
   className,
+  id,
   duration = 0.9,
   delay = 0,
   trigger = "scroll",
@@ -31,12 +33,13 @@ export function TextBlurReveal({
   const MotionTag = motion[as];
 
   if (prefersReducedMotion) {
-    const Tag = as as keyof JSX.IntrinsicElements;
-    return <Tag className={className}>{children}</Tag>;
+    const Tag = as as ElementType;
+    return <Tag id={id} className={className}>{children}</Tag>;
   }
 
   return (
     <MotionTag
+      id={id}
       className={cn(className)}
       initial={{ opacity: 0, filter: "blur(10px)", y: 14 }}
       {...(trigger === "scroll"

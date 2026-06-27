@@ -25,6 +25,18 @@ import { ShopView } from "@/components/aura/sections/ShopView";
 import { AboutView } from "@/components/aura/sections/AboutView";
 import { JournalView } from "@/components/aura/sections/JournalView";
 
+import { AccountDashboard } from "@/components/aura/account/AccountDashboard";
+import { AccountOrders } from "@/components/aura/account/AccountOrders";
+import { AccountOrderDetail } from "@/components/aura/account/AccountOrderDetail";
+import { AccountAddresses } from "@/components/aura/account/AccountAddresses";
+import { AccountWishlist } from "@/components/aura/account/AccountWishlist";
+import { AccountPreferences } from "@/components/aura/account/AccountPreferences";
+
+import { LoginView } from "@/components/aura/auth/LoginView";
+import { SignupView } from "@/components/aura/auth/SignupView";
+import { ForgotPasswordView } from "@/components/aura/auth/ForgotPasswordView";
+import { ResetPasswordView } from "@/components/aura/auth/ResetPasswordView";
+
 export function SiteShell() {
   const view = useUIStore((s) => s.view);
   const prefersReducedMotion = useReducedMotion();
@@ -68,6 +80,16 @@ export function SiteShell() {
             {view === "shop" && <ShopView />}
             {view === "about" && <AboutView />}
             {view === "journal" && <JournalView />}
+            {view === "account" && <AccountDashboard />}
+            {view === "account-orders" && <AccountOrders />}
+            {view === "account-order-detail" && <AccountOrderDetail />}
+            {view === "account-addresses" && <AccountAddresses />}
+            {view === "account-wishlist" && <AccountWishlist />}
+            {view === "account-preferences" && <AccountPreferences />}
+            {view === "login" && <LoginView />}
+            {view === "signup" && <SignupView />}
+            {view === "forgot-password" && <ForgotPasswordView />}
+            {view === "reset-password" && <ResetPasswordView />}
           </motion.div>
         </AnimatePresence>
       </main>
