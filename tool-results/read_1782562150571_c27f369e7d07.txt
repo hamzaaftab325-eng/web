@@ -1,0 +1,707 @@
+     1→     1→import type { Product } from "@/types";
+     2→     2→
+     3→     3→/**
+     4→     4→ * Aura Living — Product Catalog (24 SKUs across 6 categories)
+     5→     5→ * Imagery: Unsplash CDN with stable photo IDs.
+     6→     6→ */
+     7→     7→
+     8→     8→const img = (id: string) =>
+     9→     9→  `https://images.unsplash.com/photo-${id}?w=900&h=1125&fit=crop&q=80`;
+    10→    10→
+    11→    11→export const products: Product[] = [
+    12→    12→  // ─────────────────────────────────────────────────────────────────
+    13→    13→  // LAMPS & LIGHTING (5)
+    14→    14→  // ─────────────────────────────────────────────────────────────────
+    15→    15→  {
+    16→    16→    id: "lamp-ceramic-table",
+    17→    17→    slug: "ceramic-table-lamp",
+    18→    18→    name: "Halo Ceramic Table Lamp",
+    19→    19→    subtitle: "Warm Beige",
+    20→    20→    description:
+    21→    21→      "A hand-thrown stoneware body finished in a matte warm-beige glaze, paired with a linen drum shade. Casts a soft, ambient pool of light on a console or bedside.",
+    22→    22→    longDescription:
+    23→    23→      "The Halo lamp begins as a single column of stoneware, thrown on the wheel by a ceramics studio in northern Portugal. Each body carries the gentle asymmetry of the hand — a fingerprint of the maker, never two alike. After a slow biscuit fire, the lamp is dipped in a matte glaze tinted with iron oxide to achieve its sun-warmed tone. A natural linen drum shade softens the bulb to a honeyed glow. Use it on a console, a writing desk, or as a pair on long nightstands; it reads equally well in daylight and after dark.",
+    24→    24→    price: 189,
+    25→    25→    category: "lamps-lighting",
+    26→    26→    images: [
+    27→    27→      img("1507473885765-e6ed057f782c"),
+    28→    28→      img("1513506003901-1e6a229e2d15"),
+    29→    29→      img("1565814329452-e1efa11c5b89"),
+    30→    30→      img("1517991104123-1d56a6e81ed9"),
+    31→    31→    ],
+    32→    32→    badge: "Bestseller",
+    33→    33→    inStock: true,
+    34→    34→    variants: [
+    35→    35→      { id: "v-beige", label: "Warm Beige", swatch: "#cdb89a" },
+    36→    36→      { id: "v-clay", label: "Terracotta", swatch: "#b8714f" },
+    37→    37→      { id: "v-stone", label: "Stone Grey", swatch: "#a8a39c" },
+    38→    38→    ],
+    39→    39→    materials: ["Stoneware", "Linen", "Brass switch"],
+    40→    40→    dimensions: "Ø 28 × H 46 cm",
+    41→    41→    careInstructions:
+    42→    42→      "Wipe the ceramic body with a dry, soft cloth. Spot-clean the linen shade with a damp cloth; do not saturate. Use a 40W max E27 bulb (warm white recommended).",
+    43→    43→    collections: ["warm-tones"],
+    44→    44→    featured: true,
+    45→    45→  },
+    46→    46→  {
+    47→    47→    id: "lamp-brass-arc",
+    48→    48→    slug: "brass-arc-floor-lamp",
+    49→    49→    name: "Crescent Brass Arc Floor Lamp",
+    50→    50→    subtitle: "Antique Brass",
+    51→    51→    description:
+    52→    52→      "A sweeping arc of solid brass anchored by a marble base — an architectural reading lamp that disappears over a sofa or armchair.",
+    53→    53→    longDescription:
+    54→    54→      "The Crescent arc lamp traces a single, confident curve from a Carrara marble plinth to a pivoting brass head. The brass is antiqued by hand — a slow oxidation that deepens to a burnished ochre, sealed to prevent further tarnish. The marble base is weighted to balance the cantilevered arm, so the lamp reads as a slender line from across the room yet stays perfectly stable. Pivot the head to direct light over a book, or lift it to wash a wall in warm illumination.",
+    55→    55→    price: 425,
+    56→    56→    category: "lamps-lighting",
+    57→    57→    images: [
+    58→    58→      img("1517991104123-1d56a6e81ed9"),
+    59→    59→      img("1565814329452-e1efa11c5b89"),
+    60→    60→      img("1507473885765-e6ed057f782c"),
+    61→    61→      img("1513506003901-1e6a229e2d15"),
+    62→    62→    ],
+    63→    63→    badge: "New",
+    64→    64→    inStock: true,
+    65→    65→    variants: [
+    66→    66→      { id: "v-brass", label: "Antique Brass", swatch: "#9c7c3a" },
+    67→    67→      { id: "v-black", label: "Matte Black", swatch: "#1a1a1a" },
+    68→    68→    ],
+    69→    69→    materials: ["Solid brass", "Carrara marble", "Linen-wrapped cord"],
+    70→    70→    dimensions: "Base Ø 30 cm · Arm reach 145 cm · H 195 cm",
+    71→    71→    careInstructions:
+    72→    72→      "Dust brass with a soft, dry cloth. Avoid brass polish — the antique finish is intentional and sealed. Wipe marble with a damp cloth and dry immediately.",
+    73→    73→    collections: ["warm-tones"],
+    74→    74→    featured: true,
+    75→    75→  },
+    76→    76→  {
+    77→    77→    id: "lamp-linen-pendant",
+    78→    78→    slug: "linen-pendant-light",
+    79→    79→    name: "Drift Linen Pendant Light",
+    80→    80→    subtitle: "Natural Linen",
+    81→    81→    description:
+    82→    82→      "A drum-shaped pendant sewn from natural linen, casting a diffused, gallery-soft light over dining tables and entryways.",
+    83→    83→    longDescription:
+    84→    84→      "The Drift pendant is sewn from a single length of unbleached Belgian linen, stretched over a subtle aluminum frame. When lit, the linen glows like a paper lantern — a soft, gallery-grade diffusion that flatters food, faces, and surfaces alike. The drum shape reads as a quiet line in daylight and a warm halo after dark. Includes a 1.5m black braided cord and a brushed brass canopy.",
+    85→    85→    price: 265,
+    86→    86→    category: "lamps-lighting",
+    87→    87→    images: [
+    88→    88→      img("1513506003901-1e6a229e2d15"),
+    89→    89→      img("1565814329452-e1efa11c5b89"),
+    90→    90→      img("1507473885765-e6ed057f782c"),
+    91→    91→      img("1517991104123-1d56a6e81ed9"),
+    92→    92→    ],
+    93→    93→    inStock: true,
+    94→    94→    variants: [
+    95→    95→      { id: "v-linen", label: "Natural Linen", swatch: "#d8c9a7" },
+    96→    96→      { id: "v-ivory", label: "Ivory Linen", swatch: "#efe7d3" },
+    97→    97→    ],
+    98→    98→    materials: ["Belgian linen", "Aluminum frame", "Brass canopy"],
+    99→    99→    dimensions: "Ø 45 × H 28 cm · Cord 150 cm",
+   100→   100→    careInstructions:
+   101→   101→      "Vacuum the shade gently with a brush attachment to remove dust. Spot-clean only — do not machine wash.",
+   102→   102→    collections: ["warm-tones"],
+   103→   103→    featured: true,
+   104→   104→  },
+   105→   105→  {
+   106→   106→    id: "lamp-sculptural-desk",
+   107→   107→    slug: "sculptural-desk-lamp",
+   108→   108→    name: "Obelisk Sculptural Desk Lamp",
+   109→   109→    subtitle: "Matte Black",
+   110→   110→    description:
+   111→   111→      "A minimal obelisk in matte-black powder-coated steel, with a single pivoting LED head for focused task light.",
+   112→   112→    longDescription:
+   113→   113→      "The Obelisk desk lamp reduces the form to its essentials — a tapered column and a single horizontal bar that pivots to direct light. The body is powder-coated in a soft-touch matte black that resists fingerprints and reads as a quiet sculpture in daylight. An integrated LED delivers 700 lumens of warm-white light (2700K, CRI 95+) with a stepless dimmer hidden in the base. Ideal for a writing desk, a console, or a bedside reading light.",
+   114→   114→    price: 155,
+   115→   115→    category: "lamps-lighting",
+   116→   116→    images: [
+   117→   117→      img("1565814329452-e1efa11c5b89"),
+   118→   118→      img("1517991104123-1d56a6e81ed9"),
+   119→   119→      img("1507473885765-e6ed057f782c"),
+   120→   120→      img("1513506003901-1e6a229e2d15"),
+   121→   121→    ],
+   122→   122→    inStock: true,
+   123→   123→    variants: [
+   124→   124→      { id: "v-black", label: "Matte Black", swatch: "#1a1a1a" },
+   125→   125→      { id: "v-putty", label: "Warm Putty", swatch: "#b8a892" },
+   126→   126→    ],
+   127→   127→    materials: ["Powder-coated steel", "Integrated LED"],
+   128→   128→    dimensions: "Base 18 × 12 cm · H 42 cm",
+   129→   129→    careInstructions:
+   130→   130→      "Dust with a dry microfiber cloth. The LED module is rated for 25,000 hours and is not user-replaceable.",
+   131→   131→    collections: [],
+   132→   132→    featured: false,
+   133→   133→  },
+   134→   134→  {
+   135→   135→    id: "lamp-glass-sconce",
+   136→   136→    slug: "glass-globe-wall-sconce",
+   137→   137→    name: "Meridian Glass Globe Wall Sconce",
+   138→   138→    subtitle: "Smoked Glass",
+   139→   139→    description:
+   140→   140→      "A smoked-glass globe on a slim brass arm — a quiet wall light for hallways, reading nooks, and bedside walls.",
+   141→   141→    longDescription:
+   142→   142→      "The Meridian sconce pairs a hand-blown smoked-glass globe with a slender brass arm. The brass is finished in a soft antique patina that complements the warm tint of the glass. The globe diffuses the bulb so the light reads as a soft halo on the wall rather than a hard point. Mount singly beside a mirror, in pairs flanking a bed, or as a row down a long hallway.",
+   143→   143→    price: 145,
+   144→   144→    compareAtPrice: 175,
+   145→   145→    category: "lamps-lighting",
+   146→   146→    images: [
+   147→   147→      img("1517991104123-1d56a6e81ed9"),
+   148→   148→      img("1507473885765-e6ed057f782c"),
+   149→   149→      img("1565814329452-e1efa11c5b89"),
+   150→   150→      img("1513506003901-1e6a229e2d15"),
+   151→   151→    ],
+   152→   152→    badge: "Sale",
+   153→   153→    inStock: true,
+   154→   154→    materials: ["Hand-blown smoked glass", "Antique brass"],
+   155→   155→    dimensions: "H 22 × W 12 × D 18 cm",
+   156→   156→    careInstructions:
+   157→   157→      "Allow the glass to cool before cleaning. Wipe with a soft, dry cloth. Brass will develop a natural patina over time.",
+   158→   158→    collections: ["warm-tones", "gift-guide-under-150"],
+   159→   159→    featured: false,
+   160→   160→  },
+   161→   161→
+   162→   162→  // ─────────────────────────────────────────────────────────────────
+   163→   163→  // MIRRORS (4)
+   164→   164→  // ─────────────────────────────────────────────────────────────────
+   165→   165→  {
+   166→   166→    id: "mirror-arched-floor",
+   167→   167→    slug: "arched-floor-mirror",
+   168→   168→    name: "Aperture Arched Floor Mirror",
+   169→   169→    subtitle: "Natural Oak Frame",
+   170→   170→    description:
+   171→   171→      "A full-height arched mirror in a solid oak frame, leaning with quiet authority against a bedroom or entryway wall.",
+   172→   172→    longDescription:
+   173→   173→      "The Aperture mirror is built around a 4mm silver-backed glass and a frame of solid white oak, finished with a hard-wax oil that deepens the grain without darkening it. The arch softens the line of any wall it leans against; the generous 175cm height lets you see yourself head to toe with room to spare. The frame is rebated around the glass so the mirror appears to float inside the oak. Ships with a French cleat for wall-mounting, or lean it where you like.",
+   174→   174→    price: 395,
+   175→   175→    category: "mirrors",
+   176→   176→    images: [
+   177→   177→      img("1618220179428-22790b461013"),
+   178→   178→      img("1618221195711-dd6afb41a81b"),
+   179→   179→      img("1595428774223-ef52624120d2"),
+   180→   180→      img("1582461545998-0a1dcdc62820"),
+   181→   181→    ],
+   182→   182→    badge: "Bestseller",
+   183→   183→    inStock: true,
+   184→   184→    variants: [
+   185→   185→      { id: "v-oak", label: "Natural Oak", swatch: "#c9a978" },
+   186→   186→      { id: "v-walnut", label: "American Walnut", swatch: "#6b4a2d" },
+   187→   187→    ],
+   188→   188→    materials: ["Solid white oak", "Hard-wax oil finish", "Silver-backed glass"],
+   189→   189→    dimensions: "W 80 × H 175 cm",
+   190→   190→    careInstructions:
+   191→   191→      "Dust the frame with a soft, dry cloth. Clean glass with a streak-free glass cleaner applied to the cloth, not the surface.",
+   192→   192→    collections: ["warm-tones"],
+   193→   193→    featured: true,
+   194→   194→  },
+   195→   195→  {
+   196→   196→    id: "mirror-round-vintage",
+   197→   197→    slug: "round-vintage-mirror",
+   198→   198→    name: "Halo Round Vintage Mirror",
+   199→   199→    subtitle: "Antique Gold",
+   200→   200→    description:
+   201→   201→      "A round mirror with a slim antique-gold leaf frame — an understated note above a console or vanity.",
+   202→   202→    longDescription:
+   203→   203→      "The Halo round mirror is finished by hand with gold leaf applied over a bole base, then gently distressed to reveal the warm red beneath. The frame is just 18mm deep — slim enough to read as a thin line on the wall, present enough to introduce a quiet warmth. The glass is beveled to catch light at the edge. Hang it above a console, in an entryway, or in a pair with a wall sconce between.",
+   204→   204→    price: 225,
+   205→   205→    category: "mirrors",
+   206→   206→    images: [
+   207→   207→      img("1618221195711-dd6afb41a81b"),
+   208→   208→      img("1618220179428-22790b461013"),
+   209→   209→      img("1595428774223-ef52624120d2"),
+   210→   210→      img("1582461545998-0a1dcdc62820"),
+   211→   211→    ],
+   212→   212→    inStock: true,
+   213→   213→    variants: [
+   214→   214→      { id: "v-gold", label: "Antique Gold", swatch: "#b8923a" },
+   215→   215→      { id: "v-silver", label: "Aged Silver", swatch: "#9d9d9d" },
+   216→   216→    ],
+   217→   217→    materials: ["Wood frame", "Gold leaf", "Beveled glass"],
+   218→   218→    dimensions: "Ø 60 × D 5 cm",
+   219→   219→    careInstructions:
+   220→   220→      "Dust with a soft cloth. Avoid metal polishes — the leaf is delicate and the patina is intentional.",
+   221→   221→    collections: ["warm-tones"],
+   222→   222→    featured: false,
+   223→   223→  },
+   224→   224→  {
+   225→   225→    id: "mirror-organic",
+   226→   226→    slug: "irregular-organic-mirror",
+   227→   227→    name: "Pebble Irregular Organic Mirror",
+   228→   228→    subtitle: "Raw Brass",
+   229→   229→    description:
+   230→   230→      "A hand-formed pebble-shaped mirror with a raw-brass rim — an organic, sculptural note for an empty wall.",
+   231→   231→    longDescription:
+   232→   232→      "The Pebble mirror is shaped freehand from a single sheet of brass, so no two are exactly alike. The rim is left raw — it will patina slowly over years, deepening to a warm ochre. The mirror glass is cut to follow the brass outline, with a slim bevel that catches the light. Hang it where you want an unexpected note: above a low dresser, between two windows, or in a series down a hallway.",
+   233→   233→    price: 285,
+   234→   234→    category: "mirrors",
+   235→   235→    images: [
+   236→   236→      img("1595428774223-ef52624120d2"),
+   237→   237→      img("1618220179428-22790b461013"),
+   238→   238→      img("1618221195711-dd6afb41a81b"),
+   239→   239→      img("1582461545998-0a1dcdc62820"),
+   240→   240→    ],
+   241→   241→    badge: "New",
+   242→   242→    inStock: true,
+   243→   243→    materials: ["Raw brass rim", "Beveled mirror glass"],
+   244→   244→    dimensions: "Approx. 70 × 60 cm (varies)",
+   245→   245→    careInstructions:
+   246→   246→      "The raw brass will develop a natural patina. To restore the original tone, polish with a brass cleaner and a soft cloth.",
+   247→   247→    collections: [],
+   248→   248→    featured: true,
+   249→   249→  },
+   250→   250→  {
+   251→   251→    id: "mirror-square-grid",
+   252→   252→    slug: "square-grid-mirror",
+   253→   253→    name: "Grid Square Mirror",
+   254→   254→    subtitle: "Black Metal Frame",
+   255→   255→    description:
+   256→   256→      "A grid-mirrored panel divided by a slim black metal frame — architectural, modular, gallery-leaning.",
+   257→   257→    longDescription:
+   258→   258→      "The Grid mirror is built from four beveled mirror panels set into a powder-coated steel frame. The cross bars read as architectural drawings on the wall — a quiet geometry that adds depth without competing with what it reflects. Hang it horizontally above a sideboard, or vertically in an entryway. The frame is welded at the corners and ground smooth, then finished in a low-sheen matte black.",
+   259→   259→    price: 175,
+   260→   260→    category: "mirrors",
+   261→   261→    images: [
+   262→   262→      img("1582461545998-0a1dcdc62820"),
+   263→   263→      img("1618220179428-22790b461013"),
+   264→   264→      img("1595428774223-ef52624120d2"),
+   265→   265→      img("1618221195711-dd6afb41a81b"),
+   266→   266→    ],
+   267→   267→    inStock: false,
+   268→   268→    badge: "Sold Out",
+   269→   269→    materials: ["Powder-coated steel", "Beveled mirror panels"],
+   270→   270→    dimensions: "W 70 × H 100 × D 4 cm",
+   271→   271→    careInstructions:
+   272→   272→      "Dust the frame with a dry cloth. Clean the glass with a streak-free glass cleaner applied to the cloth.",
+   273→   273→    collections: [],
+   274→   274→    featured: false,
+   275→   275→  },
+   276→   276→
+   277→   277→  // ─────────────────────────────────────────────────────────────────
+   278→   278→  // INDOOR PLANTS (4)
+   279→   279→  // ─────────────────────────────────────────────────────────────────
+   280→   280→  {
+   281→   281→    id: "plant-fiddle-leaf",
+   282→   282→    slug: "fiddle-leaf-fig",
+   283→   283→    name: "Fiddle Leaf Fig",
+   284→   284→    subtitle: "In nursery pot · 120cm",
+   285→   285→    description:
+   286→   286→      "A mature Ficus lyrata with sculptural violin-shaped leaves — a living architectural accent for a bright corner.",
+   287→   287→    longDescription:
+   288→   288→      "Our Fiddle Leaf Figs are greenhouse-grown to a mature 120cm height, with a single upright trunk and a head of large, glossy violin-shaped leaves. They prefer a bright, indirect-light position and a weekly watering schedule. Ships in a standard nursery pot, ready to drop into any of our planters. Each plant is hand-selected at the greenhouse for shape and health.",
+   289→   289→    price: 65,
+   290→   290→    category: "indoor-plants",
+   291→   291→    images: [
+   292→   292→      img("1485955900006-10f4d324d411"),
+   293→   293→      img("1463320726281-696a485928c7"),
+   294→   294→      img("1466692476868-aef1dfb1e735"),
+   295→   295→      img("1459411552884-841db9b3cc2a"),
+   296→   296→    ],
+   297→   297→    badge: "Bestseller",
+   298→   298→    inStock: true,
+   299→   299→    materials: ["Living plant", "Plastic nursery pot"],
+   300→   300→    dimensions: "H ~120cm · Ø 24cm pot",
+   301→   301→    careInstructions:
+   302→   302→      "Place in bright, indirect light — within 1-2m of an east- or south-facing window. Water when the top 3cm of soil feels dry (about once a week). Wipe leaves monthly with a damp cloth to keep pores clear.",
+   303→   303→    collections: ["the-plant-edit"],
+   304→   304→    featured: true,
+   305→   305→  },
+   306→   306→  {
+   307→   307→    id: "plant-monstera",
+   308→   308→    slug: "monstera-deliciosa",
+   309→   309→    name: "Monstera Deliciosa",
+   310→   310→    subtitle: "In nursery pot · 90cm",
+   311→   311→    description:
+   312→   312→      "The classic Swiss Cheese plant — broad split leaves and a sprawling, jungle-soft habit.",
+   313→   313→    longDescription:
+   314→   314→      "Monstera deliciosa is the houseplant that needs no introduction — broad, glossy green leaves that develop their iconic splits and holes as the plant matures. Our specimens are 90cm tall, with 3-5 leaves already fenestrated. They tolerate a wide range of light conditions (bright indirect is ideal) and forgive the occasional missed watering. A graceful, easy centerpiece for a living room.",
+   315→   315→    price: 55,
+   316→   316→    category: "indoor-plants",
+   317→   317→    images: [
+   318→   318→      img("1463320726281-696a485928c7"),
+   319→   319→      img("1485955900006-10f4d324d411"),
+   320→   320→      img("1466692476868-aef1dfb1e735"),
+   321→   321→      img("1459411552884-841db9b3cc2a"),
+   322→   322→    ],
+   323→   323→    inStock: true,
+   324→   324→    materials: ["Living plant", "Plastic nursery pot"],
+   325→   325→    dimensions: "H ~90cm · Ø 21cm pot",
+   326→   326→    careInstructions:
+   327→   327→      "Tolerates medium to bright indirect light. Water when the top 5cm of soil feels dry — about every 7-10 days. Mist weekly for humidity.",
+   328→   328→    collections: ["the-plant-edit"],
+   329→   329→    featured: false,
+   330→   330→  },
+   331→   331→  {
+   332→   332→    id: "plant-snake",
+   333→   333→    slug: "snake-plant-sansevieria",
+   334→   334→    name: "Snake Plant (Sansevieria)",
+   335→   335→    subtitle: "In nursery pot · 60cm",
+   336→   336→    description:
+   337→   337→      "An architectural Sansevieria with upright sword leaves — the most forgiving plant we sell.",
+   338→   338→    longDescription:
+   339→   339→      "The Snake Plant is the closest thing to an indestructible houseplant. Its upright, sword-shaped leaves rise from a tight rosette and tolerate low light, irregular watering, and dry air with grace. Our 60cm specimens are dense and well-established, ready to live for years on a low-light floor or a bright windowsill alike. An excellent choice for bedrooms — Sansevieria is one of the few plants that releases oxygen at night.",
+   340→   340→    price: 40,
+   341→   341→    category: "indoor-plants",
+   342→   342→    images: [
+   343→   343→      img("1466692476868-aef1dfb1e735"),
+   344→   344→      img("1485955900006-10f4d324d411"),
+   345→   345→      img("1463320726281-696a485928c7"),
+   346→   346→      img("1459411552884-841db9b3cc2a"),
+   347→   347→    ],
+   348→   348→    inStock: true,
+   349→   349→    materials: ["Living plant", "Plastic nursery pot"],
+   350→   350→    dimensions: "H ~60cm · Ø 17cm pot",
+   351→   351→    careInstructions:
+   352→   352→      "Tolerates low to bright indirect light. Water only when soil is fully dry — every 2-3 weeks. Overwatering is the only common mistake.",
+   353→   353→    collections: ["the-plant-edit", "gift-guide-under-150"],
+   354→   354→    featured: false,
+   355→   355→  },
+   356→   356→  {
+   357→   357→    id: "plant-pothos",
+   358→   358→    slug: "pothos-hanging",
+   359→   359→    name: "Pothos in Hanging Planter",
+   360→   360→    subtitle: "Trailing · 30cm + hanger",
+   361→   361→    description:
+   362→   362→      "A trailing golden pothos in a ready-to-hang macramé hanger — soft green cascades for a window or corner.",
+   363→   363→    longDescription:
+   364→   364→      "Our Pothos hanging set pairs a 30cm golden pothos — already trailing — with a hand-knotted natural cotton macramé hanger. The plant tolerates low to bright indirect light and grows quickly, sending long cascades of variegated green down the hanger. Includes a waterproof nursery pot nested inside a decorative cachepot, so watering is mess-free. Ready to hang from any ceiling hook.",
+   365→   365→    price: 48,
+   366→   366→    category: "indoor-plants",
+   367→   367→    images: [
+   368→   368→      img("1459411552884-841db9b3cc2a"),
+   369→   369→      img("1485955900006-10f4d324d411"),
+   370→   370→      img("1463320726281-696a485928c7"),
+   371→   371→      img("1466692476868-aef1dfb1e735"),
+   372→   372→    ],
+   373→   373→    badge: "New",
+   374→   374→    inStock: true,
+   375→   375→    materials: ["Living plant", "Cotton macramé hanger", "Cachepot"],
+   376→   376→    dimensions: "Plant H ~30cm · Hanger extended ~90cm",
+   377→   377→    careInstructions:
+   378→   378→      "Bright indirect light to low light. Water when the top 5cm of soil is dry. Trim vines to encourage bushier growth.",
+   379→   379→    collections: ["the-plant-edit", "gift-guide-under-150"],
+   380→   380→    featured: false,
+   381→   381→  },
+   382→   382→
+   383→   383→  // ─────────────────────────────────────────────────────────────────
+   384→   384→  // PLANTERS & POTS (4)
+   385→   385→  // ─────────────────────────────────────────────────────────────────
+   386→   386→  {
+   387→   387→    id: "planter-teracotta-ribbed",
+   388→   388→    slug: "terracotta-ribbed-planter",
+   389→   389→    name: "Ribbed Terracotta Planter",
+   390→   390→    subtitle: "Terracotta · Medium",
+   391→   391→    description:
+   392→   392→      "A wheel-thrown terracotta planter with hand-cut vertical ribs — warm, breathable, and quietly textural.",
+   393→   393→    longDescription:
+   394→   394→      "These terracotta planters are thrown by hand on the wheel at a small workshop in Tuscany, then hand-cut with vertical ribs that catch the light and shadow as the sun moves. Terracotta is a breathable clay — it lets the soil dry between waterings, which most plants prefer. The interior is unglazed; the exterior is finished with a matte sealer that protects the surface without losing the raw clay texture. Drainage hole included; saucer sold separately.",
+   395→   395→    price: 45,
+   396→   396→    category: "planters-pots",
+   397→   397→    images: [
+   398→   398→      img("1485955900006-10f4d324d411"),
+   399→   399→      img("1463320726281-696a485928c7"),
+   400→   400→      img("1466692476868-aef1dfb1e735"),
+   401→   401→      img("1459411552884-841db9b3cc2a"),
+   402→   402→    ],
+   403→   403→    inStock: true,
+   404→   404→    variants: [
+   405→   405→      { id: "v-terracotta", label: "Terracotta", swatch: "#b8714f" },
+   406→   406→      { id: "v-white-wash", label: "White Wash", swatch: "#e8dccb" },
+   407→   407→    ],
+   408→   408→    materials: ["Wheel-thrown terracotta", "Matte sealer"],
+   409→   409→    dimensions: "Ø 22 × H 20 cm",
+   410→   410→    careInstructions:
+   411→   411→      "Wipe with a damp cloth. Terracotta is naturally porous — empty the saucer after watering to prevent mineral buildup.",
+   412→   412→    collections: ["the-plant-edit", "warm-tones", "gift-guide-under-150"],
+   413→   413→    featured: true,
+   414→   414→  },
+   415→   415→  {
+   416→   416→    id: "planter-concrete-geo",
+   417→   417→    slug: "concrete-geometric-planter",
+   418→   418→    name: "Geometric Concrete Planter",
+   419→   419→    subtitle: "Charcoal Concrete",
+   420→   420→    description:
+   421→   421→      "A faceted concrete planter cast from a hand-carved mold — heavy, architectural, and quietly modern.",
+   422→   422→    longDescription:
+   423→   423→      "The Geometric planter is cast in small batches from a high-strength concrete mix, hand-pigmented to a soft charcoal. Each planter is sealed inside and out to resist water staining, and weighted to feel substantial without being unwieldy. The faceted silhouette reads as a small piece of architecture — set it on a desk, a sideboard, or a shelf where its geometry can be appreciated. Drainage hole and rubber feet included.",
+   424→   424→    price: 58,
+   425→   425→    category: "planters-pots",
+   426→   426→    images: [
+   427→   427→      img("1463320726281-696a485928c7"),
+   428→   428→      img("1485955900006-10f4d324d411"),
+   429→   429→      img("1466692476868-aef1dfb1e735"),
+   430→   430→      img("1459411552884-841db9b3cc2a"),
+   431→   431→    ],
+   432→   432→    inStock: true,
+   433→   433→    variants: [
+   434→   434→      { id: "v-charcoal", label: "Charcoal", swatch: "#3a3a3a" },
+   435→   435→      { id: "v-bone", label: "Bone White", swatch: "#e8e2d6" },
+   436→   436→    ],
+   437→   437→    materials: ["Cast concrete", "Matte sealer"],
+   438→   438→    dimensions: "W 18 × D 18 × H 20 cm",
+   439→   439→    careInstructions:
+   440→   440→      "Wipe with a damp cloth. Re-seal annually with a stone sealer for water resistance.",
+   441→   441→    collections: ["the-plant-edit"],
+   442→   442→    featured: false,
+   443→   443→  },
+   444→   444→  {
+   445→   445→    id: "planter-handpainted-ceramic",
+   446→   446→    slug: "hand-painted-ceramic-pot",
+   447→   447→    name: "Hand-Painted Ceramic Pot",
+   448→   448→    subtitle: "Blue & White",
+   449→   449→    description:
+   450→   450→      "A hand-painted ceramic pot decorated with a cobalt brushwork motif — a quiet, painterly note.",
+   451→   451→    longDescription:
+   452→   452→      "Each pot is thrown in white stoneware, then hand-painted with a cobalt-blue motif before a final clear glaze firing. The brushwork is intentionally loose — the painter responds to the curve of each pot, so no two are identical. Use it as a cachepot for a small plant (no drainage hole), a vessel for dried botanicals, or simply as an object on a shelf. The interior is fully glazed.",
+   453→   453→    price: 75,
+   454→   454→    category: "planters-pots",
+   455→   455→    images: [
+   456→   456→      img("1466692476868-aef1dfb1e735"),
+   457→   457→      img("1485955900006-10f4d324d411"),
+   458→   458→      img("1463320726281-696a485928c7"),
+   459→   459→      img("1459411552884-841db9b3cc2a"),
+   460→   460→    ],
+   461→   461→    inStock: true,
+   462→   462→    materials: ["White stoneware", "Cobalt underglaze", "Clear glaze"],
+   463→   463→    dimensions: "Ø 16 × H 14 cm",
+   464→   464→    careInstructions:
+   465→   465→      "Wipe with a damp cloth. Use as a cachepot only — no drainage hole. Do not expose to freezing temperatures.",
+   466→   466→    collections: ["gift-guide-under-150"],
+   467→   467→    featured: false,
+   468→   468→  },
+   469→   469→  {
+   470→   470→    id: "planter-brass-stand",
+   471→   471→    slug: "brass-plant-stand-with-pot",
+   472→   472→    name: "Brass Plant Stand with Pot",
+   473→   473→    subtitle: "Brass & Ceramic",
+   474→   474→    description:
+   475→   475→      "A slim brass tripod lifting a stoneware pot — a mid-century note that elevates a single plant to sculpture.",
+   476→   476→    longDescription:
+   477→   477→      "The brass plant stand lifts a 18cm stoneware pot to a seated height, turning a single plant into a small piece of sculpture. The brass tripod is hand-welded and finished in a soft antique tone; the pot is thrown in matte stoneware and fitted with a drainage hole. The stand disassembles flat for shipping. Use it for a trailing plant (pothos, string of pearls) where the height lets the vines cascade, or a single sculptural specimen (snake plant, agave).",
+   478→   478→    price: 120,
+   479→   479→    category: "planters-pots",
+   480→   480→    images: [
+   481→   481→      img("1459411552884-841db9b3cc2a"),
+   482→   482→      img("1485955900006-10f4d324d411"),
+   483→   483→      img("1463320726281-696a485928c7"),
+   484→   484→      img("1466692476868-aef1dfb1e735"),
+   485→   485→    ],
+   486→   486→    inStock: true,
+   487→   487→    materials: ["Antique brass", "Stoneware pot"],
+   488→   488→    dimensions: "Stand H 65 cm · Pot Ø 18 × H 16 cm",
+   489→   489→    careInstructions:
+   490→   490→      "Wipe brass with a dry cloth. The pot has a drainage hole — place on a saucer (not included).",
+   491→   491→    collections: ["the-plant-edit", "warm-tones"],
+   492→   492→    featured: true,
+   493→   493→  },
+   494→   494→
+   495→   495→  // ─────────────────────────────────────────────────────────────────
+   496→   496→  // DECORATIVE ACCESSORIES (4)
+   497→   497→  // ─────────────────────────────────────────────────────────────────
+   498→   498→  {
+   499→   499→    id: "acc-obsidian-bookends",
+   500→   500→    slug: "obsidian-bookends",
+   501→   501→    name: "Obsidian Bookends",
+   502→   502→    subtitle: "Pair",
+   503→   503→    description:
+   504→   504→      "A pair of polished obsidian bookends — a dark, polished note to anchor a stack of books on a shelf.",
+   505→   505→    longDescription:
+   506→   506→      "Each bookend is cut from a single piece of natural black obsidian, then polished to a soft sheen. The natural variation in the stone means each pair is subtly different — some pieces carry tiny inclusions that catch the light. The base is felt-lined to protect shelves and prevent sliding. Sold as a pair; the set weighs 2.4kg, substantial enough to hold a row of large art books upright.",
+   507→   507→    price: 85,
+   508→   508→    category: "decorative-accessories",
+   509→   509→    images: [
+   510→   510→      img("1493663284031-b7e3aefcae8e"),
+   511→   511→      img("1513519245088-0e12902e5a38"),
+   512→   512→      img("1532634922-8fe0b757fb13"),
+   513→   513→      img("1513506003901-1e6a229e2d15"),
+   514→   514→    ],
+   515→   515→    inStock: true,
+   516→   516→    materials: ["Natural obsidian", "Felt base"],
+   517→   517→    dimensions: "Each: W 10 × D 7 × H 14 cm · Pair 2.4kg",
+   518→   518→    careInstructions:
+   519→   519→      "Wipe with a soft, dry cloth. Natural stone — handle with care to avoid chips.",
+   520→   520→    collections: ["gift-guide-under-150"],
+   521→   521→    featured: false,
+   522→   522→  },
+   523→   523→  {
+   524→   524→    id: "acc-seagrass-basket",
+   525→   525→    slug: "handwoven-storage-basket",
+   526→   526→    name: "Handwoven Seagrass Basket",
+   527→   527→    subtitle: "Seagrass · Medium",
+   528→   528→    description:
+   529→   529→      "A handwoven seagrass basket with leather handles — for throws, firewood, or a quiet catch-all.",
+   530→   530→    longDescription:
+   531→   531→      "These baskets are hand-woven from seagrass by a cooperative in Bangladesh, then fitted with vegetable-tanned leather handles. The weave is tight enough to hold smaller items (a tablet, a rolled magazine, dry toiletries) but flexible enough to fold slightly when empty. Use it for throws by a sofa, for firewood beside a hearth, or as a catch-all in an entryway. The leather handles soften and darken beautifully with use.",
+   532→   532→    price: 55,
+   533→   533→    category: "decorative-accessories",
+   534→   534→    images: [
+   535→   535→      img("1513519245088-0e12902e5a38"),
+   536→   536→      img("1493663284031-b7e3aefcae8e"),
+   537→   537→      img("1532634922-8fe0b757fb13"),
+   538→   538→      img("1513506003901-1e6a229e2d15"),
+   539→   539→    ],
+   540→   540→    badge: "Bestseller",
+   541→   541→    inStock: true,
+   542→   542→    variants: [
+   543→   543→      { id: "v-natural", label: "Natural Seagrass", swatch: "#cdb891" },
+   544→   544→      { id: "v-stripe", label: "Natural + Black Stripe", swatch: "#5a4a3a" },
+   545→   545→    ],
+   546→   546→    materials: ["Seagrass", "Vegetable-tanned leather"],
+   547→   547→    dimensions: "Ø 38 × H 32 cm (incl. handles)",
+   548→   548→    careInstructions:
+   549→   549→      "Spot-clean with a damp cloth. Avoid prolonged moisture. Re-shape by stuffing with towels if deformed.",
+   550→   550→    collections: ["warm-tones", "gift-guide-under-150"],
+   551→   551→    featured: false,
+   552→   552→  },
+   553→   553→  {
+   554→   554→    id: "acc-marble-tray",
+   555→   555→    slug: "decorative-stone-tray",
+   556→   556→    name: "Decorative Marble Tray",
+   557→   557→    subtitle: "White Marble",
+   558→   558→    description:
+   559→   559→      "A polished white marble tray with a low rim — a quiet pedestal for candles, glasses, or a single object.",
+   560→   560→    longDescription:
+   561→   561→      "Cut from a single slab of Carrara marble, the tray is polished to a soft satin finish and finished with a low, hand-chiseled rim. The natural veining means no two trays are identical; each carries its own grey-blue pattern through the white field. Use it on a coffee table to corral candles and a book, on a vanity for bottles and a glass, or on a console for keys and a small vase. Felt feet protect surfaces.",
+   562→   562→    price: 95,
+   563→   563→    category: "decorative-accessories",
+   564→   564→    images: [
+   565→   565→      img("1532634922-8fe0b757fb13"),
+   566→   566→      img("1493663284031-b7e3aefcae8e"),
+   567→   567→      img("1513519245088-0e12902e5a38"),
+   568→   568→      img("1513506003901-1e6a229e2d15"),
+   569→   569→    ],
+   570→   570→    inStock: true,
+   571→   571→    materials: ["Carrara marble", "Felt feet"],
+   572→   572→    dimensions: "W 35 × D 22 × H 4 cm",
+   573→   573→    careInstructions:
+   574→   574→      "Wipe with a damp cloth. Marble is porous — clean spills promptly to avoid staining. Re-seal annually with a stone sealer.",
+   575→   575→    collections: ["gift-guide-under-150"],
+   576→   576→    featured: false,
+   577→   577→  },
+   578→   578→  {
+   579→   579→    id: "acc-beeswax-tapers",
+   580→   580→    slug: "beeswax-taper-candle-set",
+   581→   581→    name: "Beeswax Taper Candle Set",
+   582→   582→    subtitle: "Ivory · Set of 6",
+   583→   583→    description:
+   584→   584→      "A set of six hand-dipped beeswax tapers in warm ivory — a slow, clean burn with a faint honey scent.",
+   585→   585→    longDescription:
+   586→   586→      "These tapers are hand-dipped from 100% pure beeswax, which burns slower and cleaner than paraffin (about 8 hours per candle). The natural ivory color carries a faint honey scent when lit — never overpowering, just a quiet warmth in the room. The base is sized to fit standard 22mm candleholders. Hand-dipped candles have a slightly tapered shape and a soft, organic surface — no two are identical.",
+   587→   587→    price: 35,
+   588→   588→    category: "decorative-accessories",
+   589→   589→    images: [
+   590→   590→      img("1513506003901-1e6a229e2d15"),
+   591→   591→      img("1493663284031-b7e3aefcae8e"),
+   592→   592→      img("1513519245088-0e12902e5a38"),
+   593→   593→      img("1532634922-8fe0b757fb13"),
+   594→   594→    ],
+   595→   595→    inStock: true,
+   596→   596→    materials: ["100% beeswax", "Cotton wick"],
+   597→   597→    dimensions: "Each: Ø 2.2 × H 25 cm · 8-hour burn time",
+   598→   598→    careInstructions:
+   599→   599→      "Trim wick to 1cm before each burn. Never leave unattended. Keep away from drafts to prevent drips.",
+   600→   600→    collections: ["warm-tones", "gift-guide-under-150"],
+   601→   601→    featured: false,
+   602→   602→  },
+   603→   603→
+   604→   604→  // ─────────────────────────────────────────────────────────────────
+   605→   605→  // WALL ART (3)
+   606→   606→  // ─────────────────────────────────────────────────────────────────
+   607→   607→  {
+   608→   608→    id: "art-abstract-line-print",
+   609→   609→    slug: "abstract-line-print",
+   610→   610→    name: "Abstract Line Print",
+   611→   611→    subtitle: "Framed · A2",
+   612→   612→    description:
+   613→   613→      "A single-line abstract composition printed on cotton rag, framed in solid oak — quiet, gestural, modern.",
+   614→   614→    longDescription:
+   615→   615→      "The Abstract Line Print is an original Aura Living composition — a single continuous line that loops and turns to suggest a figure in repose. Printed on a 310gsm cotton rag paper with archival pigment inks, framed behind glass in a solid oak frame. Hang it as a single statement above a low dresser, or in a small salon wall with two or three companion prints. Each print is signed and numbered in an edition of 200.",
+   616→   616→    price: 165,
+   617→   617→    category: "wall-art",
+   618→   618→    images: [
+   619→   619→      img("1513519245088-0e12902e5a38"),
+   620→   620→      img("1532634922-8fe0b757fb13"),
+   621→   621→      img("1493663284031-b7e3aefcae8e"),
+   622→   622→      img("1513506003901-1e6a229e2d15"),
+   623→   623→    ],
+   624→   624→    inStock: true,
+   625→   625→    variants: [
+   626→   626→      { id: "v-oak", label: "Oak Frame", swatch: "#c9a978" },
+   627→   627→      { id: "v-black", label: "Black Frame", swatch: "#1a1a1a" },
+   628→   628→    ],
+   629→   629→    materials: ["Cotton rag paper", "Archival pigment inks", "Solid oak frame"],
+   630→   630→    dimensions: "A2 · 42 × 59.4 cm (framed)",
+   631→   631→    careInstructions:
+   632→   632→      "Hang out of direct sunlight to prevent fading. Dust frame with a dry cloth. Clean glass with a streak-free cleaner.",
+   633→   633→    collections: ["warm-tones"],
+   634→   634→    featured: true,
+   635→   635→  },
+   636→   636→  {
+   637→   637→    id: "art-botanical-pressed",
+   638→   638→    slug: "botanical-pressed-art",
+   639→   639→    name: "Botanical Pressed Art",
+   640→   640→    subtitle: "Set of 3 · A3",
+   641→   641→    description:
+   642→   642→      "Three pressed-botanical compositions in floating glass frames — a quiet, scientific note for a wall.",
+   643→   643→    longDescription:
+   644→   644→      "Each piece in this set of three is composed of real pressed botanicals — ferns, grasses, and a single stem — laid out on cotton paper and sealed behind glass in a slim floating frame. The botanicals are hand-pressed in our studio over 4-6 weeks, then arranged with an eye to scientific specimen plates. Hang the three in a row for a quiet, museum-like installation. The set is a limited edition; each set is unique.",
+   645→   645→    price: 120,
+   646→   646→    compareAtPrice: 145,
+   647→   647→    category: "wall-art",
+   648→   648→    images: [
+   649→   649→      img("1532634922-8fe0b757fb13"),
+   650→   650→      img("1513519245088-0e12902e5a38"),
+   651→   651→      img("1493663284031-b7e3aefcae8e"),
+   652→   652→      img("1513506003901-1e6a229e2d15"),
+   653→   653→    ],
+   654→   654→    badge: "Sale",
+   655→   655→    inStock: true,
+   656→   656→    materials: ["Pressed botanicals", "Cotton paper", "Glass floating frame"],
+   657→   657→    dimensions: "Each: A3 · 29.7 × 42 cm · Set of 3",
+   658→   658→    careInstructions:
+   659→   659→      "Hang out of direct sunlight — pressed botanicals will fade in UV light. Dust frames with a dry cloth.",
+   660→   660→    collections: ["gift-guide-under-150"],
+   661→   661→    featured: false,
+   662→   662→  },
+   663→   663→  {
+   664→   664→    id: "art-woven-hanging",
+   665→   665→    slug: "woven-wall-hanging",
+   666→   666→    name: "Woven Wall Hanging",
+   667→   667→    subtitle: "Cotton & Wool",
+   668→   668→    description:
+   669→   669→      "A hand-woven wall hanging in natural cotton and undyed wool — a soft, tactile note for a blank wall.",
+   670→   670→    longDescription:
+   671→   671→      "This wall hanging is woven on a tapestry loom from natural cotton warp and undyed wool weft, with a few long fringed sections that fall below the wooden dowel. The palette is restrained — ivory, oat, and a soft warm grey — letting the texture do the work. Each piece is woven by hand in our studio; no two are exactly alike. Hang it above a headboard, on a narrow wall beside a window, or layered over a larger piece of art.",
+   672→   672→    price: 195,
+   673→   673→    category: "wall-art",
+   674→   674→    images: [
+   675→   675→      img("1493663284031-b7e3aefcae8e"),
+   676→   676→      img("1513519245088-0e12902e5a38"),
+   677→   677→      img("1532634922-8fe0b757fb13"),
+   678→   678→      img("1513506003901-1e6a229e2d15"),
+   679→   679→    ],
+   680→   680→    badge: "New",
+   681→   681→    inStock: true,
+   682→   682→    materials: ["Cotton warp", "Undyed wool weft", "Wooden dowel"],
+   683→   683→    dimensions: "W 50 × H 90 cm (incl. fringe)",
+   684→   684→    careInstructions:
+   685→   685→      "Dust gently with a soft brush. Spot-clean only with cold water. Avoid hanging in humid rooms.",
+   686→   686→    collections: ["warm-tones"],
+   687→   687→    featured: false,
+   688→   688→  },
+   689→   689→];
+   690→   690→
+   691→   691→export const productBySlug = (slug: string) =>
+   692→   692→  products.find((p) => p.slug === slug);
+   693→   693→
+   694→   694→export const productsByCategory = (slug: string) =>
+   695→   695→  products.filter((p) => p.category === slug);
+   696→   696→
+   697→   697→export const featuredProducts = () => products.filter((p) => p.featured);
+   698→   698→
+   699→   699→export const productsByCollection = (slug: string) =>
+   700→   700→  products.filter((p) => p.collections?.includes(slug as never));
+   701→   701→
+   702→   702→export const allMaterials = (): string[] => {
+   703→   703→  const set = new Set<string>();
+   704→   704→  products.forEach((p) => p.materials?.forEach((m) => set.add(m)));
+   705→   705→  return Array.from(set).sort();
+   706→   706→};
+   707→   707→

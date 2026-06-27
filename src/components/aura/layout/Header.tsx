@@ -126,8 +126,11 @@ export function Header() {
               className="relative"
             >
               <button
-                onClick={() => goCollection(collections[0].slug)}
-                data-active={false}
+                onClick={() => {
+                  setMegaOpen(false);
+                  setView("collections");
+                }}
+                data-active={view === "collections"}
                 className="t-label-caps link-underline c-ink hover:c-gold transition-colors"
               >
                 Collections

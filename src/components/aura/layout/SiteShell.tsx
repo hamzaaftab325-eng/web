@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useUIStore } from "@/store/use-ui-store";
+import { productBySlug } from "@/data/products";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MobileNav } from "./MobileNav";
@@ -10,7 +11,12 @@ import { SearchOverlay } from "./SearchOverlay";
 import { CartDrawer } from "@/components/aura/commerce/CartDrawer";
 import { WishlistDrawer } from "@/components/aura/commerce/WishlistDrawer";
 import { ProductDetailPage } from "@/components/aura/commerce/ProductDetailPage";
-import { productBySlug } from "@/data/products";
+import { QuickViewModal } from "@/components/aura/commerce/QuickViewModal";
+import { CompareTray } from "@/components/aura/commerce/CompareTray";
+import { CheckoutFlow } from "@/components/aura/commerce/CheckoutFlow";
+import { RecentlyViewed } from "@/components/aura/commerce/RecentlyViewed";
+import { ExitIntentPopup } from "@/components/aura/marketing/ExitIntentPopup";
+import { FirstOrderBanner } from "@/components/aura/marketing/FirstOrderBanner";
 
 import { HeroSlider } from "@/components/aura/sections/HeroSlider";
 import { CategoryShowcase } from "@/components/aura/sections/CategoryShowcase";
@@ -22,9 +28,18 @@ import { BrandValues } from "@/components/aura/sections/BrandValues";
 import { NewsletterSection } from "@/components/aura/sections/NewsletterSection";
 import { InstagramFeed } from "@/components/aura/sections/InstagramFeed";
 import { FAQSection } from "@/components/aura/sections/FAQSection";
+import { PressSection } from "@/components/aura/sections/PressSection";
 import { ShopView } from "@/components/aura/sections/ShopView";
 import { AboutView } from "@/components/aura/sections/AboutView";
 import { JournalView } from "@/components/aura/sections/JournalView";
+import { LookbookView } from "@/components/aura/sections/LookbookView";
+import { CollectionsView } from "@/components/aura/sections/CollectionsView";
+import { ArtisansView } from "@/components/aura/sections/ArtisansView";
+import { SustainabilityView } from "@/components/aura/sections/SustainabilityView";
+import { TradeView } from "@/components/aura/sections/TradeView";
+import { GiftsView } from "@/components/aura/sections/GiftsView";
+import { CareView } from "@/components/aura/sections/CareView";
+import { JournalReader } from "@/components/aura/sections/JournalReader";
 
 import { AccountDashboard } from "@/components/aura/account/AccountDashboard";
 import { AccountOrders } from "@/components/aura/account/AccountOrders";
@@ -38,10 +53,14 @@ import { SignupView } from "@/components/aura/auth/SignupView";
 import { ForgotPasswordView } from "@/components/aura/auth/ForgotPasswordView";
 import { ResetPasswordView } from "@/components/aura/auth/ResetPasswordView";
 
+const AUTH_VIEWS = new Set(["login", "signup", "forgot-password", "reset-password"]);
+
 export function SiteShell() {
   const view = useUIStore((s) => s.view);
   const activeProductSlug = useUIStore((s) => s.activeProductSlug);
+  const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);
   const openProduct = useUIStore((s) => s.openProduct);
+  const setQuickViewProduct = useUIStore((s) => s.setQuickViewProduct);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -49,14 +68,31 @@ export function SiteShell() {
   }, [view, prefersReducedMotion]);
 
   const activeProduct = activeProductSlug ? productBySlug(activeProductSlug) : undefined;
+  const quickViewProduct = quickViewSlug ? productBySlug(quickViewSlug) ?? null : null;
+  const isAuthView = AUTH_VIEWS.has(view);
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
-      <Header />
-      <MobileNav />
-      <SearchOverlay />
-      <CartDrawer />
-      <WishlistDrawer />
+      {!isAuthView && <FirstOrderBanner />}
+      {!isAuthView && <Header />}
+      {!isAuthView && <MobileNav />}
+      {!isAuthView && <SearchOverlay />}
+      {!isAuthView && <CartDrawer />}
+      {!isAuthView && <WishlistDrawer />}
+      {!isAuthView && <CompareTray />}
+      {!isAuthView && <CheckoutFlow />}
+      {!isAuthView && <ExitIntentPopup />}
+
+      {/* Product detail page overlay */}
+      {activeProduct && (
+        <ProductDetailPage product={activeProduct} onBack={() => openProduct(null)} />
+      )}
+
+      {/* Quick view modal */}
+      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+
+      {/* Journal article reader overlay */}
+      <JournalReader />
 
       <main id="main" className="flex-1">
         <AnimatePresence mode="wait">
@@ -76,7 +112,9 @@ export function SiteShell() {
                 <CuratedCollection />
                 <TestimonialSection />
                 <BrandValues />
+                <PressSection />
                 <InstagramFeed />
+                <RecentlyViewed />
                 <NewsletterSection />
                 <FAQSection />
               </>
@@ -84,6 +122,13 @@ export function SiteShell() {
             {view === "shop" && <ShopView />}
             {view === "about" && <AboutView />}
             {view === "journal" && <JournalView />}
+            {view === "lookbook" && <LookbookView />}
+            {view === "collections" && <CollectionsView />}
+            {view === "artisans" && <ArtisansView />}
+            {view === "sustainability" && <SustainabilityView />}
+            {view === "trade" && <TradeView />}
+            {view === "gifts" && <GiftsView />}
+            {view === "care" && <CareView />}
             {view === "account" && <AccountDashboard />}
             {view === "account-orders" && <AccountOrders />}
             {view === "account-order-detail" && <AccountOrderDetail />}
@@ -94,17 +139,11 @@ export function SiteShell() {
             {view === "signup" && <SignupView />}
             {view === "forgot-password" && <ForgotPasswordView />}
             {view === "reset-password" && <ResetPasswordView />}
-            {view === "product-detail" && activeProduct && (
-              <ProductDetailPage
-                product={activeProduct}
-                onBack={() => openProduct(null)}
-              />
-            )}
           </motion.div>
         </AnimatePresence>
       </main>
 
-      <Footer />
+      {!isAuthView && <Footer />}
     </div>
   );
 }

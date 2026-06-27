@@ -17,7 +17,20 @@ export function MobileNav() {
 
   const close = () => setOpen(false);
 
-  const goView = (v: "home" | "shop" | "about" | "journal") => {
+  const goView = (
+    v:
+      | "home"
+      | "shop"
+      | "about"
+      | "journal"
+      | "lookbook"
+      | "collections"
+      | "artisans"
+      | "sustainability"
+      | "trade"
+      | "gifts"
+      | "care"
+  ) => {
     if (v === "shop") resetShop();
     setView(v);
   };
@@ -73,8 +86,15 @@ export function MobileNav() {
                 {[
                   { label: "Home", action: () => goView("home") },
                   { label: "Shop All", action: () => goView("shop") },
+                  { label: "Collections", action: () => goView("collections") },
+                  { label: "Lookbook", action: () => goView("lookbook") },
+                  { label: "Artisans", action: () => goView("artisans") },
                   { label: "About", action: () => goView("about") },
                   { label: "Journal", action: () => goView("journal") },
+                  { label: "Sustainability", action: () => goView("sustainability") },
+                  { label: "Care Guides", action: () => goView("care") },
+                  { label: "Gifts", action: () => goView("gifts") },
+                  { label: "Trade Program", action: () => goView("trade") },
                 ].map((item) => (
                   <motion.button
                     key={item.label}

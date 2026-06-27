@@ -6,6 +6,7 @@ import { useUIStore } from "@/store/use-ui-store";
 import { SplitTextReveal } from "@/components/aura/animation/SplitTextReveal";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PressSection } from "@/components/aura/sections/PressSection";
 
 export function AboutView() {
   const setView = useUIStore((s) => s.setView);
@@ -201,6 +202,9 @@ export function AboutView() {
           </RevealOnScroll>
         </div>
       </section>
+
+      {/* Press */}
+      <PressSection />
 
       {/* CTA */}
       <section className="section-stack bg-ink c-paper">

@@ -38,6 +38,10 @@
   --color-gold-soft: var(--gold-soft);
   --color-gold-pale: var(--gold-pale);
   --color-gold-bright: var(--gold-bright);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-hairline-gold: var(--hairline-gold);
+  --color-hairline-cream: var(--hairline-cream);
   --color-cream: var(--cream);
   --color-cream-deep: var(--cream-deep);
   --color-cream-warm: var(--cream-warm);

@@ -123,7 +123,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => setView("about")}
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Our Story
                 </button>
@@ -131,9 +131,17 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => setView("journal")}
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Journal
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setView("trade")}
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
+                >
+                  Trade Program
                 </button>
               </li>
               <li>
@@ -144,13 +152,52 @@ export function Footer() {
                   Contact
                 </a>
               </li>
+            </ul>
+          </div>
+
+          {/* Discover */}
+          <div className="md:col-span-2">
+            <p className="t-label-caps c-paper/50 mb-4">Discover</p>
+            <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
+                <button
+                  onClick={() => setView("lookbook")}
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
-                  Trade Program
-                </a>
+                  Lookbook
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setView("artisans")}
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
+                >
+                  Artisans
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setView("sustainability")}
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
+                >
+                  Sustainability
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setView("care")}
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
+                >
+                  Care Guides
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setView("gifts")}
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
+                >
+                  Gifts
+                </button>
               </li>
             </ul>
           </div>
@@ -195,17 +242,23 @@ export function Footer() {
             © {new Date().getFullYear()} Aura Living Atelier. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-6">
+            <button
+              onClick={() => setView("care")}
+              className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
+            >
+              Shipping
+            </button>
+            <button
+              onClick={() => setView("care")}
+              className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
+            >
+              Returns
+            </button>
             <a href="#" className="t-caption c-paper/50 hover:c-gold transition-colors">
               Privacy
             </a>
             <a href="#" className="t-caption c-paper/50 hover:c-gold transition-colors">
               Terms
-            </a>
-            <a href="#" className="t-caption c-paper/50 hover:c-gold transition-colors">
-              Shipping
-            </a>
-            <a href="#" className="t-caption c-paper/50 hover:c-gold transition-colors">
-              Returns
             </a>
           </div>
         </div>

@@ -6,6 +6,19 @@ import { useUIStore } from "@/store/use-ui-store";
 import { SplitTextReveal } from "@/components/aura/animation/SplitTextReveal";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { journalArticles } from "@/data/journal";
+
+/**
+ * Map each visual card to one of the two fully-written journal articles.
+ * The cards without a full article yet fall back to the closest topical
+ * match so the JournalReader overlay is always reachable from the index.
+ */
+const articleSlugForCard = (index: number): string => {
+  if (index === 0) return journalArticles[0].slug; // lighting
+  if (index === 1) return journalArticles[1].slug; // mirrors
+  // For the remaining visual cards, route to the closest topical match.
+  return journalArticles[index % 2 === 0 ? 0 : 1].slug;
+};
 
 const articles = [
   {
@@ -78,7 +91,7 @@ const articles = [
 
 export function JournalView() {
   const setView = useUIStore((s) => s.setView);
-  const openProduct = useUIStore((s) => s.openProduct);
+  const openArticle = useUIStore((s) => s.openArticle);
 
   return (
     <div className="bg-canvas pt-[88px] md:pt-[120px]">
@@ -114,7 +127,7 @@ export function JournalView() {
             viewport={{ once: true, margin: "-10% 0px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="group grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center text-left w-full"
-            onClick={() => openProduct("ceramic-table-lamp")}
+            onClick={() => openArticle(articleSlugForCard(0))}
           >
             <div className="md:col-span-7 aspect-[16/10] overflow-hidden bg-cream">
               <img
@@ -160,7 +173,7 @@ export function JournalView() {
           </div>
 
           <RevealOnScroll stagger={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-            {articles.slice(1).map((article) => (
+            {articles.slice(1).map((article, i) => (
               <motion.button
                 key={article.id}
                 variants={{
@@ -171,7 +184,7 @@ export function JournalView() {
                     transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
                   },
                 }}
-                onClick={() => openProduct("ceramic-table-lamp")}
+                onClick={() => openArticle(articleSlugForCard(i + 1))}
                 className="group text-left"
               >
                 <div className="aspect-[4/3] overflow-hidden bg-cream mb-5">
