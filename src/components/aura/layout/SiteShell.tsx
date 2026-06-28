@@ -83,14 +83,9 @@ export function SiteShell() {
   useEffect(() => {
     const handlePopState = () => {
       const urlView = urlToView(window.location.pathname);
-      if (urlView) {
-        if (urlView !== useUIStore.getState().view) {
-          isInternalNav.current = true;
-          useUIStore.setState({ view: urlView });
-        }
-      } else if (window.location.pathname !== "/") {
-        // Unknown URL (e.g., deleted pages like /lookbook) — redirect to home
-        router.replace("/");
+      if (urlView && urlView !== useUIStore.getState().view) {
+        isInternalNav.current = true;
+        useUIStore.setState({ view: urlView });
       }
     };
 
@@ -99,7 +94,7 @@ export function SiteShell() {
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
