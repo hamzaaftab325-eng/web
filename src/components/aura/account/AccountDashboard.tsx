@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Package, MapPin, Heart, ArrowRight, TrendingUp, Sparkles } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -62,8 +63,8 @@ export function AccountDashboard() {
             <motion.button key={order.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.08 }} onClick={() => openOrder(order.id)} className="group w-full bg-gradient-card-warm border border-hairline-cream p-5 flex items-center gap-4 card-modern text-left rounded-sm">
               <div className="flex -space-x-3">
                 {order.items.slice(0, 3).map((item) => (
-                  <div key={item.key} className="w-12 h-12 bg-cream border-2 border-paper overflow-hidden flex-shrink-0 ring-1 ring-hairline-gold rounded-sm">
-                    <img src={item.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  <div key={item.key} className="relative w-12 h-12 bg-cream border-2 border-paper overflow-hidden flex-shrink-0 ring-1 ring-hairline-gold rounded-sm">
+                    <Image src={item.image} alt="" fill sizes="48px" className="object-cover" />
                   </div>
                 ))}
               </div>

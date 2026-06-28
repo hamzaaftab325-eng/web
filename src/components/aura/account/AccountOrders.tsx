@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Package, ArrowRight, ChevronRight } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
 import { useUIStore } from "@/store/use-ui-store";
@@ -55,8 +56,8 @@ export function AccountOrders() {
               <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex -space-x-3">
                   {order.items.slice(0, 4).map((item) => (
-                    <div key={item.key} className="w-14 h-14 bg-cream border-2 border-paper overflow-hidden flex-shrink-0 ring-1 ring-hairline-gold rounded-sm">
-                      <img src={item.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                    <div key={item.key} className="relative w-14 h-14 bg-cream border-2 border-paper overflow-hidden flex-shrink-0 ring-1 ring-hairline-gold rounded-sm">
+                      <Image src={item.image} alt="" fill sizes="56px" className="object-cover" />
                     </div>
                   ))}
                 </div>

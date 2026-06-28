@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { ArrowLeft, Package, Truck, MapPin, CreditCard, Printer, RotateCcw, Check, Clock } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
 import { useUIStore } from "@/store/use-ui-store";
@@ -77,8 +78,8 @@ export function AccountOrderDetail() {
           <RevealOnScroll stagger={0.05} className="space-y-3">
             {order.items.map((item) => (
               <motion.div key={item.key} variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }} className="flex gap-4 bg-gradient-card-warm border border-hairline-cream p-4 card-modern rounded-sm">
-                <button onClick={() => openProduct(item.slug)} className="w-20 h-24 bg-cream overflow-hidden flex-shrink-0 group ring-1 ring-hairline-gold rounded-sm">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                <button onClick={() => openProduct(item.slug)} className="relative w-20 h-24 bg-cream overflow-hidden flex-shrink-0 group ring-1 ring-hairline-gold rounded-sm">
+                  <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 </button>
                 <div className="flex-1 min-w-0">
                   <button onClick={() => openProduct(item.slug)} className="t-body c-ink font-medium hover:c-gold-deep transition-colors link-underline text-left block">{item.name}</button>
