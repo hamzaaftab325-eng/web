@@ -142,9 +142,8 @@ export function TradeView() {
       <PageHero
         image="/hero/trade.png"
         alt="A design studio meeting table with material samples, swatches, and an open catalogue."
-        eyebrow="Trade Program"
-        headline="For designers who specify slowly."
-        subtitle="Tiered pricing, dedicated concierge, freight included. We work with interior designers, stylists, and architects who put their name on the rooms they finish."
+        eyebrow="Trade"
+        headline="For Designers"
       />
 
       {/* Benefits grid */}

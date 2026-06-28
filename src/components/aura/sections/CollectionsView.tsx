@@ -25,8 +25,7 @@ export function CollectionsView() {
         image="/hero/collections.png"
         alt="Three curated room vignettes side by side, each styled around a different palette."
         eyebrow="Collections"
-        headline="Three edits, one palette."
-        subtitle="Curated selections from the catalogue — gathered by palette, purpose, or price. Each one is a complete point of view."
+        headline="Curated Edits"
       />
 
       {/* Collection cards */}

@@ -99,9 +99,8 @@ export function JournalView() {
       <PageHero
         image="/hero/journal.png"
         alt="An editor's desk with an open notebook, fountain pen, and a small ceramic vase of dried flowers."
-        eyebrow="The Journal"
-        headline="Notes on rooms, materials, and slow making."
-        subtitle="Essays, workshop visits, and care guides — written by our small team, published slowly."
+        eyebrow="Journal"
+        headline="Notes & Essays"
       />
 
       {/* Featured article */}

@@ -53,9 +53,8 @@ function GuideLibrary({ onOpen }: { onOpen: (slug: string) => void }) {
       <PageHero
         image="/hero/care.png"
         alt="Care tools arranged on a linen cloth — a horsehair brush, microfiber cloth, beeswax polish, and a dried fern frond."
-        eyebrow="Care Guides"
-        headline="How to care for your pieces."
-        subtitle="Seven material-specific guides — written by our small team, with the same slow standard we apply to everything else."
+        eyebrow="Care"
+        headline="Material Guides"
       />
 
       {/* Guide grid */}

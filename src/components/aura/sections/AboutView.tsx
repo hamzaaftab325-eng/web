@@ -17,9 +17,8 @@ export function AboutView() {
       <PageHero
         image="/hero/about.png"
         alt="A ceramics workshop — hands shaping a vessel on the wheel."
-        eyebrow="Our Story"
-        headline="A small atelier, sourcing slowly."
-        subtitle="We started Aura Living in a converted garage in Portland, Oregon, with a single arched mirror, a borrowed truck, and a list of workshops we wanted to visit."
+        eyebrow="About"
+        headline="Our Story"
       />
 
       {/* Narrative */}

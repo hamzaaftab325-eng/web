@@ -127,13 +127,7 @@ export function ShopView() {
     ? collection.name
     : category
     ? category.name
-    : "All Products";
-
-  const subheading = collection
-    ? collection.description
-    : category
-    ? category.description
-    : "Considered pieces, sourced from small workshops we know by name.";
+    : "The Catalogue";
 
   return (
     <div className="bg-canvas">
@@ -143,7 +137,6 @@ export function ShopView() {
         alt="A curated home décor showroom with lamps, mirrors, and ceramics arranged on warm wood shelves."
         eyebrow={collection ? "Collection" : category ? "Category" : "Shop"}
         headline={heading}
-        subtitle={subheading}
       />
 
       {/* Breadcrumb (below hero, dark-on-light) */}

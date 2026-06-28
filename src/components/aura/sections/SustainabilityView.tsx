@@ -202,8 +202,7 @@ export function SustainabilityView() {
         image="/hero/sustainability.png"
         alt="Natural raw materials — stoneware clay, unbleached linen, solid brass, flax, and Carrara marble — arranged on a warm oak surface."
         eyebrow="Sustainability"
-        headline="Where every piece comes from."
-        subtitle="We publish the origin of every material we use — the clay, the brass, the linen, the marble. Transparency is not a marketing line for us; it is the whole brief."
+        headline="Our Impact"
       />
 
       {/* 1. Materials sourcing index */}

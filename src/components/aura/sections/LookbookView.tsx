@@ -74,9 +74,8 @@ function LookbookHero() {
     <PageHero
       image="/hero/lookbook.png"
       alt="A beautifully styled living room with warm afternoon light, brass, ceramic, and a mirror arranged on a console."
-      eyebrow="The Lookbook"
-      headline="Rooms, styled slowly."
-      subtitle="Six styled scenes from our studio — each one built around pieces we live with. Tap a hotspot on any image to shop the look."
+      eyebrow="Lookbook"
+      headline="Styled Scenes"
     />
   );
 }

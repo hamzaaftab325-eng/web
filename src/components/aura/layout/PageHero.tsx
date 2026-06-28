@@ -1,16 +1,19 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
 
 /**
  * PageHero — full-bleed editorial hero for inner pages.
  *
  * Renders a tall image hero (60vh, min 480px) with a dark gradient
- * overlay, eyebrow label, headline, and optional subtitle/CTA slot.
+ * overlay, a small eyebrow label, and a single short headline.
  * Sits under the fixed Header (no top padding on the parent view)
  * so the image extends to the top of the viewport, matching the
  * home HeroSlider pattern.
+ *
+ * Design constraint: heading only — no subtitle paragraph, no CTA
+ * buttons. The eyebrow is a short uppercase label; the headline is
+ * a short phrase (2-4 words). Both render in white over the image.
  *
  * Uses only existing design-system classes — no new tokens.
  * Honors prefers-reduced-motion.
@@ -23,12 +26,8 @@ export interface PageHeroProps {
   alt: string;
   /** Small caps label above the headline (e.g. "Collections"). */
   eyebrow: string;
-  /** The display headline. Rendered as h1. */
+  /** Short display headline (2-4 words). Rendered as h1. */
   headline: string;
-  /** Optional body subtitle below the headline. */
-  subtitle?: string;
-  /** Optional slot for CTA buttons / links. */
-  children?: ReactNode;
 }
 
 export function PageHero({
@@ -36,8 +35,6 @@ export function PageHero({
   alt,
   eyebrow,
   headline,
-  subtitle,
-  children,
 }: PageHeroProps) {
   const prefersReducedMotion = useReducedMotion();
 
@@ -73,31 +70,10 @@ export function PageHero({
           initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="t-display-xl c-paper leading-[1.05] max-w-3xl mb-6"
+          className="t-display-xl c-paper leading-[1.05] max-w-3xl"
         >
           {headline}
         </motion.h1>
-
-        {subtitle && (
-          <motion.p
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="t-body-lg c-paper/80 max-w-xl leading-relaxed mb-8"
-          >
-            {subtitle}
-          </motion.p>
-        )}
-
-        {children && (
-          <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {children}
-          </motion.div>
-        )}
       </div>
     </section>
   );

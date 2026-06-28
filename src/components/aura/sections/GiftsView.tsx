@@ -106,8 +106,7 @@ export function GiftsView() {
         image="/hero/gifts.png"
         alt="A beautifully wrapped gift in cream paper with a gold-foil seal and a hand-tied linen ribbon."
         eyebrow="Gifts"
-        headline="Gifts that finish a room."
-        subtitle="Considered pieces, chosen by recipient or price. Each one wrapped in our signature cream paper and gold-foil seal."
+        headline="Considered Gifts"
       />
 
       {/* Gift card CTA banner (dark gradient) */}

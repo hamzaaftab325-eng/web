@@ -59,9 +59,8 @@ function ArtisanIndex({ onOpen }: { onOpen: (slug: string) => void }) {
       <PageHero
         image="/hero/artisans.png"
         alt="An artisan's workshop interior — a pottery wheel with a half-thrown vessel, glaze jars, and brass tools."
-        eyebrow="The Workshops"
-        headline="The hands behind the pieces."
-        subtitle="Four workshops, six countries, one shared standard. Every Aura piece is made by a person we know by name."
+        eyebrow="Artisans"
+        headline="The Workshops"
       />
 
       {/* Profile grid */}
