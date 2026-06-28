@@ -19,7 +19,7 @@ const navItems: { label: string; icon: typeof LayoutDashboard; view: ViewKey }[]
 ];
 
 export function AccountLayout({ children }: { children: ReactNode }) {
-  const { view, setView, mobileNavOpen, setMobileNavOpen } = useUIStore();
+  const { view, setView, filterDrawerOpen, setFilterDrawerOpen } = useUIStore();
   const user = useAuthStore((s) => s.user);
   const clearAuth = useAuthStore((s) => s.clear);
   const wishCount = useWishlistStore((s) => s.slugs.length);
@@ -54,7 +54,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
             const badge = item.view === "account-wishlist" ? wishCount : item.view === "account-orders" ? 2 : 0;
             return (
               <li key={item.view}>
-                <button onClick={() => { setView(item.view); setMobileNavOpen(false); }} className={cn("w-full flex items-center gap-3 px-4 py-3 t-body transition-all duration-300 relative group rounded-sm", isActive ? "c-ink font-medium" : "c-ink-muted hover:c-ink hover:bg-cream/60")}>
+                <button onClick={() => { setView(item.view); setFilterDrawerOpen(false); }} className={cn("w-full flex items-center gap-3 px-4 py-3 t-body transition-all duration-300 relative group rounded-sm", isActive ? "c-ink font-medium" : "c-ink-muted hover:c-ink hover:bg-cream/60")}>
                   {isActive && <motion.span layoutId="account-nav-active" className="absolute inset-0 bg-gold-pale rounded-sm border border-gold/40 shadow-glow-gold" transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} />}
                   {isActive && <motion.span layoutId="account-nav-bar" className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-gold rounded-r-full" transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} />}
                   <item.icon size={18} strokeWidth={isActive ? 1.5 : 1.25} className={cn("flex-shrink-0 relative z-10 transition-colors", isActive ? "c-gold-deep" : "group-hover:c-gold")} />
@@ -77,7 +77,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
           <div className="relative"><ShoppingBag size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{cartCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper text-[9px] font-semibold rounded-full w-4 h-4 flex items-center justify-center t-num">{cartCount}</span>}</div>
           <span className="t-caption c-ink-faint">Cart</span>
         </button>
-        <button onClick={() => { setView("account-wishlist"); setMobileNavOpen(false); }} className="flex flex-col items-center justify-center gap-1 py-3 border border-hairline-cream bg-cream/50 hover:bg-cream hover:border-hairline-gold transition-colors group rounded-sm">
+        <button onClick={() => { setView("account-wishlist"); setFilterDrawerOpen(false); }} className="flex flex-col items-center justify-center gap-1 py-3 border border-hairline-cream bg-cream/50 hover:bg-cream hover:border-hairline-gold transition-colors group rounded-sm">
           <div className="relative"><Heart size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{wishCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper text-[9px] font-semibold rounded-full w-4 h-4 flex items-center justify-center t-num">{wishCount}</span>}</div>
           <span className="t-caption c-ink-faint">Saved</span>
         </button>
@@ -90,18 +90,18 @@ export function AccountLayout({ children }: { children: ReactNode }) {
       <div className="container-aura py-8 md:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           <div className="lg:hidden flex items-center justify-between mb-4">
-            <button onClick={() => setMobileNavOpen(true)} className="inline-flex items-center gap-2 t-label-caps c-ink border border-hairline-cream px-4 py-2.5 rounded-sm"><Menu size={14} strokeWidth={1.5} />Account Menu</button>
+            <button onClick={() => setFilterDrawerOpen(true)} className="inline-flex items-center gap-2 t-label-caps c-ink border border-hairline-cream px-4 py-2.5 rounded-sm"><Menu size={14} strokeWidth={1.5} />Account Menu</button>
             <div className="flex items-center gap-2 t-caption c-ink-faint"><span className="w-1.5 h-1.5 rounded-full bg-success" aria-hidden />Signed in</div>
           </div>
           <aside className="hidden lg:block lg:col-span-3">
             <div className="sticky top-[100px] bg-gradient-sidebar border border-hairline-cream shadow-premium overflow-hidden rounded-sm">{sidebar}</div>
           </aside>
           <AnimatePresence>
-            {mobileNavOpen && (
+            {filterDrawerOpen && (
               <>
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onClick={() => setMobileNavOpen(false)} className="fixed inset-0 z-overlay overlay-dark lg:hidden" />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onClick={() => setFilterDrawerOpen(false)} className="fixed inset-0 z-overlay overlay-dark lg:hidden" />
                 <motion.aside initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="fixed top-0 left-0 bottom-0 z-drawer w-full max-w-[360px] bg-paper lg:hidden shadow-modal">
-                  <button onClick={() => setMobileNavOpen(false)} aria-label="Close menu" className="absolute top-4 right-4 p-2 c-ink hover:c-gold-deep transition-colors z-10"><X size={22} strokeWidth={1.25} /></button>
+                  <button onClick={() => setFilterDrawerOpen(false)} aria-label="Close menu" className="absolute top-4 right-4 p-2 c-ink hover:c-gold-deep transition-colors z-10"><X size={22} strokeWidth={1.25} /></button>
                   {sidebar}
                 </motion.aside>
               </>

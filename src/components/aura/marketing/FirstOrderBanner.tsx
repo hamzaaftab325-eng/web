@@ -1,71 +1,49 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Sparkles, ArrowRight, Gift } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 
-const STORAGE_KEY = "aura-first-order-banner-dismissed";
+const STORAGE_KEY = "aura-first-order-popup-dismissed";
 const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+const SHOW_DELAY = 3000;
 
 /**
- * readDismissed — true when a valid, unexpired dismissal timestamp is stored.
- * Returns false on the server, in private mode, or when storage is unavailable.
- */
-function readDismissed(): boolean {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const at = Number(raw);
-      if (Number.isFinite(at) && Date.now() - at < THIRTY_DAYS) return true;
-    }
-  } catch {
-    /* localStorage unavailable */
-  }
-  return false;
-}
-
-const subscribe = (callback: () => void) => {
-  // Cross-tab updates fire the native storage event; same-tab writes are
-  // notified by a manual dispatch in `dismiss()`.
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
-};
-
-const getSnapshot = (): boolean => readDismissed();
-const getServerSnapshot = (): boolean => false;
-
-/**
- * FirstOrderBanner — dismissible top announcement bar.
- *
- * "First order? 10% off — Sign up". Renders on a dark ink gradient. Dismissal
- * is timestamped to localStorage and respected for 30 days. The CTA routes to
- * the signup view. Dismissal state is read with `useSyncExternalStore` so it's
- * SSR-safe and free of setState-in-effect.
+ * FirstOrderBanner — popup toast that appears after 3s.
+ * "First order? 10% off — Sign up". Dismissal persists 30 days.
+ * Appears as a floating popup at bottom-right (desktop) / bottom (mobile).
  */
 export function FirstOrderBanner() {
   const prefersReducedMotion = useReducedMotion();
   const setView = useUIStore((s) => s.setView);
+  const [visible, setVisible] = useState(false);
 
-  const dismissed = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot
-  );
-  const visible = !dismissed;
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const at = Number(raw);
+        if (Number.isFinite(at) && Date.now() - at < THIRTY_DAYS) return;
+      }
+    } catch {
+      /* localStorage unavailable */
+    }
+    const timer = setTimeout(() => setVisible(true), SHOW_DELAY);
+    return () => clearTimeout(timer);
+  }, []);
 
   const dismiss = useCallback(() => {
+    setVisible(false);
     try {
       localStorage.setItem(STORAGE_KEY, String(Date.now()));
-      // The native `storage` event only fires in *other* tabs, so dispatch one
-      // locally to wake our own subscriber and re-render the banner away.
-      window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
     } catch {
       /* ignore */
     }
   }, []);
 
   const goToSignup = () => {
+    dismiss();
     setView("signup");
   };
 
@@ -73,60 +51,59 @@ export function FirstOrderBanner() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          role="region"
+          role="dialog"
           aria-label="First order offer"
-          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
-          animate={
-            prefersReducedMotion
-              ? { opacity: 1 }
-              : { opacity: 1, height: "auto" }
-          }
-          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="overflow-hidden bg-gradient-to-r from-ink via-ink-soft to-ink c-paper"
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30, scale: 0.95 }}
+          animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.95 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed bottom-4 right-4 left-4 md:left-auto md:bottom-6 md:right-6 z-toast w-auto md:w-80"
         >
-          <div className="container-aura safe-area-top">
-            <div className="flex items-center justify-between gap-4 py-2.5">
-              {/* Message + CTA */}
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <Gift
-                  size={15}
-                  strokeWidth={1.5}
-                  className="c-gold shrink-0"
-                  aria-hidden="true"
-                />
-                <p className="t-body-sm c-paper truncate">
-                  <span className="hidden sm:inline">First order? </span>
-                  <span className="font-medium">10% off</span>
-                  <span className="c-paper/70"> — </span>
-                  <button
-                    type="button"
-                    onClick={goToSignup}
-                    className="inline-flex items-center gap-1 c-gold hover:c-gold-soft transition-colors link-underline font-medium"
-                  >
-                    Sign up
-                    <ArrowRight
-                      size={12}
-                      strokeWidth={2}
-                      className="hidden sm:inline"
-                    />
-                  </button>
-                </p>
-                <span className="hidden md:inline-flex items-center gap-1 t-caption c-gold/80 border border-gold/30 rounded-full px-2 py-0.5">
-                  <Sparkles size={10} strokeWidth={2} />
-                  AURA10
-                </span>
+          <div className="bg-gradient-card-warm border border-hairline-gold shadow-modal rounded-sm overflow-hidden">
+            {/* Gold top accent */}
+            <div className="h-1 bg-gradient-to-r from-gold via-gold-soft to-gold" aria-hidden />
+
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold-pale to-cream flex items-center justify-center ring-1 ring-hairline-gold">
+                    <Gift size={18} strokeWidth={1.25} className="c-gold-deep" />
+                  </div>
+                  <div>
+                    <p className="t-label-caps c-gold-deep flex items-center gap-1">
+                      <Sparkles size={10} strokeWidth={2} />
+                      First Order Offer
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={dismiss}
+                  aria-label="Dismiss offer"
+                  className="p-1 c-ink-faint hover:c-ink transition-colors"
+                >
+                  <X size={16} strokeWidth={1.75} />
+                </button>
               </div>
 
-              {/* Dismiss */}
+              <p className="t-body c-ink mb-1">
+                <span className="font-medium">10% off</span> your first order
+              </p>
+              <p className="t-caption c-ink-muted mb-4">
+                Sign up to reveal your exclusive discount code.
+              </p>
+
               <button
-                type="button"
-                onClick={dismiss}
-                aria-label="Dismiss offer"
-                className="shrink-0 w-7 h-7 flex items-center justify-center c-paper/70 hover:c-gold transition-colors rounded-sm"
+                onClick={goToSignup}
+                className="w-full bg-ink c-paper t-label-caps py-3 hover:bg-gold-deep transition-colors rounded-sm flex items-center justify-center gap-2"
               >
-                <X size={15} strokeWidth={1.75} />
+                Sign Up & Reveal Code
+                <ArrowRight size={12} strokeWidth={2} />
               </button>
+
+              <p className="t-caption c-ink-faint text-center mt-2">
+                Use code <span className="c-gold-deep font-medium">AURA10</span> at checkout
+              </p>
             </div>
           </div>
         </motion.div>

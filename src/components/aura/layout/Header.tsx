@@ -41,6 +41,9 @@ export function Header() {
 
   const prefersReducedMotion = useReducedMotion();
 
+  // Account and content pages have cream backgrounds — force dark text
+  const isLightPage = view.startsWith("account") || view === "shop" || view === "lookbook" || view === "collections" || view === "artisans" || view === "sustainability" || view === "trade" || view === "gifts" || view === "care";
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
@@ -68,7 +71,7 @@ export function Header() {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-sticky transition-all duration-500",
-        scrolled ? "glass-nav h-[60px] md:h-[72px]" : "bg-transparent h-[72px] md:h-[88px]"
+        (scrolled || isLightPage) ? "glass-nav h-[60px] md:h-[72px]" : "bg-transparent h-[72px] md:h-[88px]"
       )}
       onMouseLeave={() => {
         setMegaOpen(false);
@@ -80,7 +83,7 @@ export function Header() {
           {/* Mobile menu button */}
           <button
             onClick={() => openMobile(true)}
-            className={cn("lg:hidden p-2 -ml-2 transition-colors hover:text-gold", scrolled ? "text-ink" : "text-paper")}
+            className={cn("lg:hidden p-2 -ml-2 transition-colors hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
             aria-label="Open menu"
           >
             <Menu size={22} strokeWidth={1.25} />
@@ -92,7 +95,7 @@ export function Header() {
             className="flex-shrink-0 flex items-center gap-2 group"
             aria-label="Aura Living home"
           >
-            <span className={cn("t-display-md font-display leading-none tracking-tight transition-colors", scrolled ? "c-ink" : "c-paper")}>
+            <span className={cn("t-display-md font-display leading-none tracking-tight transition-colors", (scrolled || isLightPage) ? "c-ink" : "c-paper")}>
               Aura
             </span>
             <span className="t-label-caps c-gold hidden sm:inline-block self-end mb-[6px]">
@@ -112,7 +115,7 @@ export function Header() {
               <button
                 onClick={goShop}
                 data-active={view === "shop"}
-                className={cn("t-label-caps link-underline transition-colors hover:c-gold", scrolled ? "c-ink" : "c-paper")}
+                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
               >
                 Shop
               </button>
@@ -131,7 +134,7 @@ export function Header() {
                   setView("collections");
                 }}
                 data-active={view === "collections"}
-                className={cn("t-label-caps link-underline transition-colors hover:c-gold", scrolled ? "c-ink" : "c-paper")}
+                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
               >
                 Collections
               </button>
@@ -140,7 +143,7 @@ export function Header() {
             <button
               onClick={() => setView("about")}
               data-active={view === "about"}
-              className={cn("t-label-caps link-underline transition-colors hover:c-gold", scrolled ? "c-ink" : "c-paper")}
+              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
             >
               About
             </button>
@@ -148,7 +151,7 @@ export function Header() {
             <button
               onClick={() => setView("journal")}
               data-active={view === "journal"}
-              className={cn("t-label-caps link-underline transition-colors hover:c-gold", scrolled ? "c-ink" : "c-paper")}
+              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
             >
               Journal
             </button>
@@ -159,7 +162,7 @@ export function Header() {
             <button
               onClick={() => setView(user ? "account" : "login")}
               aria-label={user ? "Account" : "Sign in"}
-              className={cn("transition-colors p-1 relative hover:text-gold", scrolled ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
             >
               <User size={20} strokeWidth={1.25} />
             </button>
@@ -167,7 +170,7 @@ export function Header() {
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="Search"
-              className={cn("transition-colors p-1 hover:text-gold", scrolled ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
             >
               <Search size={20} strokeWidth={1.25} />
             </button>
@@ -175,7 +178,7 @@ export function Header() {
             <button
               onClick={openWishlist}
               aria-label={`Wishlist, ${wishCount} items`}
-              className={cn("transition-colors p-1 relative hover:text-gold", scrolled ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
             >
               <Heart size={20} strokeWidth={1.25} />
               {wishCount > 0 && (
@@ -188,7 +191,7 @@ export function Header() {
             <button
               onClick={openCart}
               aria-label={`Cart, ${cartCount} items`}
-              className={cn("transition-colors p-1 relative hover:text-gold", scrolled ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
             >
               <ShoppingBag size={20} strokeWidth={1.25} />
               {cartCount > 0 && (
