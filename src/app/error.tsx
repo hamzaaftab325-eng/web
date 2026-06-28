@@ -22,7 +22,7 @@ export default function Error({
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    // eslint-disable-next-line no-console -- error boundary must log to console.error
+     
     console.error("App error boundary caught:", error);
   }, [error]);
 

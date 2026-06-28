@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Volume2, Square } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +22,14 @@ export function ReadAloud({ text, className }: ReadAloudProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   const speak = () => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
 
@@ -42,13 +50,6 @@ export function ReadAloud({ text, className }: ReadAloudProps) {
     window.speechSynthesis.speak(utterance);
     setIsPlaying(true);
   };
-
-  // Clean up on unmount
-  if (typeof window !== "undefined" && window.speechSynthesis) {
-    window.onbeforeunload = () => {
-      window.speechSynthesis?.cancel();
-    };
-  }
 
   const isSupported =
     typeof window !== "undefined" && typeof window.speechSynthesis !== "undefined";
@@ -75,3 +76,4 @@ export function ReadAloud({ text, className }: ReadAloudProps) {
 }
 
 export default ReadAloud;
+
