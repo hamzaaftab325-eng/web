@@ -70,10 +70,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* No-flash theme script — runs before paint to set data-theme */}
+        {/* No-flash theme + language script — runs before paint */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('aura-theme');var m=t?JSON.parse(t).state?.mode:'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');var c=t?JSON.parse(t).state?.contrast:'default';if(c==='high')document.documentElement.setAttribute('data-contrast','high');var f=t?JSON.parse(t).state?.fontSize:'md';if(f!=='md')document.documentElement.setAttribute('data-font-size',f);}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('aura-theme');var m=t?JSON.parse(t).state?.mode:'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');var c=t?JSON.parse(t).state?.contrast:'default';if(c==='high')document.documentElement.setAttribute('data-contrast','high');var f=t?JSON.parse(t).state?.fontSize:'md';if(f!=='md')document.documentElement.setAttribute('data-font-size',f);var l=localStorage.getItem('aura-language');var lang=l?JSON.parse(l).state?.language:'en';document.documentElement.lang=lang;document.documentElement.dir=lang==='ur'?'rtl':'ltr';}catch(e){}})();`,
           }}
         />
       </head>

@@ -6,16 +6,20 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format a number as a USD price string.
- * Tabular numerals are handled via CSS `.t-num`.
+ * Format a USD price value as PKR (Pakistani Rupee) for server-side rendering.
+ * The site's primary currency is PKR. Prices stored in USD, converted at mock
+ * rate of 278.5 PKR per USD. Client-side useFormatPrice() upgrades to user's
+ * currency choice. Tabular numerals handled via CSS `.t-num`.
  */
-export function formatPrice(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: value % 1 === 0 ? 0 : 2,
-    maximumFractionDigits: 2,
-  }).format(value);
+const PKR_RATE = 278.5;
+
+export function formatPrice(usdValue: number): string {
+  const pkr = Math.round(usdValue * PKR_RATE);
+  const formatted = new Intl.NumberFormat("ur-PK", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(pkr);
+  return `₨${formatted}`;
 }
 
 /** Convert a string to a URL-safe slug. */

@@ -13,6 +13,8 @@ import { collections } from "@/data/collections";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
+import { CurrencySelector } from "@/components/aura/ui/CurrencySelector";
+import { LanguageSelector } from "@/components/aura/ui/LanguageSelector";
 
 const navLinks: { label: string; view: "shop" | "about" | "journal" }[] = [
   { label: "Shop", view: "shop" },
@@ -170,6 +172,16 @@ export function Header() {
 
           {/* Utility icons */}
           <div className="flex items-center gap-3 md:gap-4">
+            <LanguageSelector
+              className={cn(
+                (scrolled || isLightPage) ? "text-ink" : "hero-text"
+              )}
+            />
+            <CurrencySelector
+              className={cn(
+                (scrolled || isLightPage) ? "text-ink" : "hero-text"
+              )}
+            />
             <ThemeToggle
               className={cn(
                 "p-1",
