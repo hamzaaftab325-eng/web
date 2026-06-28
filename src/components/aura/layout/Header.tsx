@@ -41,8 +41,11 @@ export function Header() {
 
   const prefersReducedMotion = useReducedMotion();
 
-  // Account and content pages have cream backgrounds — force dark text
-  const isLightPage = view.startsWith("account") || view === "shop" || view === "collections" || view === "artisans" || view === "sustainability" || view === "care";
+  // Only account pages have cream backgrounds (no hero image).
+  // All other pages (shop, collections, artisans, sustainability, care,
+  // about, journal, home) have dark image heroes — header text should
+  // be white over the hero, switching to dark when scrolled (glass-nav).
+  const isLightPage = view.startsWith("account");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);

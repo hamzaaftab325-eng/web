@@ -63,12 +63,23 @@ export function SiteShell() {
   const setQuickViewProduct = useUIStore((s) => s.setQuickViewProduct);
   const prefersReducedMotion = useReducedMotion();
 
+  // Track initialization state to prevent URL flicker on direct URL access.
+  // On mount, we sync view FROM the URL (Effect 2). Only AFTER that initial
+  // sync do we allow view→URL pushing (Effect 1). This prevents the default
+  // view "home" from momentarily pushing "/" to the URL bar.
+  const hasInitialized = useRef(false);
+
   // Track whether the URL change was triggered by us (to avoid loops)
   const isInternalNav = useRef(false);
 
   // Effect 1: Sync view → URL
   // When the Zustand view changes (via setView), push the corresponding URL.
+  // SKIPPED on first render — let Effect 2 sync from URL first.
   useEffect(() => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      return;
+    }
     if (isInternalNav.current) {
       isInternalNav.current = false;
       return;
