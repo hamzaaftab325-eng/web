@@ -6,6 +6,7 @@ import { useUIStore } from "@/store/use-ui-store";
 import { categories } from "@/data/categories";
 import { allMaterials } from "@/data/products";
 import { cn, formatPrice } from "@/lib/utils";
+import type { ActiveFilter, CategorySlug } from "@/types";
 
 const PRICE_BANDS = [
   { id: "under-50", label: "Under $50", min: 0, max: 50 },
@@ -120,8 +121,8 @@ export function FilterSidebar() {
 
 interface FilterContentProps {
   activeCategory: string;
-  setCategory: (c: any) => void;
-  filters: any[];
+  setCategory: (c: "all" | CategorySlug) => void;
+  filters: ActiveFilter[];
   isFilterActive: (field: string, value: string) => boolean;
   toggleFilter: (field: "category" | "material" | "price", value: string, label: string) => void;
   clearAll: () => void;

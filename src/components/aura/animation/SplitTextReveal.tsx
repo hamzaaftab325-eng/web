@@ -1,5 +1,6 @@
 "use client";
 
+import { type ElementType } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,7 @@ interface SplitTextRevealProps {
 /**
  * SplitTextReveal — splits text into chars/words/lines and animates them
  * upward from a clipped container. Honors prefers-reduced-motion.
+ * ZERO inline styles — uses CSS utility classes only.
  */
 export function SplitTextReveal({
   text,
@@ -34,11 +36,10 @@ export function SplitTextReveal({
   const MotionTag = motion[as];
 
   if (prefersReducedMotion) {
-    const Tag = as as keyof JSX.IntrinsicElements;
+    const Tag = as as ElementType;
     return <Tag className={className}>{text}</Tag>;
   }
 
-  // Split into lines by explicit \n, words by space, chars individually.
   let units: string[] = [];
   if (splitBy === "line") {
     units = text.split("\n");
@@ -51,18 +52,16 @@ export function SplitTextReveal({
 
   const containerVariants = {
     hidden: {},
-    visible: {
-      transition: { staggerChildren: stagger, delayChildren: delay },
-    },
+    visible: { transition: { staggerChildren: stagger, delayChildren: delay } },
   };
 
   const unitVariants = {
     hidden: { y: "110%" },
-    visible: {
-      y: "0%",
-      transition: { duration, ease: [0.16, 1, 0.3, 1] as const },
-    },
+    visible: { y: "0%", transition: { duration, ease: [0.16, 1, 0.3, 1] as const } },
   };
+
+  const maskClass =
+    splitBy === "line" ? "block overflow-hidden" : "inline-block overflow-hidden align-bottom mr-[0.25em]";
 
   return (
     <MotionTag
@@ -74,20 +73,8 @@ export function SplitTextReveal({
       variants={containerVariants}
     >
       {units.map((unit, i) => (
-        <span
-          key={i}
-          className="inline-block overflow-hidden align-bottom"
-          style={{
-            marginRight: splitBy === "word" ? "0.25em" : undefined,
-            display: splitBy === "line" ? "block" : "inline-block",
-            verticalAlign: splitBy === "char" ? "bottom" : undefined,
-          }}
-        >
-          <motion.span
-            className="inline-block"
-            variants={unitVariants}
-            style={{ display: "inline-block" }}
-          >
+        <span key={i} className={maskClass}>
+          <motion.span className="inline-block" variants={unitVariants}>
             {unit}
             {splitBy === "word" && i < units.length - 1 ? "\u00A0" : ""}
           </motion.span>

@@ -291,15 +291,15 @@ export function ProductDetail() {
                             onClick={() => setVariant(v)}
                             className={cn(
                               "chip",
-                              variant?.id === v.id && "data-[active=true]"
+                              variant?.id === v.id && "bg-ink c-paper border-ink"
                             )}
                             data-active={variant?.id === v.id}
                             aria-pressed={variant?.id === v.id}
                           >
                             {v.swatch && (
                               <span
-                                className="w-3 h-3 rounded-full border border-hairline"
-                                style={{ backgroundColor: v.swatch }}
+                                className="swatch-dot"
+                                data-swatch={v.swatch}
                                 aria-hidden
                               />
                             )}
