@@ -10,7 +10,7 @@ const SLIDES = [
   {
     image: "/hero/slide-1.png",
     eyebrow: "New — The Plant Edit",
-    headline: "Considered objects for the considered home.",
+    headline: "Considered objects, considered home.",
     subtitle: "Warm minimalism, artisanal craft, lived-in elegance. A small atelier of lamps, mirrors, plants, and ceramics — sourced from workshops we know by name.",
     ctaLabel: "Shop the Collection",
     ctaAction: "shop" as const,
