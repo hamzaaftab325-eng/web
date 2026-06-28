@@ -42,6 +42,9 @@ import { SustainabilityView } from "@/components/aura/sections/SustainabilityVie
 import { CareView } from "@/components/aura/sections/CareView";
 import { JournalReader } from "@/components/aura/sections/JournalReader";
 import { RecommendedForYou } from "@/components/aura/personalization/RecommendedForYou";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { CookieConsent } from "@/components/analytics/CookieConsent";
+import { InstallPrompt } from "@/components/analytics/InstallPrompt";
 
 import { AccountDashboard } from "@/components/aura/account/AccountDashboard";
 import { AccountOrders } from "@/components/aura/account/AccountOrders";
@@ -132,6 +135,7 @@ export function SiteShell({ initialView = "home" }: SiteShellProps = {}) {
   const isAuthView = AUTH_VIEWS.has(view);
 
   return (
+    <AnalyticsProvider>
     <div className="min-h-screen flex flex-col bg-canvas">
       {!isAuthView && <FirstOrderBanner />}
       {!isAuthView && <Header />}
@@ -203,7 +207,10 @@ export function SiteShell({ initialView = "home" }: SiteShellProps = {}) {
 
       {!isAuthView && <Footer />}
       {!isAuthView && view !== "product-detail" && <MobileTabBar />}
+      <CookieConsent />
+      <InstallPrompt />
     </div>
+    </AnalyticsProvider>
   );
 }
 

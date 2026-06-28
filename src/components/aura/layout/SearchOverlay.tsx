@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { products } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
+import { search as trackSearch } from "@/lib/analytics/ecommerce";
 
 export function SearchOverlay() {
   const open = useUIStore((s) => s.searchOpen);
@@ -43,6 +44,20 @@ export function SearchOverlay() {
           p.subtitle?.toLowerCase().includes(q)
       )
       .slice(0, 6);
+  }, [query]);
+
+  // Fire search analytics event (debounced 800ms)
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    if (query.trim().length >= 2) {
+      searchTimer.current = setTimeout(() => {
+        trackSearch({ search_term: query.trim() });
+      }, 800);
+    }
+    return () => {
+      if (searchTimer.current) clearTimeout(searchTimer.current);
+    };
   }, [query]);
 
   const popular = ["ceramic lamp", "fiddle leaf", "mirror", "terracotta", "candle"];

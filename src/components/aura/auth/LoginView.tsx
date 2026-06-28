@@ -18,6 +18,7 @@ import { Button } from "@/components/aura/ui/Button";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { cn } from "@/lib/utils";
+import { login as trackLogin } from "@/lib/analytics/ecommerce";
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod schema (no server-side dependency)
@@ -148,6 +149,9 @@ export function LoginView() {
       },
     });
     setToken(`aura_demo_${Date.now().toString(36)}`);
+
+    // Fire analytics: login
+    trackLogin({ method: "email" });
 
     const target = authRedirect ?? "home";
     setAuthRedirect(null);

@@ -19,7 +19,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Aura Living — Considered Objects for the Considered Home",
+  metadataBase: new URL("https://aura-living-1.vercel.app"),
+  title: {
+    default: "Aura Living — Considered Objects for the Considered Home",
+    template: "%s",
+  },
   description:
     "Aura Living is a premium home décor atelier offering lamps, mirrors, indoor plants, planters, vases, candles, and sculptural objects. Warm minimalism, artisanal craft, lived-in elegance.",
   keywords: [
@@ -32,17 +36,30 @@ export const metadata: Metadata = {
     "indoor plants",
   ],
   authors: [{ name: "Aura Living" }],
+  creator: "Aura Living",
+  publisher: "Aura Living",
   openGraph: {
     title: "Aura Living — Considered Objects for the Considered Home",
     description:
       "Warm minimalism for the considered interior. Lamps, mirrors, plants, planters, and sculptural objects.",
     siteName: "Aura Living",
     type: "website",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "Aura Living",
     description: "Considered objects for the considered home.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 

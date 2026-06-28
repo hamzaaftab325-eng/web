@@ -100,6 +100,7 @@ export function HeroSlider() {
             exit={{ scale: 1.16 }}
             transition={{ duration: AUTOPLAY_MS / 1000 + 1.4, ease: "linear" }}
             className={cn("w-full h-full object-cover", !prefersReducedMotion && "slider-image-active")}
+            fetchPriority={index === 0 ? "high" : "low"}
           />
           <div className="absolute inset-0 hero-overlay" />
           <div className="absolute inset-0 hero-overlay-bias" />

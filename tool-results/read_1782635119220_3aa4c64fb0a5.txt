@@ -1,0 +1,1135 @@
+     1→     1→"use client";
+     2→     2→
+     3→     3→import { useEffect, useMemo, useRef, useState } from "react";
+     4→     4→import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+     5→     5→import {
+     6→     6→  X,
+     7→     7→  Check,
+     8→     8→  ChevronLeft,
+     9→     9→  ChevronRight,
+    10→    10→  Lock,
+    11→    11→  Truck,
+    12→    12→  Zap,
+    13→    13→  Package,
+    14→    14→  Tag,
+    15→    15→  Gift,
+    16→    16→  ShieldCheck,
+    17→    17→  Loader2,
+    18→    18→  ShoppingBag,
+    19→    19→  CreditCard,
+    20→    20→  Wallet,
+    21→    21→  Smartphone,
+    22→    22→} from "lucide-react";
+    23→    23→import { cn, formatPrice, sleep, uid } from "@/lib/utils";
+    24→    24→import { useCartStore } from "@/store/use-cart-store";
+    25→    25→import { useUIStore } from "@/store/use-ui-store";
+    26→    26→import { useFocusTrap } from "@/hooks/use-focus-trap";
+    27→    27→import { useToast } from "@/hooks/use-toast";
+    28→    28→import { AuraInput, AuraTextarea } from "@/components/aura/ui/AuraInput";
+    29→    29→
+    30→    30→const GIFT_WRAP_PRICE = 8;
+    31→    31→const TAX_RATE = 0.08;
+    32→    32→const FREE_SHIP_THRESHOLD = 150;
+    33→    33→
+    34→    34→const PROMOS: Record<
+    35→    35→  string,
+    36→    36→  { type: "percent" | "shipping"; value: number; label: string }
+    37→    37→> = {
+    38→    38→  AURA10: { type: "percent", value: 0.1, label: "10% off your order" },
+    39→    39→  WELCOME15: { type: "percent", value: 0.15, label: "15% off — welcome" },
+    40→    40→  FREESHIP: { type: "shipping", value: 0, label: "Free shipping" },
+    41→    41→};
+    42→    42→
+    43→    43→const STEPS = ["Information", "Shipping", "Payment"] as const;
+    44→    44→
+    45→    45→interface ShippingMethod {
+    46→    46→  id: string;
+    47→    47→  label: string;
+    48→    48→  detail: string;
+    49→    49→  icon: typeof Truck;
+    50→    50→  cost: (sub: number) => number;
+    51→    51→}
+    52→    52→
+    53→    53→const SHIPPING_METHODS: ShippingMethod[] = [
+    54→    54→  {
+    55→    55→    id: "standard",
+    56→    56→    label: "Standard",
+    57→    57→    detail: "3–5 business days · insured ground",
+    58→    58→    icon: Truck,
+    59→    59→    cost: (sub) => (sub >= FREE_SHIP_THRESHOLD ? 0 : 8),
+    60→    60→  },
+    61→    61→  {
+    62→    62→    id: "expedited",
+    63→    63→    label: "Expedited",
+    64→    64→    detail: "2 business days · insured air",
+    65→    65→    icon: Zap,
+    66→    66→    cost: () => 18,
+    67→    67→  },
+    68→    68→  {
+    69→    69→    id: "white-glove",
+    70→    70→    label: "White-Glove",
+    71→    71→    detail: "5–10 business days · freight + assembly",
+    72→    72→    icon: Package,
+    73→    73→    cost: () => 45,
+    74→    74→  },
+    75→    75→];
+    76→    76→
+    77→    77→interface InfoForm {
+    78→    78→  email: string;
+    79→    79→  firstName: string;
+    80→    80→  lastName: string;
+    81→    81→  address: string;
+    82→    82→  apartment: string;
+    83→    83→  city: string;
+    84→    84→  state: string;
+    85→    85→  zip: string;
+    86→    86→  country: string;
+    87→    87→  phone: string;
+    88→    88→}
+    89→    89→
+    90→    90→interface PaymentForm {
+    91→    91→  cardName: string;
+    92→    92→  cardNumber: string;
+    93→    93→  expiry: string;
+    94→    94→  cvc: string;
+    95→    95→}
+    96→    96→
+    97→    97→/**
+    98→    98→ * CheckoutFlow — full-screen three-step checkout driven by the UI store's
+    99→    99→ * `checkoutOpen` flag. Information → Shipping → Payment, then a confirmation
+   100→   100→ * screen. Order summary sidebar holds the promo field, gift-wrap toggle, and
+   101→   101→ * order notes. Focus is trapped for the duration of the flow.
+   102→   102→ */
+   103→   103→export function CheckoutFlow() {
+   104→   104→  const prefersReducedMotion = useReducedMotion();
+   105→   105→  const isOpen = useUIStore((s) => s.checkoutOpen);
+   106→   106→  const setCheckoutOpen = useUIStore((s) => s.setCheckoutOpen);
+   107→   107→  const setView = useUIStore((s) => s.setView);
+   108→   108→  const lines = useCartStore((s) => s.lines);
+   109→   109→  const subtotal = useCartStore((s) => s.subtotal());
+   110→   110→  const cartCount = useCartStore((s) => s.count());
+   111→   111→  const clearCart = useCartStore((s) => s.clear);
+   112→   112→  const { toast } = useToast();
+   113→   113→
+   114→   114→  const containerRef = useRef<HTMLDivElement>(null);
+   115→   115→
+   116→   116→  const [step, setStep] = useState(0); // 0,1,2 form; 3 = confirmation
+   117→   117→  const [placedOrder, setPlacedOrder] = useState<string | null>(null);
+   118→   118→  const [placing, setPlacing] = useState(false);
+   119→   119→
+   120→   120→  const [info, setInfo] = useState<InfoForm>({
+   121→   121→    email: "",
+   122→   122→    firstName: "",
+   123→   123→    lastName: "",
+   124→   124→    address: "",
+   125→   125→    apartment: "",
+   126→   126→    city: "",
+   127→   127→    state: "",
+   128→   128→    zip: "",
+   129→   129→    country: "United States",
+   130→   130→    phone: "",
+   131→   131→  });
+   132→   132→  const [shippingMethod, setShippingMethod] = useState("standard");
+   133→   133→  const [payment, setPayment] = useState<PaymentForm>({
+   134→   134→    cardName: "",
+   135→   135→    cardNumber: "",
+   136→   136→    expiry: "",
+   137→   137→    cvc: "",
+   138→   138→  });
+   139→   139→  const [billingSame, setBillingSame] = useState(true);
+   140→   140→
+   141→   141→  const [promoInput, setPromoInput] = useState("");
+   142→   142→  const [promoCode, setPromoCode] = useState<string | null>(null);
+   143→   143→  const [promoError, setPromoError] = useState<string | null>(null);
+   144→   144→  const [giftWrap, setGiftWrap] = useState(false);
+   145→   145→  const [orderNotes, setOrderNotes] = useState("");
+   146→   146→
+   147→   147→  // Reset flow state each time the modal opens (previous-render pattern —
+   148→   148→  // avoids a setState-in-effect and the cascading render it would cause).
+   149→   149→  const [prevOpen, setPrevOpen] = useState(isOpen);
+   150→   150→  if (isOpen !== prevOpen) {
+   151→   151→    setPrevOpen(isOpen);
+   152→   152→    if (isOpen) {
+   153→   153→      setStep(0);
+   154→   154→      setPlacedOrder(null);
+   155→   155→      setPlacing(false);
+   156→   156→    }
+   157→   157→  }
+   158→   158→
+   159→   159→  // Focus trap + Esc + body lock.
+   160→   160→  useFocusTrap(containerRef, isOpen);
+   161→   161→  useEffect(() => {
+   162→   162→    if (!isOpen) return;
+   163→   163→    const onKey = (e: KeyboardEvent) => {
+   164→   164→      if (e.key === "Escape") setCheckoutOpen(false);
+   165→   165→    };
+   166→   166→    document.addEventListener("keydown", onKey);
+   167→   167→    const prev = document.body.style.overflow;
+   168→   168→    document.body.style.overflow = "hidden";
+   169→   169→    return () => {
+   170→   170→      document.removeEventListener("keydown", onKey);
+   171→   171→      document.body.style.overflow = prev;
+   172→   172→    };
+   173→   173→  }, [isOpen, setCheckoutOpen]);
+   174→   174→
+   175→   175→  // Scroll to top whenever the step changes.
+   176→   176→  useEffect(() => {
+   177→   177→    if (isOpen) {
+   178→   178→      const el = containerRef.current;
+   179→   179→      if (el) el.scrollTo({ top: 0, behavior: "auto" });
+   180→   180→    }
+   181→   181→  }, [step, isOpen]);
+   182→   182→
+   183→   183→  const totals = useMemo(() => {
+   184→   184→    const promo = promoCode ? PROMOS[promoCode] : null;
+   185→   185→    const discount =
+   186→   186→      promo && promo.type === "percent" ? subtotal * promo.value : 0;
+   187→   187→    const method =
+   188→   188→      SHIPPING_METHODS.find((m) => m.id === shippingMethod) ?? SHIPPING_METHODS[0];
+   189→   189→    let shipping = method.cost(subtotal);
+   190→   190→    if (promo && promo.type === "shipping") shipping = 0;
+   191→   191→    const taxable = Math.max(0, subtotal - discount);
+   192→   192→    const tax = taxable * TAX_RATE;
+   193→   193→    const gift = giftWrap ? GIFT_WRAP_PRICE : 0;
+   194→   194→    const total = Math.max(0, taxable + shipping + tax + gift);
+   195→   195→    return { discount, shipping, tax, gift, total };
+   196→   196→  }, [subtotal, promoCode, shippingMethod, giftWrap]);
+   197→   197→
+   198→   198→  const applyPromo = () => {
+   199→   199→    const code = promoInput.trim().toUpperCase();
+   200→   200→    if (!code) return;
+   201→   201→    if (PROMOS[code]) {
+   202→   202→      setPromoCode(code);
+   203→   203→      setPromoError(null);
+   204→   204→      setPromoInput("");
+   205→   205→      toast({ title: "Promo applied", description: PROMOS[code].label });
+   206→   206→    } else {
+   207→   207→      setPromoError("That code isn't valid.");
+   208→   208→    }
+   209→   209→  };
+   210→   210→
+   211→   211→  const removePromo = () => {
+   212→   212→    setPromoCode(null);
+   213→   213→    setPromoError(null);
+   214→   214→  };
+   215→   215→
+   216→   216→  const setInfoField = (key: keyof InfoForm, value: string) =>
+   217→   217→    setInfo((prev) => ({ ...prev, [key]: value }));
+   218→   218→  const setPaymentField = (key: keyof PaymentForm, value: string) =>
+   219→   219→    setPayment((prev) => ({ ...prev, [key]: value }));
+   220→   220→
+   221→   221→  const canContinue = () => {
+   222→   222→    if (step === 0) {
+   223→   223→      return Boolean(
+   224→   224→        info.email &&
+   225→   225→          info.firstName &&
+   226→   226→          info.lastName &&
+   227→   227→          info.address &&
+   228→   228→          info.city &&
+   229→   229→          info.state &&
+   230→   230→          info.zip
+   231→   231→      );
+   232→   232→    }
+   233→   233→    if (step === 1) return Boolean(shippingMethod);
+   234→   234→    if (step === 2) {
+   235→   235→      return Boolean(
+   236→   236→        payment.cardName &&
+   237→   237→          payment.cardNumber.length >= 12 &&
+   238→   238→          payment.expiry &&
+   239→   239→          payment.cvc.length >= 3
+   240→   240→      );
+   241→   241→    }
+   242→   242→    return false;
+   243→   243→  };
+   244→   244→
+   245→   245→  const next = () => {
+   246→   246→    if (step < 2) setStep((s) => s + 1);
+   247→   247→    else void placeOrder();
+   248→   248→  };
+   249→   249→  const back = () => {
+   250→   250→    if (step > 0) setStep((s) => s - 1);
+   251→   251→  };
+   252→   252→
+   253→   253→  const placeOrder = async () => {
+   254→   254→    setPlacing(true);
+   255→   255→    await sleep(1300);
+   256→   256→    const orderNumber = `AURA-${uid("ord").slice(-8).toUpperCase()}`;
+   257→   257→    setPlacedOrder(orderNumber);
+   258→   258→    setPlacing(false);
+   259→   259→    setStep(3);
+   260→   260→    clearCart();
+   261→   261→    toast({ title: "Order placed", description: `Confirmation ${orderNumber}` });
+   262→   262→  };
+   263→   263→
+   264→   264→  const finish = () => {
+   265→   265→    setCheckoutOpen(false);
+   266→   266→    setView("shop");
+   267→   267→  };
+   268→   268→
+   269→   269→  return (
+   270→   270→    <AnimatePresence>
+   271→   271→      {isOpen && (
+   272→   272→        <motion.div
+   273→   273→          className="fixed inset-0 z-[1100] bg-canvas overflow-y-auto scrollbar-thin"
+   274→   274→          initial={{ opacity: 0 }}
+   275→   275→          animate={{ opacity: 1 }}
+   276→   276→          exit={{ opacity: 0 }}
+   277→   277→          transition={{ duration: 0.3 }}
+   278→   278→          role="dialog"
+   279→   279→          aria-modal="true"
+   280→   280→          aria-label="Checkout"
+   281→   281→        >
+   282→   282→          <div ref={containerRef} className="min-h-screen flex flex-col">
+   283→   283→            {/* Header */}
+   284→   284→            <header className="sticky top-0 z-10 glass-nav border-b border-hairline">
+   285→   285→              <div className="container-aura flex items-center justify-between h-[64px]">
+   286→   286→                <div className="flex items-center gap-3">
+   287→   287→                  <span className="t-headline-sm c-ink">Aura Living</span>
+   288→   288→                  <span className="t-caption c-ink-faint hidden sm:inline">
+   289→   289→                    · Secure checkout
+   290→   290→                  </span>
+   291→   291→                </div>
+   292→   292→                <button
+   293→   293→                  type="button"
+   294→   294→                  onClick={() => setCheckoutOpen(false)}
+   295→   295→                  aria-label="Close checkout"
+   296→   296→                  className="inline-flex items-center gap-2 t-label-caps c-ink hover:c-gold-deep transition-colors link-underline"
+   297→   297→                >
+   298→   298→                  Close
+   299→   299→                  <X size={16} strokeWidth={1.5} />
+   300→   300→                </button>
+   301→   301→              </div>
+   302→   302→            </header>
+   303→   303→
+   304→   304→            {step < 3 ? (
+   305→   305→              <div className="flex-1 container-aura py-8 lg:py-12">
+   306→   306→                <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-10">
+   307→   307→                  {/* Main column */}
+   308→   308→                  <div>
+   309→   309→                    <StepIndicator step={step} />
+   310→   310→
+   311→   311→                    <div className="mt-8">
+   312→   312→                      <AnimatePresence mode="wait">
+   313→   313→                        <motion.div
+   314→   314→                          key={step}
+   315→   315→                          initial={
+   316→   316→                            prefersReducedMotion
+   317→   317→                              ? { opacity: 0 }
+   318→   318→                              : { opacity: 0, x: 24 }
+   319→   319→                          }
+   320→   320→                          animate={{ opacity: 1, x: 0 }}
+   321→   321→                          exit={
+   322→   322→                            prefersReducedMotion
+   323→   323→                              ? { opacity: 0 }
+   324→   324→                              : { opacity: 0, x: -24 }
+   325→   325→                          }
+   326→   326→                          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+   327→   327→                        >
+   328→   328→                          {step === 0 && (
+   329→   329→                            <InformationStep
+   330→   330→                              info={info}
+   331→   331→                              setField={setInfoField}
+   332→   332→                            />
+   333→   333→                          )}
+   334→   334→                          {step === 1 && (
+   335→   335→                            <ShippingStep
+   336→   336→                              method={shippingMethod}
+   337→   337→                              setMethod={setShippingMethod}
+   338→   338→                              subtotal={subtotal}
+   339→   339→                            />
+   340→   340→                          )}
+   341→   341→                          {step === 2 && (
+   342→   342→                            <PaymentStep
+   343→   343→                              payment={payment}
+   344→   344→                              setField={setPaymentField}
+   345→   345→                              billingSame={billingSame}
+   346→   346→                              setBillingSame={setBillingSame}
+   347→   347→                            />
+   348→   348→                          )}
+   349→   349→                        </motion.div>
+   350→   350→                      </AnimatePresence>
+   351→   351→                    </div>
+   352→   352→
+   353→   353→                    {/* Nav buttons */}
+   354→   354→                    <div className="flex items-center justify-between mt-10 pt-6 border-t border-hairline">
+   355→   355→                      <button
+   356→   356→                        type="button"
+   357→   357→                        onClick={back}
+   358→   358→                        disabled={step === 0}
+   359→   359→                        className="inline-flex items-center gap-2 t-label-caps c-ink hover:c-gold-deep disabled:opacity-30 disabled:pointer-events-none transition-colors link-underline"
+   360→   360→                      >
+   361→   361→                        <ChevronLeft size={14} strokeWidth={1.5} />
+   362→   362→                        Back
+   363→   363→                      </button>
+   364→   364→                      <button
+   365→   365→                        type="button"
+   366→   366→                        onClick={next}
+   367→   367→                        disabled={!canContinue() || placing}
+   368→   368→                        className="inline-flex items-center gap-2 bg-ink c-paper t-label-caps px-8 h-12 rounded-sm hover:bg-gold-deep disabled:opacity-40 disabled:pointer-events-none transition-colors"
+   369→   369→                      >
+   370→   370→                        {placing ? (
+   371→   371→                          <>
+   372→   372→                            <Loader2
+   373→   373→                              size={14}
+   374→   374→                              strokeWidth={1.75}
+   375→   375→                              className="animate-spin"
+   376→   376→                            />
+   377→   377→                            Placing order
+   378→   378→                          </>
+   379→   379→                        ) : step === 2 ? (
+   380→   380→                          <>
+   381→   381→                            <Lock size={14} strokeWidth={1.5} />
+   382→   382→                            Place Order · {formatPrice(totals.total)}
+   383→   383→                          </>
+   384→   384→                        ) : (
+   385→   385→                          <>
+   386→   386→                            Continue
+   387→   387→                            <ChevronRight size={14} strokeWidth={1.5} />
+   388→   388→                          </>
+   389→   389→                        )}
+   390→   390→                      </button>
+   391→   391→                    </div>
+   392→   392→                  </div>
+   393→   393→
+   394→   394→                  {/* Summary sidebar */}
+   395→   395→                  <aside>
+   396→   396→                    <div className="lg:sticky lg:top-[88px] bg-gradient-card-warm border border-hairline-cream rounded-sm card-modern p-6">
+   397→   397→                      <div className="flex items-center justify-between mb-4">
+   398→   398→                        <h3 className="t-headline-sm c-ink">Order Summary</h3>
+   399→   399→                        <span className="t-caption c-ink-faint t-num">
+   400→   400→                          {cartCount} {cartCount === 1 ? "item" : "items"}
+   401→   401→                        </span>
+   402→   402→                      </div>
+   403→   403→
+   404→   404→                      {/* Line items */}
+   405→   405→                      <div className="max-h-64 overflow-y-auto scrollbar-thin -mx-1 px-1 space-y-3 mb-5">
+   406→   406→                        {lines.length === 0 ? (
+   407→   407→                          <p className="t-body-sm c-ink-faint">
+   408→   408→                            Your cart is empty.
+   409→   409→                          </p>
+   410→   410→                        ) : (
+   411→   411→                          lines.map((l) => (
+   412→   412→                            <div key={l.key} className="flex gap-3">
+   413→   413→                              <div className="w-12 h-14 flex-shrink-0 bg-cream overflow-hidden">
+   414→   414→                                <img
+   415→   415→                                  src={l.image}
+   416→   416→                                  alt={l.name}
+   417→   417→                                  className="w-full h-full object-cover"
+   418→   418→                                />
+   419→   419→                              </div>
+   420→   420→                              <div className="flex-1 min-w-0">
+   421→   421→                                <p className="t-body-sm c-ink truncate">
+   422→   422→                                  {l.name}
+   423→   423→                                </p>
+   424→   424→                                {l.variantLabel && (
+   425→   425→                                  <p className="t-caption c-ink-faint">
+   426→   426→                                    {l.variantLabel}
+   427→   427→                                  </p>
+   428→   428→                                )}
+   429→   429→                                <p className="t-caption c-ink-faint t-num">
+   430→   430→                                  Qty {l.quantity}
+   431→   431→                                </p>
+   432→   432→                              </div>
+   433→   433→                              <span className="t-body-sm c-ink t-num">
+   434→   434→                                {formatPrice(l.price * l.quantity)}
+   435→   435→                              </span>
+   436→   436→                            </div>
+   437→   437→                          ))
+   438→   438→                        )}
+   439→   439→                      </div>
+   440→   440→
+   441→   441→                      {/* Promo */}
+   442→   442→                      <div className="border-t border-hairline pt-4 mb-4">
+   443→   443→                        {promoCode ? (
+   444→   444→                          <div className="flex items-center justify-between bg-gold-pale border border-hairline-gold rounded-sm px-3 py-2.5">
+   445→   445→                            <div className="flex items-center gap-2 min-w-0">
+   446→   446→                              <Tag
+   447→   447→                                size={14}
+   448→   448→                                strokeWidth={1.5}
+   449→   449→                                className="c-gold-deep shrink-0"
+   450→   450→                              />
+   451→   451→                              <div className="min-w-0">
+   452→   452→                                <p className="t-body-sm c-ink font-medium">
+   453→   453→                                  {promoCode}
+   454→   454→                                </p>
+   455→   455→                                <p className="t-caption c-gold-deep truncate">
+   456→   456→                                  {PROMOS[promoCode].label}
+   457→   457→                                </p>
+   458→   458→                              </div>
+   459→   459→                            </div>
+   460→   460→                            <button
+   461→   461→                              type="button"
+   462→   462→                              onClick={removePromo}
+   463→   463→                              aria-label="Remove promo code"
+   464→   464→                              className="c-ink-faint hover:c-gold-deep transition-colors p-1"
+   465→   465→                            >
+   466→   466→                              <X size={14} strokeWidth={1.75} />
+   467→   467→                            </button>
+   468→   468→                          </div>
+   469→   469→                        ) : (
+   470→   470→                          <div>
+   471→   471→                            <label
+   472→   472→                              htmlFor="promo"
+   473→   473→                              className="t-label-caps c-ink-faint block mb-2"
+   474→   474→                            >
+   475→   475→                              Promo code
+   476→   476→                            </label>
+   477→   477→                            <div className="flex gap-2">
+   478→   478→                              <input
+   479→   479→                                id="promo"
+   480→   480→                                value={promoInput}
+   481→   481→                                onChange={(e) => {
+   482→   482→                                  setPromoInput(e.target.value);
+   483→   483→                                  setPromoError(null);
+   484→   484→                                }}
+   485→   485→                                onKeyDown={(e) => {
+   486→   486→                                  if (e.key === "Enter") {
+   487→   487→                                    e.preventDefault();
+   488→   488→                                    applyPromo();
+   489→   489→                                  }
+   490→   490→                                }}
+   491→   491→                                placeholder="AURA10"
+   492→   492→                                className="flex-1 min-w-0 bg-transparent border border-hairline px-3 py-2.5 t-body-sm c-ink placeholder:c-ink-faint focus:border-ink focus:outline-none transition-colors uppercase tracking-wider"
+   493→   493→                              />
+   494→   494→                              <button
+   495→   495→                                type="button"
+   496→   496→                                onClick={applyPromo}
+   497→   497→                                className="px-4 t-label-caps border border-ink c-ink hover:bg-ink hover:c-paper transition-colors shrink-0"
+   498→   498→                              >
+   499→   499→                                Apply
+   500→   500→                              </button>
+   501→   501→                            </div>
+   502→   502→                            {promoError && (
+   503→   503→                              <p className="t-caption c-error mt-1.5" role="alert">
+   504→   504→                                {promoError}
+   505→   505→                              </p>
+   506→   506→                            )}
+   507→   507→                            <p className="t-caption c-ink-faint mt-1.5">
+   508→   508→                              Try AURA10, WELCOME15, or FREESHIP.
+   509→   509→                            </p>
+   510→   510→                          </div>
+   511→   511→                        )}
+   512→   512→                      </div>
+   513→   513→
+   514→   514→                      {/* Gift wrap toggle */}
+   515→   515→                      <div className="border-t border-hairline pt-4 mb-4">
+   516→   516→                        <button
+   517→   517→                          type="button"
+   518→   518→                          role="checkbox"
+   519→   519→                          aria-checked={giftWrap}
+   520→   520→                          onClick={() => setGiftWrap(!giftWrap)}
+   521→   521→                          className="w-full flex items-center gap-3 text-left"
+   522→   522→                        >
+   523→   523→                          <span
+   524→   524→                            className={cn(
+   525→   525→                              "flex-shrink-0 w-5 h-5 rounded-[2px] border flex items-center justify-center transition-all",
+   526→   526→                              giftWrap
+   527→   527→                                ? "bg-gold border-gold"
+   528→   528→                                : "bg-paper border-hairline-strong"
+   529→   529→                            )}
+   530→   530→                          >
+   531→   531→                            <AnimatePresence>
+   532→   532→                              {giftWrap && (
+   533→   533→                                <motion.span
+   534→   534→                                  initial={{ opacity: 0, scale: 0.6 }}
+   535→   535→                                  animate={{ opacity: 1, scale: 1 }}
+   536→   536→                                  exit={{ opacity: 0, scale: 0.6 }}
+   537→   537→                                  transition={{ duration: 0.18 }}
+   538→   538→                                >
+   539→   539→                                  <Check
+   540→   540→                                    size={13}
+   541→   541→                                    strokeWidth={2.5}
+   542→   542→                                    className="c-paper"
+   543→   543→                                  />
+   544→   544→                                </motion.span>
+   545→   545→                              )}
+   546→   546→                            </AnimatePresence>
+   547→   547→                          </span>
+   548→   548→                          <Gift
+   549→   549→                            size={15}
+   550→   550→                            strokeWidth={1.5}
+   551→   551→                            className={cn(
+   552→   552→                              giftWrap ? "c-gold-deep" : "c-ink",
+   553→   553→                              "shrink-0"
+   554→   554→                            )}
+   555→   555→                          />
+   556→   556→                          <span className="flex-1 min-w-0">
+   557→   557→                            <span className="t-body-sm c-ink font-medium">
+   558→   558→                              Gift wrap
+   559→   559→                            </span>
+   560→   560→                            <span className="t-caption c-ink-faint t-num">
+   561→   561→                              {" "}
+   562→   562→                              + ${GIFT_WRAP_PRICE}
+   563→   563→                            </span>
+   564→   564→                          </span>
+   565→   565→                        </button>
+   566→   566→                      </div>
+   567→   567→
+   568→   568→                      {/* Order notes */}
+   569→   569→                      <div className="border-t border-hairline pt-4 mb-4">
+   570→   570→                        <AuraTextarea
+   571→   571→                          id="notes"
+   572→   572→                          label="Order notes (optional)"
+   573→   573→                          rows={2}
+   574→   574→                          value={orderNotes}
+   575→   575→                          onChange={(e) => setOrderNotes(e.target.value)}
+   576→   576→                          placeholder="Delivery instructions, gift message…"
+   577→   577→                          containerClassName="w-full"
+   578→   578→                        />
+   579→   579→                      </div>
+   580→   580→
+   581→   581→                      {/* Totals */}
+   582→   582→                      <div className="border-t border-hairline pt-4 space-y-2">
+   583→   583→                        <SummaryRow
+   584→   584→                          label="Subtotal"
+   585→   585→                          value={formatPrice(subtotal)}
+   586→   586→                        />
+   587→   587→                        {totals.discount > 0 && (
+   588→   588→                          <SummaryRow
+   589→   589→                            label="Discount"
+   590→   590→                            value={`− ${formatPrice(totals.discount)}`}
+   591→   591→                            accent
+   592→   592→                          />
+   593→   593→                        )}
+   594→   594→                        <SummaryRow
+   595→   595→                          label="Shipping"
+   596→   596→                          value={
+   597→   597→                            totals.shipping === 0
+   598→   598→                              ? "Free"
+   599→   599→                              : formatPrice(totals.shipping)
+   600→   600→                          }
+   601→   601→                        />
+   602→   602→                        {totals.gift > 0 && (
+   603→   603→                          <SummaryRow
+   604→   604→                            label="Gift wrap"
+   605→   605→                            value={formatPrice(totals.gift)}
+   606→   606→                          />
+   607→   607→                        )}
+   608→   608→                        <SummaryRow
+   609→   609→                          label="Estimated tax"
+   610→   610→                          value={formatPrice(totals.tax)}
+   611→   611→                          muted
+   612→   612→                        />
+   613→   613→                        <div className="flex justify-between pt-3 border-t border-hairline t-headline-sm c-ink">
+   614→   614→                          <span>Total</span>
+   615→   615→                          <span className="t-num">
+   616→   616→                            {formatPrice(totals.total)}
+   617→   617→                          </span>
+   618→   618→                        </div>
+   619→   619→                      </div>
+   620→   620→
+   621→   621→                      {/* Trust */}
+   622→   622→                      <div className="flex items-center justify-center gap-2 mt-5 t-caption c-ink-faint">
+   623→   623→                        <ShieldCheck size={13} strokeWidth={1.5} />
+   624→   624→                        256-bit encrypted · 30-day returns
+   625→   625→                      </div>
+   626→   626→                    </div>
+   627→   627→                  </aside>
+   628→   628→                </div>
+   629→   629→              </div>
+   630→   630→            ) : (
+   631→   631→              <ConfirmationScreen
+   632→   632→                orderNumber={placedOrder ?? ""}
+   633→   633→                email={info.email}
+   634→   634→                total={totals.total}
+   635→   635→                onFinish={finish}
+   636→   636→                prefersReducedMotion={prefersReducedMotion}
+   637→   637→              />
+   638→   638→            )}
+   639→   639→          </div>
+   640→   640→        </motion.div>
+   641→   641→      )}
+   642→   642→    </AnimatePresence>
+   643→   643→  );
+   644→   644→}
+   645→   645→
+   646→   646→/* ==========================================================================
+   647→   647→   Sub-components
+   648→   648→   ========================================================================== */
+   649→   649→
+   650→   650→function StepIndicator({ step }: { step: number }) {
+   651→   651→  return (
+   652→   652→    <ol className="flex items-center gap-2 sm:gap-4">
+   653→   653→      {STEPS.map((label, i) => {
+   654→   654→        const done = i < step;
+   655→   655→        const active = i === step;
+   656→   656→        return (
+   657→   657→          <li key={label} className="flex items-center gap-2 sm:gap-4">
+   658→   658→            <div className="flex items-center gap-2">
+   659→   659→              <span
+   660→   660→                className={cn(
+   661→   661→                  "w-7 h-7 rounded-full flex items-center justify-center t-caption border transition-all",
+   662→   662→                  done && "bg-ink c-paper border-ink",
+   663→   663→                  active && "bg-gold c-paper border-gold",
+   664→   664→                  !done && !active && "bg-transparent c-ink-faint border-hairline"
+   665→   665→                )}
+   666→   666→              >
+   667→   667→                {done ? (
+   668→   668→                  <Check size={13} strokeWidth={2.5} />
+   669→   669→                ) : (
+   670→   670→                  <span className="t-num">{i + 1}</span>
+   671→   671→                )}
+   672→   672→              </span>
+   673→   673→              <span
+   674→   674→                className={cn(
+   675→   675→                  "t-label-caps hidden sm:inline",
+   676→   676→                  active ? "c-ink" : "c-ink-faint"
+   677→   677→                )}
+   678→   678→              >
+   679→   679→                {label}
+   680→   680→              </span>
+   681→   681→            </div>
+   682→   682→            {i < STEPS.length - 1 && (
+   683→   683→              <span
+   684→   684→                className={cn(
+   685→   685→                  "h-px w-6 sm:w-12",
+   686→   686→                  done ? "bg-ink" : "bg-hairline"
+   687→   687→                )}
+   688→   688→                aria-hidden="true"
+   689→   689→              />
+   690→   690→            )}
+   691→   691→          </li>
+   692→   692→        );
+   693→   693→      })}
+   694→   694→    </ol>
+   695→   695→  );
+   696→   696→}
+   697→   697→
+   698→   698→function SectionTitle({
+   699→   699→  step,
+   700→   700→  title,
+   701→   701→  caption,
+   702→   702→}: {
+   703→   703→  step: string;
+   704→   704→  title: string;
+   705→   705→  caption: string;
+   706→   706→}) {
+   707→   707→  return (
+   708→   708→    <div className="mb-6">
+   709→   709→      <p className="t-label-caps c-gold-deep mb-2">{step}</p>
+   710→   710→      <h2 className="t-headline-md c-ink mb-1.5 leading-tight">{title}</h2>
+   711→   711→      <p className="t-body-sm c-ink-muted">{caption}</p>
+   712→   712→    </div>
+   713→   713→  );
+   714→   714→}
+   715→   715→
+   716→   716→function InformationStep({
+   717→   717→  info,
+   718→   718→  setField,
+   719→   719→}: {
+   720→   720→  info: InfoForm;
+   721→   721→  setField: (key: keyof InfoForm, value: string) => void;
+   722→   722→}) {
+   723→   723→  return (
+   724→   724→    <section>
+   725→   725→      <SectionTitle
+   726→   726→        step="Step 1 of 3"
+   727→   727→        title="Contact & shipping address"
+   728→   728→        caption="Where should we send your order and updates?"
+   729→   729→      />
+   730→   730→      <div className="space-y-5">
+   731→   731→        <AuraInput
+   732→   732→          label="Email"
+   733→   733→          type="email"
+   734→   734→          required
+   735→   735→          value={info.email}
+   736→   736→          onChange={(e) => setField("email", e.target.value)}
+   737→   737→          placeholder="you@email.com"
+   738→   738→          hint="We'll send your confirmation and tracking here."
+   739→   739→        />
+   740→   740→        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+   741→   741→          <AuraInput
+   742→   742→            label="First name"
+   743→   743→            required
+   744→   744→            value={info.firstName}
+   745→   745→            onChange={(e) => setField("firstName", e.target.value)}
+   746→   746→            autoComplete="given-name"
+   747→   747→          />
+   748→   748→          <AuraInput
+   749→   749→            label="Last name"
+   750→   750→            required
+   751→   751→            value={info.lastName}
+   752→   752→            onChange={(e) => setField("lastName", e.target.value)}
+   753→   753→            autoComplete="family-name"
+   754→   754→          />
+   755→   755→        </div>
+   756→   756→        <AuraInput
+   757→   757→          label="Address"
+   758→   758→          required
+   759→   759→          value={info.address}
+   760→   760→          onChange={(e) => setField("address", e.target.value)}
+   761→   761→          autoComplete="address-line1"
+   762→   762→        />
+   763→   763→        <AuraInput
+   764→   764→          label="Apartment, suite (optional)"
+   765→   765→          value={info.apartment}
+   766→   766→          onChange={(e) => setField("apartment", e.target.value)}
+   767→   767→          autoComplete="address-line2"
+   768→   768→        />
+   769→   769→        <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+   770→   770→          <AuraInput
+   771→   771→            label="City"
+   772→   772→            required
+   773→   773→            value={info.city}
+   774→   774→            onChange={(e) => setField("city", e.target.value)}
+   775→   775→            containerClassName="col-span-2"
+   776→   776→            autoComplete="address-level2"
+   777→   777→          />
+   778→   778→          <AuraInput
+   779→   779→            label="State"
+   780→   780→            required
+   781→   781→            value={info.state}
+   782→   782→            onChange={(e) => setField("state", e.target.value)}
+   783→   783→            autoComplete="address-level1"
+   784→   784→          />
+   785→   785→          <AuraInput
+   786→   786→            label="ZIP"
+   787→   787→            required
+   788→   788→            value={info.zip}
+   789→   789→            onChange={(e) => setField("zip", e.target.value)}
+   790→   790→            autoComplete="postal-code"
+   791→   791→          />
+   792→   792→        </div>
+   793→   793→        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+   794→   794→          <AuraInput
+   795→   795→            label="Country"
+   796→   796→            value={info.country}
+   797→   797→            onChange={(e) => setField("country", e.target.value)}
+   798→   798→            autoComplete="country-name"
+   799→   799→          />
+   800→   800→          <AuraInput
+   801→   801→            label="Phone (optional)"
+   802→   802→            type="tel"
+   803→   803→            value={info.phone}
+   804→   804→            onChange={(e) => setField("phone", e.target.value)}
+   805→   805→            autoComplete="tel"
+   806→   806→            hint="For delivery questions only."
+   807→   807→          />
+   808→   808→        </div>
+   809→   809→      </div>
+   810→   810→    </section>
+   811→   811→  );
+   812→   812→}
+   813→   813→
+   814→   814→function ShippingStep({
+   815→   815→  method,
+   816→   816→  setMethod,
+   817→   817→  subtotal,
+   818→   818→}: {
+   819→   819→  method: string;
+   820→   820→  setMethod: (id: string) => void;
+   821→   821→  subtotal: number;
+   822→   822→}) {
+   823→   823→  return (
+   824→   824→    <section>
+   825→   825→      <SectionTitle
+   826→   826→        step="Step 2 of 3"
+   827→   827→        title="Shipping method"
+   828→   828→        caption="Choose how you'd like your pieces to arrive."
+   829→   829→      />
+   830→   830→      <div className="space-y-3">
+   831→   831→        {SHIPPING_METHODS.map((m) => {
+   832→   832→          const selected = method === m.id;
+   833→   833→          const cost = m.cost(subtotal);
+   834→   834→          return (
+   835→   835→            <button
+   836→   836→              key={m.id}
+   837→   837→              type="button"
+   838→   838→              onClick={() => setMethod(m.id)}
+   839→   839→              aria-pressed={selected}
+   840→   840→              className={cn(
+   841→   841→                "w-full flex items-center gap-4 p-4 sm:p-5 border rounded-sm text-left transition-all",
+   842→   842→                selected
+   843→   843→                  ? "bg-gold-pale border-hairline-gold shadow-glow-gold"
+   844→   844→                  : "bg-gradient-card-warm border-hairline-cream hover:border-hairline-gold"
+   845→   845→              )}
+   846→   846→            >
+   847→   847→              <span
+   848→   848→                className={cn(
+   849→   849→                  "flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
+   850→   850→                  selected ? "border-gold" : "border-hairline-strong"
+   851→   851→                )}
+   852→   852→              >
+   853→   853→                {selected && (
+   854→   854→                  <span className="w-2.5 h-2.5 rounded-full bg-gold" />
+   855→   855→                )}
+   856→   856→              </span>
+   857→   857→              <m.icon
+   858→   858→                size={20}
+   859→   859→                strokeWidth={1.25}
+   860→   860→                className={cn(
+   861→   861→                  "shrink-0",
+   862→   862→                  selected ? "c-gold-deep" : "c-ink"
+   863→   863→                )}
+   864→   864→              />
+   865→   865→              <span className="flex-1 min-w-0">
+   866→   866→                <span className="flex items-baseline gap-2">
+   867→   867→                  <span className="t-body c-ink font-medium">{m.label}</span>
+   868→   868→                  <span className="t-caption c-ink-faint">{m.detail}</span>
+   869→   869→                </span>
+   870→   870→              </span>
+   871→   871→              <span className="t-body c-ink t-num font-medium shrink-0">
+   872→   872→                {cost === 0 ? "Free" : formatPrice(cost)}
+   873→   873→              </span>
+   874→   874→            </button>
+   875→   875→          );
+   876→   876→        })}
+   877→   877→      </div>
+   878→   878→      {subtotal < FREE_SHIP_THRESHOLD && (
+   879→   879→        <p className="t-caption c-ink-muted mt-4 flex items-center gap-1.5">
+   880→   880→          <Truck size={13} strokeWidth={1.5} className="c-gold-deep" />
+   881→   881→          Add {formatPrice(FREE_SHIP_THRESHOLD - subtotal)} more to unlock free
+   882→   882→          Standard shipping.
+   883→   883→        </p>
+   884→   884→      )}
+   885→   885→    </section>
+   886→   886→  );
+   887→   887→}
+   888→   888→
+   889→   889→function PaymentStep({
+   890→   890→  payment,
+   891→   891→  setField,
+   892→   892→  billingSame,
+   893→   893→  setBillingSame,
+   894→   894→}: {
+   895→   895→  payment: PaymentForm;
+   896→   896→  setField: (key: keyof PaymentForm, value: string) => void;
+   897→   897→  billingSame: boolean;
+   898→   898→  setBillingSame: (v: boolean) => void;
+   899→   899→}) {
+   900→   900→  // Format helpers — group card digits and slash the expiry as the user types.
+   901→   901→  const formatCard = (v: string) =>
+   902→   902→    v
+   903→   903→      .replace(/\D/g, "")
+   904→   904→      .slice(0, 16)
+   905→   905→      .replace(/(.{4})/g, "$1 ")
+   906→   906→      .trim();
+   907→   907→  const formatExpiry = (v: string) => {
+   908→   908→    const digits = v.replace(/\D/g, "").slice(0, 4);
+   909→   909→    if (digits.length <= 2) return digits;
+   910→   910→    return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+   911→   911→  };
+   912→   912→
+   913→   913→  return (
+   914→   914→    <section>
+   915→   915→      <SectionTitle
+   916→   916→        step="Step 3 of 3"
+   917→   917→        title="Payment"
+   918→   918→        caption="All transactions are encrypted end-to-end."
+   919→   919→      />
+   920→   920→
+   921→   921→      {/* Express pay (disabled — coming soon) */}
+   922→   922→      <div className="mb-6">
+   923→   923→        <p className="t-label-caps c-ink-faint mb-2">Express checkout</p>
+   924→   924→        <div className="grid grid-cols-3 gap-2">
+   925→   925→          {[
+   926→   926→            { label: "Apple Pay", icon: Smartphone },
+   927→   927→            { label: "Google Pay", icon: Wallet },
+   928→   928→            { label: "PayPal", icon: CreditCard },
+   929→   929→          ].map((opt) => (
+   930→   930→            <button
+   931→   931→              key={opt.label}
+   932→   932→              type="button"
+   933→   933→              disabled
+   934→   934→              aria-disabled="true"
+   935→   935→              className="flex flex-col items-center justify-center gap-1.5 h-14 border border-hairline rounded-sm bg-cream/60 c-ink-faint cursor-not-allowed"
+   936→   936→            >
+   937→   937→              <opt.icon size={16} strokeWidth={1.5} />
+   938→   938→              <span className="t-caption">{opt.label}</span>
+   939→   939→            </button>
+   940→   940→          ))}
+   941→   941→        </div>
+   942→   942→        <p className="t-caption c-ink-faint mt-1.5">Coming soon — card below for now.</p>
+   943→   943→      </div>
+   944→   944→
+   945→   945→      <div className="relative mb-6">
+   946→   946→        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+   947→   947→          <div className="w-full border-t border-hairline" />
+   948→   948→        </div>
+   949→   949→        <div className="relative flex justify-center">
+   950→   950→          <span className="bg-canvas px-4 t-label-caps c-ink-faint">
+   951→   951→            or pay by card
+   952→   952→          </span>
+   953→   953→        </div>
+   954→   954→      </div>
+   955→   955→
+   956→   956→      <div className="space-y-5">
+   957→   957→        <AuraInput
+   958→   958→          label="Name on card"
+   959→   959→          required
+   960→   960→          value={payment.cardName}
+   961→   961→          onChange={(e) => setField("cardName", e.target.value)}
+   962→   962→          autoComplete="cc-name"
+   963→   963→        />
+   964→   964→        <AuraInput
+   965→   965→          label="Card number"
+   966→   966→          required
+   967→   967→          inputMode="numeric"
+   968→   968→          value={payment.cardNumber}
+   969→   969→          onChange={(e) => setField("cardNumber", formatCard(e.target.value))}
+   970→   970→          placeholder="0000 0000 0000 0000"
+   971→   971→          autoComplete="cc-number"
+   972→   972→        />
+   973→   973→        <div className="grid grid-cols-2 gap-5">
+   974→   974→          <AuraInput
+   975→   975→            label="Expiry"
+   976→   976→            required
+   977→   977→            inputMode="numeric"
+   978→   978→            value={payment.expiry}
+   979→   979→            onChange={(e) => setField("expiry", formatExpiry(e.target.value))}
+   980→   980→            placeholder="MM/YY"
+   981→   981→            autoComplete="cc-exp"
+   982→   982→          />
+   983→   983→          <AuraInput
+   984→   984→            label="CVC"
+   985→   985→            required
+   986→   986→            inputMode="numeric"
+   987→   987→            value={payment.cvc}
+   988→   988→            onChange={(e) =>
+   989→   989→              setField("cvc", e.target.value.replace(/\D/g, "").slice(0, 4))
+   990→   990→            }
+   991→   991→            placeholder="123"
+   992→   992→            autoComplete="cc-csc"
+   993→   993→          />
+   994→   994→        </div>
+   995→   995→
+   996→   996→        <button
+   997→   997→          type="button"
+   998→   998→          role="checkbox"
+   999→   999→          aria-checked={billingSame}
+  1000→  1000→          onClick={() => setBillingSame(!billingSame)}
+  1001→  1001→          className="w-full flex items-center gap-3 text-left pt-2"
+  1002→  1002→        >
+  1003→  1003→          <span
+  1004→  1004→            className={cn(
+  1005→  1005→              "flex-shrink-0 w-5 h-5 rounded-[2px] border flex items-center justify-center transition-all",
+  1006→  1006→              billingSame
+  1007→  1007→                ? "bg-gold border-gold"
+  1008→  1008→                : "bg-paper border-hairline-strong"
+  1009→  1009→            )}
+  1010→  1010→          >
+  1011→  1011→            {billingSame && (
+  1012→  1012→              <Check size={13} strokeWidth={2.5} className="c-paper" />
+  1013→  1013→            )}
+  1014→  1014→          </span>
+  1015→  1015→          <span className="t-body-sm c-ink">
+  1016→  1016→            Billing address matches shipping address
+  1017→  1017→          </span>
+  1018→  1018→        </button>
+  1019→  1019→      </div>
+  1020→  1020→    </section>
+  1021→  1021→  );
+  1022→  1022→}
+  1023→  1023→
+  1024→  1024→function SummaryRow({
+  1025→  1025→  label,
+  1026→  1026→  value,
+  1027→  1027→  accent,
+  1028→  1028→  muted,
+  1029→  1029→}: {
+  1030→  1030→  label: string;
+  1031→  1031→  value: string;
+  1032→  1032→  accent?: boolean;
+  1033→  1033→  muted?: boolean;
+  1034→  1034→}) {
+  1035→  1035→  return (
+  1036→  1036→    <div className="flex justify-between t-body">
+  1037→  1037→      <span className={cn(muted ? "c-ink-faint" : "c-ink-muted")}>{label}</span>
+  1038→  1038→      <span
+  1039→  1039→        className={cn(
+  1040→  1040→          "t-num",
+  1041→  1041→          accent && "c-gold-deep font-medium",
+  1042→  1042→          muted && "c-ink-faint",
+  1043→  1043→          !accent && !muted && "c-ink"
+  1044→  1044→        )}
+  1045→  1045→      >
+  1046→  1046→        {value}
+  1047→  1047→      </span>
+  1048→  1048→    </div>
+  1049→  1049→  );
+  1050→  1050→}
+  1051→  1051→
+  1052→  1052→function ConfirmationScreen({
+  1053→  1053→  orderNumber,
+  1054→  1054→  email,
+  1055→  1055→  total,
+  1056→  1056→  onFinish,
+  1057→  1057→  prefersReducedMotion,
+  1058→  1058→}: {
+  1059→  1059→  orderNumber: string;
+  1060→  1060→  email: string;
+  1061→  1061→  total: number;
+  1062→  1062→  onFinish: () => void;
+  1063→  1063→  prefersReducedMotion: boolean | null;
+  1064→  1064→}) {
+  1065→  1065→  return (
+  1066→  1066→    <div className="flex-1 flex items-center justify-center px-4 py-16 lg:py-24">
+  1067→  1067→      <motion.div
+  1068→  1068→        className="w-full max-w-xl bg-gradient-card-warm border border-hairline-cream rounded-sm card-modern p-8 sm:p-10 text-center"
+  1069→  1069→        initial={
+  1070→  1070→          prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 12 }
+  1071→  1071→        }
+  1072→  1072→        animate={{ opacity: 1, scale: 1, y: 0 }}
+  1073→  1073→        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+  1074→  1074→      >
+  1075→  1075→        {/* Checkmark */}
+  1076→  1076→        <motion.div
+  1077→  1077→          initial={prefersReducedMotion ? { opacity: 0 } : { scale: 0 }}
+  1078→  1078→          animate={{ scale: 1 }}
+  1079→  1079→          transition={{
+  1080→  1080→            duration: 0.5,
+  1081→  1081→            delay: 0.15,
+  1082→  1082→            ease: [0.34, 1.56, 0.64, 1],
+  1083→  1083→          }}
+  1084→  1084→          className="w-20 h-20 mx-auto rounded-full bg-gold-pale border border-hairline-gold flex items-center justify-center mb-6 shadow-glow-gold"
+  1085→  1085→        >
+  1086→  1086→          <motion.span
+  1087→  1087→            initial={prefersReducedMotion ? { opacity: 0 } : { pathLength: 0, opacity: 0 }}
+  1088→  1088→            animate={{ pathLength: 1, opacity: 1 }}
+  1089→  1089→            transition={{ duration: 0.4, delay: 0.45 }}
+  1090→  1090→          >
+  1091→  1091→            <Check size={36} strokeWidth={2} className="c-gold-deep" />
+  1092→  1092→          </motion.span>
+  1093→  1093→        </motion.div>
+  1094→  1094→
+  1095→  1095→        <p className="t-label-caps c-gold-deep mb-2">Order confirmed</p>
+  1096→  1096→        <h2 className="t-display-md c-ink mb-3 leading-tight">Thank you.</h2>
+  1097→  1097→        <p className="t-body c-ink-muted mb-6 max-w-md mx-auto leading-relaxed">
+  1098→  1098→          Your order is in our makers' hands. A confirmation
+  1099→  1099→          {email ? <> has been sent to <span className="c-ink">{email}</span></> : <> is on its way</>}.
+  1100→  1100→        </p>
+  1101→  1101→
+  1102→  1102→        {/* Order details card */}
+  1103→  1103→        <div className="bg-paper border border-hairline rounded-sm p-5 mb-6 text-left">
+  1104→  1104→          <div className="flex items-center justify-between mb-3">
+  1105→  1105→            <span className="t-label-caps c-ink-faint">Order number</span>
+  1106→  1106→            <span className="t-body c-ink t-num font-medium">{orderNumber}</span>
+  1107→  1107→          </div>
+  1108→  1108→          <div className="flex items-center justify-between">
+  1109→  1109→            <span className="t-label-caps c-ink-faint">Total paid</span>
+  1110→  1110→            <span className="t-body c-ink t-num font-medium">
+  1111→  1111→              {formatPrice(total)}
+  1112→  1112→            </span>
+  1113→  1113→          </div>
+  1114→  1114→        </div>
+  1115→  1115→
+  1116→  1116→        <div className="flex items-center justify-center gap-2 t-caption c-ink-faint mb-6">
+  1117→  1117→          <Truck size={13} strokeWidth={1.5} className="c-gold-deep" />
+  1118→  1118→          You'll receive tracking within 1–2 business days.
+  1119→  1119→        </div>
+  1120→  1120→
+  1121→  1121→        <button
+  1122→  1122→          type="button"
+  1123→  1123→          onClick={onFinish}
+  1124→  1124→          className="inline-flex items-center justify-center gap-2 bg-ink c-paper t-label-caps px-8 h-12 rounded-sm hover:bg-gold-deep transition-colors"
+  1125→  1125→        >
+  1126→  1126→          <ShoppingBag size={14} strokeWidth={1.5} />
+  1127→  1127→          Continue Shopping
+  1128→  1128→        </button>
+  1129→  1129→      </motion.div>
+  1130→  1130→    </div>
+  1131→  1131→  );
+  1132→  1132→}
+  1133→  1133→
+  1134→  1134→export default CheckoutFlow;
+  1135→  1135→

@@ -25,6 +25,7 @@ import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { useToast } from "@/hooks/use-toast";
+import { beginCheckout, purchase } from "@/lib/analytics/ecommerce";
 import { AuraInput, AuraTextarea } from "@/components/aura/ui/AuraInput";
 
 const GIFT_WRAP_PRICE = 8;
@@ -153,6 +154,18 @@ export function CheckoutFlow() {
       setStep(0);
       setPlacedOrder(null);
       setPlacing(false);
+      // Fire analytics: begin_checkout
+      beginCheckout({
+        currency: "USD",
+        value: subtotal,
+        items: lines.map((l) => ({
+          item_id: l.productId,
+          item_name: l.name,
+          price: l.price,
+          quantity: l.quantity,
+          item_variant: l.variantLabel,
+        })),
+      });
     }
   }
 
@@ -254,6 +267,23 @@ export function CheckoutFlow() {
     setPlacing(true);
     await sleep(1300);
     const orderNumber = `AURA-${uid("ord").slice(-8).toUpperCase()}`;
+
+    // Fire analytics: purchase (before clearing cart so we have the items)
+    purchase({
+      transaction_id: orderNumber,
+      currency: "USD",
+      value: totals.total,
+      shipping: totals.shipping,
+      tax: totals.tax,
+      items: lines.map((l) => ({
+        item_id: l.productId,
+        item_name: l.name,
+        price: l.price,
+        quantity: l.quantity,
+        item_variant: l.variantLabel,
+      })),
+    });
+
     setPlacedOrder(orderNumber);
     setPlacing(false);
     setStep(3);

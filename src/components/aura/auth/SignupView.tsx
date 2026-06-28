@@ -21,6 +21,7 @@ import { Button } from "@/components/aura/ui/Button";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { cn } from "@/lib/utils";
+import { signUp as trackSignUp } from "@/lib/analytics/ecommerce";
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod
@@ -190,6 +191,10 @@ export function SignupView() {
       },
     });
     setToken(`aura_demo_${Date.now().toString(36)}`);
+
+    // Fire analytics: sign_up
+    trackSignUp({ method: "email" });
+
     setAuthRedirect(null);
     setView("account");
   };
