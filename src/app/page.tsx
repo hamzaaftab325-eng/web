@@ -1,5 +1,5 @@
 import { SiteShell } from "@/components/aura/layout/SiteShell";
 
 export default function Home() {
-  return <SiteShell />;
+  return <SiteShell initialView="home" />;
 }

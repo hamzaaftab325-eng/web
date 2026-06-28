@@ -1,15 +1,17 @@
 import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/aura/layout/SiteShell";
 import { urlToView } from "@/lib/view-url";
+import type { ViewKey } from "@/types";
 
 /**
  * Catch-all route — renders SiteShell for valid URLs, triggers 404 for unknown.
  *
- * In Next.js 16, params is a Promise and must be awaited.
- * For unknown URLs, notFound() triggers app/not-found.tsx.
+ * Passes the `initialView` prop derived from the URL so that SiteShell
+ * renders the correct view on the FIRST render (server + client).
+ * This prevents the flash-of-wrong-content where the default "home"
+ * view would briefly show before the URL→view sync effect runs.
  *
- * Valid URLs are defined in src/lib/view-url.ts (viewToUrl / urlToView).
- * The root "/" is handled by app/page.tsx (not this catch-all).
+ * In Next.js 16, params is a Promise and must be awaited.
  */
 
 interface CatchAllPageProps {
@@ -22,9 +24,8 @@ export default async function CatchAllPage({ params }: CatchAllPageProps) {
   const view = urlToView(pathname);
 
   if (!view) {
-    // Unknown URL — trigger the branded 404 page
     notFound();
   }
 
-  return <SiteShell />;
+  return <SiteShell initialView={view as ViewKey} />;
 }

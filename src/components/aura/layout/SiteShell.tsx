@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useUIStore } from "@/store/use-ui-store";
 import { productBySlug } from "@/data/products";
 import { viewToUrl, urlToView } from "@/lib/view-url";
+import type { ViewKey } from "@/types";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MobileNav } from "./MobileNav";
@@ -54,32 +55,48 @@ import { ResetPasswordView } from "@/components/aura/auth/ResetPasswordView";
 
 const AUTH_VIEWS = new Set(["login", "signup", "forgot-password", "reset-password"]);
 
-export function SiteShell() {
+interface SiteShellProps {
+  /**
+   * The view to render on the first paint, derived from the URL on the
+   * server side. This prevents the flash-of-wrong-content where the
+   * default Zustand view ("home") would briefly show before the
+   * URL→view sync effect runs.
+   */
+  initialView?: ViewKey;
+}
+
+export function SiteShell({ initialView = "home" }: SiteShellProps = {}) {
   const router = useRouter();
-  const view = useUIStore((s) => s.view);
+  const storeView = useUIStore((s) => s.view);
   const activeProductSlug = useUIStore((s) => s.activeProductSlug);
   const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);
   const openProduct = useUIStore((s) => s.openProduct);
   const setQuickViewProduct = useUIStore((s) => s.setQuickViewProduct);
   const prefersReducedMotion = useReducedMotion();
 
-  // Track initialization state to prevent URL flicker on direct URL access.
-  // On mount, we sync view FROM the URL (Effect 2). Only AFTER that initial
-  // sync do we allow view→URL pushing (Effect 1). This prevents the default
-  // view "home" from momentarily pushing "/" to the URL bar.
-  const hasInitialized = useRef(false);
+  // Use initialView for the first render (server + client hydration),
+  // then switch to the Zustand storeView for subsequent renders.
+  // This ensures the correct content is shown immediately — no flash.
+  const hasMounted = useRef(false);
+  const view = !hasMounted.current ? initialView : storeView;
 
   // Track whether the URL change was triggered by us (to avoid loops)
   const isInternalNav = useRef(false);
 
-  // Effect 1: Sync view → URL
-  // When the Zustand view changes (via setView), push the corresponding URL.
-  // SKIPPED on first render — let Effect 2 sync from URL first.
+  // On mount: sync the Zustand store with the initialView prop.
+  // This runs once after hydration. After this, storeView is correct
+  // and all subsequent view changes come from user interaction.
   useEffect(() => {
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-      return;
+    hasMounted.current = true;
+    if (initialView !== useUIStore.getState().view) {
+      useUIStore.setState({ view: initialView });
     }
+  }, [initialView]);
+
+  // Sync view → URL: when the Zustand view changes (via setView from
+  // nav clicks), push the corresponding URL. Uses isInternalNav ref
+  // to avoid pushing when the view change came from a popstate event.
+  useEffect(() => {
     if (isInternalNav.current) {
       isInternalNav.current = false;
       return;
@@ -90,7 +107,7 @@ export function SiteShell() {
     }
   }, [view, router]);
 
-  // Effect 2: Sync URL → view (on back/forward and direct URL access)
+  // Sync URL → view: on back/forward, read the URL and update the store.
   useEffect(() => {
     const handlePopState = () => {
       const urlView = urlToView(window.location.pathname);
@@ -99,9 +116,6 @@ export function SiteShell() {
         useUIStore.setState({ view: urlView });
       }
     };
-
-    // Initial sync from URL on mount (handles direct URL access like /sustainability)
-    handlePopState();
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
