@@ -43,8 +43,11 @@ export function Header() {
 
   const prefersReducedMotion = useReducedMotion();
 
-  // Only account pages have cream backgrounds (no hero image).
-  const isLightPage = pathname.startsWith("/account");
+  // Pages with light/cream backgrounds (no dark hero image) need dark header text.
+  // Account pages + product detail pages have cream backgrounds.
+  // All other pages (home, shop, about, journal, collections, artisans,
+  // sustainability, care) have dark image heroes — white header text.
+  const isLightPage = pathname.startsWith("/account") || pathname.startsWith("/product");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -93,7 +96,7 @@ export function Header() {
           {/* Mobile menu button */}
           <button
             onClick={() => openMobile(true)}
-            className={cn("lg:hidden p-2 -ml-2 transition-colors hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
+            className={cn("lg:hidden p-2 -ml-2 transition-colors hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "hero-text")}
             aria-label="Open menu"
           >
             <Menu size={22} strokeWidth={1.25} />
@@ -105,7 +108,7 @@ export function Header() {
             className="flex-shrink-0 flex items-center gap-2 group"
             aria-label="Aura Living home"
           >
-            <span className={cn("t-display-md font-display leading-none tracking-tight transition-colors", (scrolled || isLightPage) ? "c-ink" : "c-paper")}>
+            <span className={cn("t-display-md font-display leading-none tracking-tight transition-colors", (scrolled || isLightPage) ? "c-ink" : "hero-text")}>
               Aura
             </span>
             <span className="t-label-caps c-gold hidden sm:inline-block self-end mb-[6px]">
@@ -125,7 +128,7 @@ export function Header() {
               <button
                 onClick={goShop}
                 data-active={pathname === "/shop"}
-                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
+                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
               >
                 Shop
               </button>
@@ -141,7 +144,7 @@ export function Header() {
               <button
                 onClick={goCollections}
                 data-active={pathname === "/collections"}
-                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
+                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
               >
                 Collections
               </button>
@@ -150,7 +153,7 @@ export function Header() {
             <button
               onClick={goAbout}
               data-active={pathname === "/about"}
-              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
+              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
             >
               About
             </button>
@@ -158,7 +161,7 @@ export function Header() {
             <button
               onClick={goJournal}
               data-active={pathname === "/journal"}
-              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
+              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
             >
               Journal
             </button>
@@ -169,13 +172,13 @@ export function Header() {
             <ThemeToggle
               className={cn(
                 "p-1",
-                (scrolled || isLightPage) ? "text-ink" : "text-paper"
+                (scrolled || isLightPage) ? "text-ink" : "hero-text"
               )}
             />
             <button
               onClick={goAccount}
               aria-label={user ? "Account" : "Sign in"}
-              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "hero-text")}
             >
               <User size={20} strokeWidth={1.25} />
             </button>
@@ -183,7 +186,7 @@ export function Header() {
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="Search"
-              className={cn("transition-colors p-1 hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "hero-text")}
             >
               <Search size={20} strokeWidth={1.25} />
             </button>
@@ -191,7 +194,7 @@ export function Header() {
             <button
               onClick={openWishlist}
               aria-label={`Wishlist, ${wishCount} items`}
-              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "hero-text")}
             >
               <Heart size={20} strokeWidth={1.25} />
               {wishCount > 0 && (
@@ -204,7 +207,7 @@ export function Header() {
             <button
               onClick={openCart}
               aria-label={`Cart, ${cartCount} items`}
-              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
+              className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "hero-text")}
             >
               <ShoppingBag size={20} strokeWidth={1.25} />
               {cartCount > 0 && (

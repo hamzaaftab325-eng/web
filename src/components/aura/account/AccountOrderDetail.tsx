@@ -57,7 +57,7 @@ export function AccountOrderDetail({ orderId }: { orderId?: string }) {
             <div className="absolute top-5 left-5 right-5 h-px bg-hairline hidden md:block" />
             {timelineSteps.map((step, i) => (
               <div key={step.status} className={cn("relative flex flex-col items-start md:items-center text-center", i === 0 && "md:pr-4", i > 0 && i < 3 && "md:px-4", i === 3 && "md:pl-4")}>
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.1, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }} className={cn("w-10 h-10 rounded-full flex items-center justify-center mb-3 relative z-10", i <= currentIndex ? "bg-ink c-paper" : "bg-cream c-ink-faint border border-hairline")}>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.1, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }} className={cn("w-10 h-10 rounded-full flex items-center justify-center mb-3 relative z-10", i <= currentIndex ? "bg-ink c-paper" : "bg-cream c-ink-faint border border-hairline-cream")}>
                   {i <= currentIndex ? <Check size={16} strokeWidth={2} /> : <Clock size={16} strokeWidth={1.25} />}
                 </motion.div>
                 <p className={cn("t-label-caps mb-1", i <= currentIndex ? "c-ink" : "c-ink-faint")}>{step.label}</p>
