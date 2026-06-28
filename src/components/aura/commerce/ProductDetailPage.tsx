@@ -27,6 +27,7 @@ import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { products as allProducts } from "@/data/products";
 import AuraChip from "@/components/aura/ui/Chip";
+import { ReadAloud } from "@/components/aura/ui/ReadAloud";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { ProductCard } from "./ProductCard";
@@ -197,6 +198,7 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
           <p className="t-body c-ink-muted leading-relaxed">
             {product.longDescription || product.description}
           </p>
+          <ReadAloud text={product.longDescription || product.description} />
         </div>
       ),
     },

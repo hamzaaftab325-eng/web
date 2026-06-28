@@ -21,6 +21,7 @@ import { JournalReader } from "@/components/aura/sections/JournalReader";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { CookieConsent } from "@/components/analytics/CookieConsent";
 import { InstallPrompt } from "@/components/analytics/InstallPrompt";
+import { CustomCursor } from "@/components/aura/ui/CustomCursor";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
@@ -65,6 +66,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <AnalyticsProvider>
+      <CustomCursor />
       <div className="min-h-screen flex flex-col bg-canvas">
         {!isAuthPage && <FirstOrderBanner />}
         {!isAuthPage && <Header />}
