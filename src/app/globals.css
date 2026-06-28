@@ -453,6 +453,20 @@
   .hero-overlay-bias {
     background: linear-gradient(105deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.15) 100%);
   }
+  /* Hero background — pure black so it works in both light and dark mode */
+  .hero-bg { background-color: #000000; }
+  /* Hero text — fixed white so it's always visible over dark overlay */
+  .hero-text { color: #ffffff; }
+  .hero-text-muted { color: rgba(255, 255, 255, 0.8); }
+  /* Hero CTA button — fixed white bg + dark text so it works in both modes */
+  .hero-cta-primary { background-color: #ffffff; color: #1a1714; }
+  .hero-cta-primary:hover { background-color: var(--gold-deep); color: #ffffff; }
+  /* Hero control buttons (prev/next) — fixed white borders + text */
+  .hero-control-btn { color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.2); transition: color 0.2s, border-color 0.2s; }
+  .hero-control-btn:hover { color: #ffffff; border-color: rgba(255, 255, 255, 0.6); }
+  /* Hero slide indicators — fixed white */
+  .hero-slide-indicator { background-color: rgba(255, 255, 255, 0.25); }
+  .hero-slide-indicator-active { background-color: #ffffff; }
 
   /* Glassmorphic cards */
   .glass-card { background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }

@@ -40,7 +40,7 @@ export function PageHero({
 
   return (
     <section
-      className="relative h-[60vh] min-h-[480px] w-full overflow-hidden bg-ink flex items-end"
+      className="relative h-[60vh] min-h-[480px] w-full overflow-hidden flex items-end hero-bg"
       aria-label={eyebrow}
     >
       <motion.img
@@ -49,11 +49,13 @@ export function PageHero({
         initial={prefersReducedMotion ? false : { scale: 1.05 }}
         animate={prefersReducedMotion ? { scale: 1 } : { scale: 1 }}
         transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute inset-0 w-full h-full object-cover opacity-70"
+        className="absolute inset-0 w-full h-full object-cover"
       />
-      {/* Dark gradient overlay so header text + headline remain legible */}
+      {/* Dark gradient overlays — hardcoded black so they work in both
+          light AND dark mode (theme-independent). This ensures the white
+          heading text is always legible over the image. */}
       <div className="absolute inset-0 hero-overlay" />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
+      <div className="absolute inset-0 hero-overlay-bias" />
 
       <div className="relative z-10 container-aura pb-16 md:pb-24 w-full">
         <motion.p
@@ -70,7 +72,7 @@ export function PageHero({
           initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="t-display-xl c-paper leading-[1.05] max-w-3xl"
+          className="t-display-xl hero-text leading-[1.05] max-w-3xl"
         >
           {headline}
         </motion.h1>
