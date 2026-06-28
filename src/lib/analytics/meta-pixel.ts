@@ -40,6 +40,7 @@ export function initMetaPixel(pixelId: string): void {
   (function (f: any, b: Document, e: string, v: string) {
     if (f.fbq) return;
     const n: any = (f.fbq = function (...args: unknown[]) {
+      // eslint-disable-next-line prefer-spread -- Meta Pixel SDK official snippet uses .apply()
       n.callMethod ? n.callMethod.apply(n, args) : n.queue.push(args);
     });
     if (!f._fbq) f._fbq = n;
