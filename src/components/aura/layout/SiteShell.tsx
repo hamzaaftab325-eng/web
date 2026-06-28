@@ -10,6 +10,7 @@ import type { ViewKey } from "@/types";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MobileNav } from "./MobileNav";
+import { MobileTabBar } from "./MobileTabBar";
 import { SearchOverlay } from "./SearchOverlay";
 import { CartDrawer } from "@/components/aura/commerce/CartDrawer";
 import { WishlistDrawer } from "@/components/aura/commerce/WishlistDrawer";
@@ -40,6 +41,7 @@ import { ArtisansView } from "@/components/aura/sections/ArtisansView";
 import { SustainabilityView } from "@/components/aura/sections/SustainabilityView";
 import { CareView } from "@/components/aura/sections/CareView";
 import { JournalReader } from "@/components/aura/sections/JournalReader";
+import { RecommendedForYou } from "@/components/aura/personalization/RecommendedForYou";
 
 import { AccountDashboard } from "@/components/aura/account/AccountDashboard";
 import { AccountOrders } from "@/components/aura/account/AccountOrders";
@@ -164,6 +166,7 @@ export function SiteShell({ initialView = "home" }: SiteShellProps = {}) {
             {view === "home" && (
               <>
                 <HeroSlider />
+                <RecommendedForYou />
                 <CategoryShowcase />
                 <BrandMarquee />
                 <FeaturedProducts />
@@ -199,6 +202,7 @@ export function SiteShell({ initialView = "home" }: SiteShellProps = {}) {
       </main>
 
       {!isAuthView && <Footer />}
+      {!isAuthView && view !== "product-detail" && <MobileTabBar />}
     </div>
   );
 }

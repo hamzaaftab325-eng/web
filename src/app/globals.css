@@ -616,4 +616,63 @@
   .skip-link:focus {
     left: 0;
   }
+
+  /* ─── View Transitions API ────────────────────────────────────── */
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* Smooth crossfade for all view transitions */
+  ::view-transition-group(root) {
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  ::view-transition-old(root) {
+    animation: fade-out 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  ::view-transition-new(root) {
+    animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes fade-out { to { opacity: 0; } }
+  @keyframes fade-in { from { opacity: 0; } }
+
+  /* Respect reduced motion — disable view transitions */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(root),
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+    }
+  }
+
+  /* ─── Design polish: focus states + scrollbar ────────────────── */
+  /* Visible focus ring for keyboard navigation */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  /* Custom selection color */
+  ::selection {
+    background: var(--gold);
+    color: var(--paper);
+  }
+  ::-moz-selection {
+    background: var(--gold);
+    color: var(--paper);
+  }
 }

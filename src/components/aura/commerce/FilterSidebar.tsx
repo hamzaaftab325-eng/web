@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { X, Check } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
+import { LEFT_DRAWER_CONSTRAINTS, leftDrawerDragEnd } from "@/lib/swipe-to-close";
 import { categories } from "@/data/categories";
 import { allMaterials } from "@/data/products";
 import { cn, formatPrice } from "@/lib/utils";
@@ -78,8 +79,18 @@ export function FilterSidebar() {
               animate={{ opacity: 1, x: 0 }}
               exit={prefersReducedMotion ? { opacity: 0 } : { x: "-100%" }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              drag={prefersReducedMotion ? false : "x"}
+              dragConstraints={LEFT_DRAWER_CONSTRAINTS}
+              dragElastic={0.2}
+              onDragEnd={(_e: unknown, info: PanInfo) => leftDrawerDragEnd(info, closeMobile)}
               className="fixed top-0 left-0 bottom-0 z-[1100] w-full max-w-[360px] bg-paper flex flex-col lg:hidden"
             >
+              {/* Drag handle (right edge) */}
+              {!prefersReducedMotion && (
+                <div className="absolute top-0 right-0 bottom-0 w-1 flex items-center justify-center cursor-ew-resize" aria-hidden>
+                  <div className="w-[3px] h-12 rounded-full bg-hairline-gold opacity-40" />
+                </div>
+              )}
               <div className="flex items-center justify-between px-6 h-[72px] border-b border-hairline">
                 <span className="t-headline-sm c-ink">Filter & Sort</span>
                 <button

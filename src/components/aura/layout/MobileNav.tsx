@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { X } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { categories } from "@/data/categories";
 import { collections } from "@/data/collections";
 import { cn } from "@/lib/utils";
+import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 
 export function MobileNav() {
   const open = useUIStore((s) => s.mobileNavOpen);
@@ -14,6 +15,7 @@ export function MobileNav() {
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
+  const prefersReducedMotion = useReducedMotion();
 
   const close = () => setOpen(false);
 
@@ -57,8 +59,18 @@ export function MobileNav() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            drag={prefersReducedMotion ? false : "x"}
+            dragConstraints={RIGHT_DRAWER_CONSTRAINTS}
+            dragElastic={0.2}
+            onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
             className="fixed top-0 right-0 bottom-0 z-[160] w-full max-w-[420px] bg-paper lg:hidden flex flex-col"
           >
+            {/* Drag handle (left edge) */}
+            {!prefersReducedMotion && (
+              <div className="absolute top-0 left-0 bottom-0 w-1 flex items-center justify-center cursor-ew-resize" aria-hidden>
+                <div className="w-[3px] h-12 rounded-full bg-hairline-gold opacity-40" />
+              </div>
+            )}
             <div className="flex items-center justify-between px-6 h-[72px] border-b border-hairline">
               <span className="t-headline-sm c-ink">Menu</span>
               <button

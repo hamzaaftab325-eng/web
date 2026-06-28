@@ -1,10 +1,11 @@
 "use client";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { formatPrice, cn } from "@/lib/utils";
+import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 
 const FREE_SHIP_THRESHOLD = 150;
 
@@ -51,9 +52,19 @@ export function CartDrawer() {
             animate={{ opacity: 1, x: 0 }}
             exit={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            drag={prefersReducedMotion ? false : "x"}
+            dragConstraints={RIGHT_DRAWER_CONSTRAINTS}
+            dragElastic={0.2}
+            onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
             className="fixed top-0 right-0 bottom-0 z-[1100] w-full max-w-[440px] bg-paper flex flex-col"
             aria-label="Shopping cart"
           >
+            {/* Drag handle (left edge) */}
+            {!prefersReducedMotion && (
+              <div className="absolute top-0 left-0 bottom-0 w-1 flex items-center justify-center cursor-ew-resize" aria-hidden>
+                <div className="w-[3px] h-12 rounded-full bg-hairline-gold opacity-40" />
+              </div>
+            )}
             {/* Header */}
             <div className="flex items-center justify-between px-6 h-[72px] border-b border-hairline">
               <div className="flex items-center gap-2">
