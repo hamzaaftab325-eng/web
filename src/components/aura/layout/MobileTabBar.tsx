@@ -9,6 +9,7 @@ import { useCartStore } from "@/store/use-cart-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useAuthStore } from "@/store/use-auth-store";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 
 /**
  * MobileTabBar — persistent bottom navigation for mobile (< lg).
@@ -35,6 +36,7 @@ export function MobileTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
+  const { t } = useTranslation();
 
   const setSearchOpen = useUIStore((s) => s.setSearchOpen);
   const openCart = useCartStore((s) => s.openCart);
@@ -76,33 +78,33 @@ export function MobileTabBar() {
   const tabs: TabConfig[] = [
     {
       key: "home",
-      label: "Browse",
+      label: t("nav.browse"),
       icon: Home,
       action: () => router.push("/"),
     },
     {
       key: "search",
-      label: "Search",
+      label: t("nav.search"),
       icon: Search,
       action: () => setSearchOpen(true),
     },
     {
       key: "cart",
-      label: "Cart",
+      label: t("nav.cart"),
       icon: ShoppingBag,
       action: () => openCart(),
       badge: cartCount,
     },
     {
       key: "wishlist",
-      label: "Saved",
+      label: t("nav.saved"),
       icon: Heart,
       action: () => openWishlist(),
       badge: wishCount,
     },
     {
       key: "account",
-      label: "Account",
+      label: t("nav.account"),
       icon: User,
       action: () => router.push(user ? "/account" : "/login"),
     },

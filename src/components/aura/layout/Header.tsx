@@ -13,8 +13,8 @@ import { collections } from "@/data/collections";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
-import { CurrencySelector } from "@/components/aura/ui/CurrencySelector";
 import { LanguageSelector } from "@/components/aura/ui/LanguageSelector";
+import { useTranslation } from "@/hooks/use-translation";
 
 const navLinks: { label: string; view: "shop" | "about" | "journal" }[] = [
   { label: "Shop", view: "shop" },
@@ -26,6 +26,7 @@ const navLinks: { label: string; view: "shop" | "about" | "journal" }[] = [
 export function Header() {
   const router = useRouter();
   const pathname = usePathname();
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -133,7 +134,7 @@ export function Header() {
                 data-active={pathname === "/shop"}
                 className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
               >
-                Shop
+                {t("nav.shop")}
               </button>
             </div>
 
@@ -149,7 +150,7 @@ export function Header() {
                 data-active={pathname === "/collections"}
                 className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
               >
-                Collections
+                {t("nav.collections")}
               </button>
             </div>
 
@@ -158,7 +159,7 @@ export function Header() {
               data-active={pathname === "/about"}
               className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
             >
-              About
+              {t("nav.about")}
             </button>
 
             <button
@@ -166,31 +167,28 @@ export function Header() {
               data-active={pathname === "/journal"}
               className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
             >
-              Journal
+              {t("nav.journal")}
             </button>
           </nav>
 
-          {/* Utility icons */}
+          {/* Utility icons — only essential icons on mobile */}
           <div className="flex items-center gap-3 md:gap-4">
+            {/* Language + Theme + Settings — desktop only (hidden on mobile to avoid clutter) */}
             <LanguageSelector
               className={cn(
-                (scrolled || isLightPage) ? "text-ink" : "hero-text"
-              )}
-            />
-            <CurrencySelector
-              className={cn(
+                "hidden lg:flex",
                 (scrolled || isLightPage) ? "text-ink" : "hero-text"
               )}
             />
             <ThemeToggle
               className={cn(
-                "p-1",
+                "p-1 hidden lg:flex",
                 (scrolled || isLightPage) ? "text-ink" : "hero-text"
               )}
             />
             <DisplayPreferences
               className={cn(
-                "p-1",
+                "p-1 hidden lg:flex",
                 (scrolled || isLightPage) ? "text-ink" : "hero-text"
               )}
             />
