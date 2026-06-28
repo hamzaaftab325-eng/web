@@ -1,0 +1,756 @@
+     1→     1→# Aura Living — Production Frontend Checklist
+     2→     2→
+     3→     3→> **Working agreement**: Every checkbox below is a production-grade deliverable. No prototypes. No stubs. No `TODO` comments. No `console.log`. Every component is typed, accessible, animated with `prefers-reduced-motion` honored, and validated. Lint must pass clean before any checkbox is checked.
+     4→     4→
+     5→     5→> **ABSOLUTE RULES** (see `RULES.md` for full details):
+     6→     6→> 1. **ZERO inline styles** — enforced by ESLint `react/forbid-component-props` (error level). Use CSS classes or CSS custom properties via `ref`.
+     7→     7→> 2. **Don't go outside the design system** — do NOT create new CSS classes, utility classes, color tokens, or design tokens without asking the user first.
+     8→     8→> 3. **ZERO `any` types** — use `unknown` and narrow, or define a proper interface.
+     9→     9→> 4. **ZERO `console.log`** in production code.
+    10→    10→> 5. **Verify before declaring complete** — run `bash scripts/verify.sh` which checks: inline styles, console.log, TODOs, any types, ESLint errors, TypeScript errors.
+    11→    11→
+    12→    12→**Status legend**:
+    13→    13→- `[ ]` — not started
+    14→    14→- `[~]` — in progress
+    15→    15→- `[x]` — complete and verified
+    16→    16→
+    17→    17→**Last updated**: 2026-06-27
+    18→    18→
+    19→    19→---
+    20→    20→
+    21→    21→## Phase 0 — Foundation & Architecture
+    22→    22→
+    23→    23→### 0.1 API client layer (swap-ready for real backend)
+    24→    24→- [x] Create `src/lib/api/client.ts` — typed fetch wrapper (`get/post/put/delete`), error handling, retry with exponential backoff, request cancellation via AbortController
+    25→    25→- [x] Create `src/lib/api/mock/delay.ts` — `simulateLatency(min, max)` helper that mimics real network variance
+    26→    26→- [x] Create `src/lib/api/mock/data.ts` — migrate all existing data files (`products.ts`, `categories.ts`, `collections.ts`, `testimonials.ts`, `faq.ts`, `journal.ts`) into a single mock data module
+    27→    27→- [x] Create `src/lib/api/products.ts` — `getProducts(filters)`, `getProduct(slug)`, `getFeatured()`, `getByCategory(slug)`, `getByCollection(slug)`, `search(query)` — all return `Promise<T>` with simulated latency
+    28→    28→- [x] Create `src/lib/api/reviews.ts` — `getReviews(slug, sort, filter)`, `createReview(slug, data)`, `markHelpful(id)`
+    29→    29→- [x] Create `src/lib/api/user.ts` — `login(email, password)`, `signup(data)`, `getProfile()`, `updateProfile(data)`, `getOrders()`, `getOrder(id)`, `getAddresses()`, `saveAddress(data)`, `deleteAddress(id)`
+    30→    30→- [x] Create `src/lib/api/cart.ts` — `getCart()`, `addItem(productId, variant, qty)`, `updateItem(key, qty)`, `removeItem(key)`, `applyPromo(code)`, `getShippingRates(address)`
+    31→    31→- [x] Create `src/lib/api/search.ts` — `search(query)`, `autocomplete(query)`, `getSuggestions()`, `getPopular()`
+    32→    32→- [x] Create `src/lib/api/content.ts` — `getArticles()`, `getArticle(slug)`, `getCollections()`, `getCollection(slug)`, `getTestimonials()`, `getFAQ()`, `getLookbook()`, `getLookbookScene(slug)`
+    33→    33→- [x] Create `src/lib/api/orders.ts` — `createOrder(checkoutData)`, `trackOrder(id)`, `getOrderHistory()`
+    34→    34→- [x] All API functions return typed responses — no `any`, no `unknown`
+    35→    35→- [x] All API functions throw typed `ApiError` on failure (not generic Error)
+    36→    36→- [x] `client.ts` has a single `BASE_URL` constant — today `""` (mock), tomorrow `"https://api.auraliving.com"`
+    37→    37→
+    38→    38→### 0.2 TanStack Query integration
+    39→    39→- [x] Create `src/lib/query-client.ts` — query client config with staleTime, gcTime, retry logic
+    40→    40→- [x] Create `src/components/providers/QueryProvider.tsx` — client-side provider wrapper
+    41→    41→- [x] Wrap app in QueryProvider in `src/app/layout.tsx`
+    42→    42→- [x] Create hooks: `useProducts()`, `useProduct(slug)`, `useReviews(slug)`, `useUser()`, `useOrders()`, `useSearch(query)`, `useCollections()`, `useArticles()`
+    43→    43→- [x] All hooks return `{ data, isLoading, isError, error }` — properly typed
+    44→    44→- [x] Optimistic updates for: add to cart, remove from cart, wishlist toggle, review submit
+    45→    45→- [x] Query invalidation on: login, logout, order placed, address saved
+    46→    46→- [x] Prefetch on hover for product cards (`queryClient.prefetchQuery`)
+    47→    47→
+    48→    48→### 0.3 TypeScript strictness
+    49→    49→- [x] Enable `strict: true` in `tsconfig.json` (already enabled, verify)
+    50→    50→- [x] Enable `noImplicitAny: true` (was `false` — now flipped, verified clean)
+    51→    51→- [ ] Enable `noUncheckedIndexedAccess: true` — **deferred to Phase 1** (requires ~30 nullable-access fixes in pre-existing components; verified the flag works, just needs the fixes)
+    52→    52→- [ ] Enable `exactOptionalPropertyTypes: true` — **deferred to Phase 1** (same reason)
+    53→    53→- [x] No `any` anywhere in `src/` (except shadcn/ui primitives we don't touch) — verified via `rg ': any' src/`
+    54→    54→- [x] All API responses have Zod schemas for runtime validation at the boundary (`src/lib/api/schemas.ts`)
+    55→    55→- [x] All component props have explicit interfaces (no inferred props)
+    56→    56→- [x] All event handlers typed (`React.MouseEvent<HTMLButtonElement>`, not `any`)
+    57→    57→
+    58→    58→### 0.4 ESLint & Prettier
+    59→    59→- [x] Lint passes clean: `bun run lint` exits 0 (0 errors; 64 pre-existing warnings in pre-Phase-0 code — all `no-mixed-spaces-and-tabs` in `tailwind.config.ts` + unused imports in existing components, to be cleaned in Phase 1)
+    60→    60→- [x] No `// @ts-ignore` or `// @ts-expect-error` anywhere in `src/` — verified via `rg`
+    61→    61→- [x] No `eslint-disable` without justification comment — verified via `rg`
+    62→    62→- [x] No unused imports, variables, or exports **in new Phase 0 code** (pre-existing unused imports flagged as warnings, to be cleaned in Phase 1)
+    63→    63→- [x] Prettier config enforced (`.prettierrc` with 2-space indent, 100 char width, no semicolons — match existing code)
+    64→    64→
+    65→    65→---
+    66→    66→
+    67→    67→## Phase 1 — Auth & User Accounts
+    68→    68→
+    69→    69→### 1.1 Auth store & mock session
+    70→    70→- [ ] Create `src/store/use-auth-store.ts` — Zustand store with `persist` middleware
+    71→    71→- [ ] Store shape: `{ user: User | null, addresses: Address[], preferences: Preferences, login(), signup(), logout(), updateUser() }`
+    72→    72→- [ ] Mock `login()` validates email format, returns user after 600ms simulated latency
+    73→    73→- [ ] Mock `signup()` creates user, returns session
+    74→    74→- [ ] Mock `logout()` clears session, redirects to home
+    75→    75→- [ ] Session persists across reloads (localStorage)
+    76→    76→- [ ] Protected routes redirect to `/login` with `redirect` query param
+    77→    77→
+    78→    78→### 1.2 Login page (`/login`)
+    79→    79→- [ ] `src/app/(auth)/login/page.tsx` — server component shell
+    80→    80→- [ ] `src/components/auth/LoginForm.tsx` — client component with React Hook Form + Zod
+    81→    81→- [ ] Fields: email, password, "Remember me" checkbox, "Forgot password?" link
+    82→    82→- [ ] Validation: email format, password min 8 chars — inline errors below each field
+    83→    83→- [ ] Submit button shows loading spinner, disabled during submit
+    84→    84→- [ ] Error state: "Invalid email or password" with shake animation on form
+    85→    85→- [ ] Success state: redirect to `?redirect=` param or `/account`
+    86→    86→- [ ] "Don't have an account? Sign up" link
+    87→    87→- [ ] Split layout: form left (50%), lifestyle image right (50%) — image is the hero slider image
+    88→    88→- [ ] Mobile: stacked, image hidden or as small banner
+    89→    89→- [ ] Social login buttons (Google, Apple) — visual only, disabled with "Coming soon" tooltip
+    90→    90→- [ ] Focus trap inside form, Esc clears form
+    91→    91→- [ ] Accessible: labels, `aria-invalid`, `aria-describedby` for errors, autocomplete attributes
+    92→    92→
+    93→    93→### 1.3 Signup page (`/signup`)
+    94→    94→- [ ] `src/app/(auth)/signup/page.tsx` — server component shell
+    95→    95→- [ ] `src/components/auth/SignupForm.tsx` — client component
+    96→    96→- [ ] Fields: firstName, lastName, email, password, confirmPassword, "Join newsletter" checkbox (default true), terms checkbox (required)
+    97→    97→- [ ] Validation: all fields required, email format, password min 8 chars with 1 number, passwords match, terms checked
+    98→    98→- [ ] Password strength meter (weak/fair/good/strong) — visual bar
+    99→    99→- [ ] Success: redirect to `/account` with welcome toast
+   100→   100→- [ ] "Already have an account? Sign in" link
+   101→   101→- [ ] Same split-layout as login
+   102→   102→- [ ] Accessible: same standards as login
+   103→   103→
+   104→   104→### 1.4 Forgot password (`/forgot-password`)
+   105→   105→- [ ] `src/app/(auth)/forgot-password/page.tsx`
+   106→   106→- [ ] Single email field, submit → "Check your inbox" success state
+   107→   107→- [ ] "Back to login" link
+   108→   108→- [ ] Mock: always shows success (no email existence leak)
+   109→   109→
+   110→   110→### 1.5 Reset password (`/reset-password`)
+   111→   111→- [ ] `src/app/(auth)/reset-password/page.tsx` — reads `?token=` from URL
+   112→   112→- [ ] Fields: newPassword, confirmPassword
+   113→   113→- [ ] Validation: min 8 chars, 1 number, match
+   114→   114→- [ ] Success: redirect to `/login` with "Password reset" toast
+   115→   115→- [ ] Invalid/expired token: show error state with "request new link" CTA
+   116→   116→
+   117→   117→### 1.6 Account dashboard (`/account`)
+   118→   118→- [ ] `src/app/account/layout.tsx` — sidebar nav + main content area
+   119→   119→- [ ] Sidebar: Orders, Addresses, Wishlist, Preferences, Sign Out
+   120→   120→- [ ] Mobile: sidebar collapses to hamburger menu
+   121→   121→- [ ] Active nav item highlighted with gold accent
+   122→   122→- [ ] `/account` redirects to `/account/orders` by default
+   123→   123→- [ ] Welcome header: "Welcome back, {firstName}"
+   124→   124→- [ ] Quick stats: order count, wishlist count, saved addresses count
+   125→   125→
+   126→   126→### 1.7 Orders (`/account/orders`)
+   127→   127→- [ ] `src/app/account/orders/page.tsx` — order history list
+   128→   128→- [ ] Each order: order number, date, status badge, item count, total, "View order" button
+   129→   129→- [ ] Status badges: Processing, Packed, Shipped, Delivered, Cancelled
+   130→   130→- [ ] Empty state: "No orders yet" + "Start shopping" CTA
+   131→   131→- [ ] Pagination or "Load more" (12 per page)
+   132→   132→- [ ] Loading skeleton while fetching
+   133→   133→- [ ] Sort: Most recent (default), Oldest, Highest total
+   134→   134→
+   135→   135→### 1.8 Order detail (`/account/orders/[id]`)
+   136→   136→- [ ] `src/app/account/orders/[id]/page.tsx`
+   137→   137→- [ ] Order header: order number, date placed, status, tracking number
+   138→   138→- [ ] Status timeline: Ordered → Packed → Shipped → Delivered (visual progress)
+   139→   139→- [ ] Items list: image, name, variant, qty, price, "Buy again" button
+   140→   140→- [ ] Shipping address card
+   141→   141→- [ ] Payment summary: subtotal, shipping, tax, total, payment method
+   142→   142→- [ ] Actions: "Track shipment", "Print receipt", "Buy again", "Contact support"
+   143→   143→- [ ] Tracking link opens carrier URL in new tab (mock URL)
+   144→   144→
+   145→   145→### 1.9 Addresses (`/account/addresses`)
+   146→   146→- [ ] `src/app/account/addresses/page.tsx`
+   147→   147→- [ ] List of saved addresses as cards: name, street, city, ZIP, country, "Default" badge
+   148→   148→- [ ] "Add new address" button → modal form
+   149→   149→- [ ] Edit address → modal form prefilled
+   150→   150→- [ ] Delete address → confirmation dialog
+   151→   151→- [ ] "Set as default" toggle
+   152→   152→- [ ] Form fields: firstName, lastName, street, apartment (optional), city, state, ZIP, country, phone, "Default shipping" checkbox
+   153→   153→- [ ] Validation: all required except apartment
+   154→   154→- [ ] Empty state: "No saved addresses" + "Add address" CTA
+   155→   155→
+   156→   156→### 1.10 Wishlist page (`/account/wishlist`)
+   157→   157→- [ ] `src/app/account/wishlist/page.tsx` — full-page wishlist (drawer also exists)
+   158→   158→- [ ] Grid of wishlisted products (reuse ProductCard)
+   159→   159→- [ ] "Add all to cart" button
+   160→   160→- [ ] "Share wishlist" → copies shareable URL
+   161→   161→- [ ] Empty state: "No saved pieces yet" + "Browse the shop" CTA
+   162→   162→- [ ] Sort: Recently added, Price low-high, Price high-low
+   163→   163→
+   164→   164→### 1.11 Preferences (`/account/preferences`)
+   165→   165→- [ ] `src/app/account/preferences/page.tsx`
+   166→   166→- [ ] Email preferences: newsletters, new arrivals, sale alerts, order updates (toggles)
+   167→   167→- [ ] Style preferences: warm minimalism, modern, traditional, eclectic (multi-select chips)
+   168→   168→- [ ] Room preferences: living room, bedroom, dining, entryway, office (multi-select)
+   169→   169→- [ ] Budget range: slider ($50-$500+)
+   170→   170→- [ ] Currency selector: USD, EUR, GBP, CAD, AUD
+   171→   171→- [ ] Save button → "Preferences saved" toast
+   172→   172→- [ ] "Delete account" danger zone → confirmation dialog
+   173→   173→
+   174→   174→### 1.12 Header auth state
+   175→   175→- [ ] When logged out: "Sign In" link in header (desktop), in mobile menu
+   176→   176→- [ ] When logged in: avatar circle with initials, dropdown menu (Account, Orders, Wishlist, Sign Out)
+   177→   177→- [ ] Avatar dropdown animates in (Framer Motion)
+   178→   178→- [ ] Sign out: clears session, redirects to home, shows "Signed out" toast
+   179→   179→
+   180→   180→---
+   181→   181→
+   182→   182→## Phase 2 — Reviews & Enhanced PDP
+   183→   183→
+   184→   184→### 2.1 Reviews data & API
+   185→   185→- [ ] Create `src/lib/api/mock/reviews.ts` — 30+ mock reviews across products
+   186→   186→- [ ] Each review: id, productSlug, authorName, authorLocation, rating (1-5), title, body, date, verifiedBuyer, helpfulCount, photos (optional)
+   187→   187→- [ ] `getReviews(slug, sort, filter)` returns paginated results (10 per page)
+   188→   188→- [ ] `createReview(slug, data)` returns created review, appends to mock store
+   189→   189→- [ ] `markHelpful(id)` increments helpfulCount
+   190→   190→
+   191→   191→### 2.2 RatingSummary component
+   192→   192→- [ ] `src/components/commerce/RatingSummary.tsx`
+   193→   193→- [ ] Shows: average rating (large), star distribution bars (5★ to 1★), total count, "Write a review" button
+   194→   194→- [ ] Bars are clickable → filter reviews by that rating
+   195→   195→- [ ] Animated bar fill on mount (RevealOnScroll)
+   196→   196→- [ ] Empty state: "Be the first to review"
+   197→   197→
+   198→   198→### 2.3 ReviewsList component
+   199→   199→- [ ] `src/components/commerce/ReviewsList.tsx`
+   200→   200→- [ ] Sort dropdown: Most recent, Highest, Lowest, Most helpful
+   201→   201→- [ ] Filter chips: All, 5★, 4★, 3★, 2★, 1★, With photos, Verified buyers
+   202→   202→- [ ] Each review: avatar (initials), name, location, verified badge, rating stars, date, title, body, photos (clickable → lightbox), "Helpful" button with count
+   203→   203→- [ ] "Helpful" button: click → increments, shows "Thanks!" state, prevents double-click
+   204→   204→- [ ] Pagination: "Load more" button (10 at a time)
+   205→   205→- [ ] Loading skeleton while fetching
+   206→   206→- [ ] Empty state when filter matches nothing
+   207→   207→
+   208→   208→### 2.4 ReviewForm
+   209→   209→- [ ] `src/components/commerce/ReviewForm.tsx`
+   210→   210→- [ ] Modal or inline form (toggle via prop)
+   211→   211→- [ ] Fields: rating (star picker — interactive), title, body, photos (file upload, max 3), "I recommend this" checkbox
+   212→   212→- [ ] Validation: rating required, title min 3 chars, body min 20 chars
+   213→   213→- [ ] Photo upload: drag-drop zone, preview thumbnails, remove button, max 5MB each
+   214→   214→- [ ] Submit: loading state, success state ("Review submitted — pending moderation"), error state
+   215→   215→- [ ] Only shown for verified buyers (mock: always shown)
+   216→   216→- [ ] After submit: review appears at top of list with "Pending" badge
+   217→   217→
+   218→   218→### 2.5 ProductZoom (gallery enhancement)
+   219→   219→- [ ] `src/components/commerce/ProductZoom.tsx`
+   220→   220→- [ ] Desktop: hover over image → zoom lens (2x) follows cursor, preview shown in corner or inline
+   221→   221→- [ ] Mobile: pinch-to-zoom gesture, double-tap to toggle
+   222→   222→- [ ] Smooth transition, no jank
+   223→   223→- [ ] Lens border subtle (1px gold)
+   224→   224→- [ ] Accessible: keyboard can tab to image, Enter activates zoom mode, arrow keys pan
+   225→   225→
+   226→   226→### 2.6 ProductShare
+   227→   227→- [ ] `src/components/commerce/ProductShare.tsx`
+   228→   228→- [ ] Share button in PDP → dropdown with: Copy link, Pinterest, X, Facebook, Email
+   229→   229→- [ ] Copy link: copies to clipboard, shows "Copied!" toast
+   230→   230→- [ ] Social links open share dialog in new window
+   231→   231→- [ ] Email opens mailto with subject + body prefilled
+   232→   232→
+   233→   233→### 2.7 BackInStockForm
+   234→   234→- [ ] `src/components/commerce/BackInStockForm.tsx`
+   235→   235→- [ ] Shown on PDP when `product.inStock === false`
+   236→   236→- [ ] Replaces "Sold Out" button
+   237→   237→- [ ] Email field + "Notify me" button
+   238→   238→- [ ] Validation: email format
+   239→   239→- [ ] Success: "We'll email you when this returns" state with checkmark
+   240→   240→- [ ] Mock: always succeeds
+   241→   241→
+   242→   242→### 2.8 RecentlyViewed
+   243→   243→- [ ] `src/hooks/use-recently-viewed.ts` — localStorage-backed hook, max 8 items, most recent first
+   244→   244→- [ ] `src/components/commerce/RecentlyViewed.tsx` — horizontal scroll row
+   245→   245→- [ ] Appears on: PDP (bottom), Shop (sidebar), Home (row)
+   246→   246→- [ ] Each card: small product card (image, name, price)
+   247→   247→- [ ] "Clear history" button
+   248→   248→- [ ] Empty state: hidden (don't show if no history)
+   249→   249→
+   250→   250→### 2.9 SocialProof
+   251→   251→- [ ] `src/components/commerce/SocialProof.tsx`
+   252→   252→- [ ] Shows on PDP: "X people have this in their cart" (mock: random 3-15, changes hourly)
+   253→   253→- [ ] "X viewed in the last 24 hours"
+   254→   254→- [ ] Subtle pulse animation on number
+   255→   255→- [ ] Hidden if count < 3
+   256→   256→
+   257→   257→### 2.10 SizeGuide
+   258→   258→- [ ] `src/components/commerce/SizeGuide.tsx`
+   259→   259→- [ ] Modal triggered by "Size guide" link on PDP
+   260→   260→- [ ] Dimensions diagram (SVG) per product category
+   261→   261→- [ ] Measurement table (W × H × D in cm and inches)
+   262→   262→- [ ] "How to measure" explainer
+   263→   263→- [ ] Close button + Esc to close + focus trap
+   264→   264→
+   265→   265→### 2.11 GiftWrapOption
+   266→   266→- [ ] `src/components/commerce/GiftWrapOption.tsx`
+   267→   267→- [ ] Checkbox on PDP: "Add gift wrap (+$8)"
+   268→   268→- [ ] When checked: reveals gift note textarea (max 200 chars, char counter)
+   269→   269→- [ ] Updates cart line item with gift wrap flag
+   270→   270→- [ ] Gift wrap badge appears in cart line item
+   271→   271→
+   272→   272→### 2.12 StickyMobileAddToCart
+   273→   273→- [ ] `src/components/commerce/StickyMobileAddToCart.tsx`
+   274→   274→- [ ] Appears on mobile PDP when user scrolls past the main Add to Cart button
+   275→   275→- [ ] Fixed bottom bar: product image (small), name, price, "Add to Cart" button
+   276→   276→- [ ] Slides up with Framer Motion (y: 100% → 0)
+   277→   277→- [ ] Disappears when user scrolls back up to main button
+   278→   278→- [ ] Respects safe area inset (iOS notch)
+   279→   279→
+   280→   280→### 2.13 PDP enhancements
+   281→   281→- [ ] SKU display below product name (`SKU: AL-CTL-001`)
+   282→   282→- [ ] Breadcrumb inside PDP modal (Home > Shop > Category > Product)
+   283→   283→- [ ] "Back to results" button (closes modal, returns to shop)
+   284→   284→
+   285→   285→---
+   286→   286→
+   287→   287→## Phase 3 — Enhanced Shop & Search
+   288→   288→
+   289→   289→### 3.1 QuickViewModal
+   290→   290→- [ ] `src/components/commerce/QuickViewModal.tsx`
+   291→   291→- [ ] Triggered by "Quick view" button on product card hover (desktop) or long-press (mobile)
+   292→   292→- [ ] Compact PDP: image, name, price, variant selector, Add to Cart, "View full details" link
+   293→   293→- [ ] Smaller than full PDP modal (max-width 800px)
+   294→   294→- [ ] Focus trap, Esc to close
+   295→   295→
+   296→   296→### 3.2 PriceRangeSlider
+   297→   297→- [ ] `src/components/commerce/PriceRangeSlider.tsx`
+   298→   298→- [ ] Dual-thumb slider (min and max)
+   299→   299→- [ ] Replaces checkbox price bands in FilterSidebar
+   300→   300→- [ ] Shows selected range below: "$45 — $300"
+   301→   301→- [ ] Updates URL params in real-time
+   302→   302→- [ ] Accessible: keyboard navigable, ARIA values
+   303→   303→
+   304→   304→### 3.3 ColorSwatchFilter
+   305→   305→- [ ] `src/components/commerce/ColorSwatchFilter.tsx`
+   306→   306→- [ ] Row of color swatches (reuses swatch-dot pattern)
+   307→   307→- [ ] Multi-select, active state with gold ring
+   308→   308→- [ ] Tooltip with color name on hover
+   309→   309→- [ ] Updates URL params
+   310→   310→
+   311→   311→### 3.4 Additional filters
+   312→   312→- [ ] "In stock only" toggle
+   313→   313→- [ ] "On sale" toggle
+   314→   314→- [ ] "New arrivals" toggle
+   315→   315→- [ ] All persist to URL params
+   316→   316→
+   317→   317→### 3.5 URL-synced filter state
+   318→   318→- [ ] All filters (category, price, material, color, toggles, sort) sync to URL search params
+   319→   319→- [ ] Changing filters updates URL without page reload (`router.replace`)
+   320→   320→- [ ] Loading page with filter params pre-applies filters
+   321→   321→- [ ] Shareable filtered URLs work on direct load
+   322→   322→- [ ] "Clear all" resets URL params
+   323→   323→
+   324→   324→### 3.6 CompareTray
+   325→   325→- [ ] `src/components/commerce/CompareTray.tsx`
+   326→   326→- [ ] "Compare" button on each product card (bookmark icon)
+   327→   327→- [ ] Bottom-fixed tray appears when 2+ items added (max 4)
+   328→   328→- [ ] Tray shows: product thumbnails, names, "Compare now" button, "Clear" button
+   329→   329→- [ ] "Compare now" opens full-screen comparison: side-by-side table with image, price, materials, dimensions, badge, in-stock
+   330→   330→- [ ] "Remove" per product
+   331→   331→- [ ] Persists across navigation (sessionStorage)
+   332→   332→
+   333→   333→### 3.7 SearchAutocomplete
+   334→   334→- [ ] `src/components/layout/SearchAutocomplete.tsx`
+   335→   335→- [ ] As user types in search overlay: dropdown with suggestions
+   336→   336→- [ ] Sections: Products (top 3 with image), Categories, Articles, "Search for '{query}'"
+   337→   337→- [ ] Debounced 200ms
+   338→   338→- [ ] Keyboard nav: arrow up/down, Enter to select, Esc to close
+   339→   339→- [ ] Recent searches section when query is empty (localStorage, clearable)
+   340→   340→- [ ] "Popular searches" when no history
+   341→   341→
+   342→   342→### 3.8 Search results page
+   343→   343→- [ ] `src/app/search/page.tsx` — reads `?q=` param
+   344→   344→- [ ] Full results grid with all filters available
+   345→   345→- [ ] Result count, sort dropdown
+   346→   346→- [ ] "Did you mean?" for typos (mock: simple Levenshtein)
+   347→   347→- [ ] Empty state: "No matches for '{query}'" + popular products + popular searches
+   348→   348→- [ ] Breadcrumb: Home > Search > "{query}"
+   349→   349→
+   350→   350→### 3.9 Catalog enhancements
+   351→   351→- [ ] Infinite scroll option (toggle with "Load more")
+   352→   352→- [ ] "View" toggle: grid / list (list shows more info per product)
+   353→   353→- [ ] Catalog metadata: showing X-Y of Z products
+   354→   354→
+   355→   355→---
+   356→   356→
+   357→   357→## Phase 4 — Cart, Checkout & Conversion
+   358→   358→
+   359→   359→### 4.1 Cart enhancements
+   360→   360→- [ ] "Save for later" per line item → moves to separate section below cart, restores on click
+   361→   361→- [ ] "Move to wishlist" per line item
+   362→   362→- [ ] Estimated delivery date per line: "Arrives Mar 15-18" (mock: 3-5 business days from today)
+   363→   363→- [ ] Mini-cart preview on header cart hover (desktop, 500ms delay) — shows top 3 items + subtotal + "View cart"
+   364→   364→- [ ] "Add all to cart" from wishlist page and wishlist drawer
+   365→   365→- [ ] Free shipping progress in header on scroll (after 200px scroll, small bar appears)
+   366→   366→
+   367→   367→### 4.2 Checkout enhancements
+   368→   368→- [ ] Promo code field: input + "Apply" button → shows discount line, "Remove" button
+   369→   369→- [ ] Gift card redemption field (separate from promo)
+   370→   370→- [ ] Order notes / delivery instructions textarea (max 200 chars)
+   371→   371→- [ ] "Save this address" checkbox (when logged in)
+   372→   372→- [ ] Express payment buttons: Apple Pay, Google Pay, PayPal (visual only, disabled with "Coming soon")
+   373→   373→- [ ] Real-time tax estimate: ZIP → tax rate lookup (mock table)
+   374→   374→- [ ] Shipping rate calculation: based on address + item weight (mock)
+   375→   375→- [ ] Gift wrapping add-on: line item "+ Gift wrap — $8" with note preview
+   376→   376→- [ ] "Create account" prompt on confirmation: password field, "Save my info for next time"
+   377→   377→
+   378→   378→### 4.3 Order confirmation page
+   379→   379→- [ ] `src/app/order/[id]/confirmation/page.tsx` — shareable URL
+   380→   380→- [ ] Same content as confirmation modal (order number, total, delivery estimate, tracking)
+   381→   381→- [ ] "Print receipt" button (opens print dialog)
+   382→   382→- [ ] "Add to calendar" for estimated delivery (.ics download)
+   383→   383→- [ ] "Continue shopping" CTA
+   384→   384→- [ ] Recommended products row (based on ordered items)
+   385→   385→
+   386→   386→### 4.4 Order tracking
+   387→   387→- [ ] `src/app/order/[id]/track/page.tsx`
+   388→   388→- [ ] Visual timeline: Ordered → Packed → Shipped → Out for delivery → Delivered
+   389→   389→- [ ] Each step: date, location (mock), description
+   390→   390→- [ ] Current step highlighted with gold
+   391→   391→- [ ] Tracking number + carrier link
+   392→   392→- [ ] "Get updates via SMS" opt-in
+   393→   393→
+   394→   394→### 4.5 ExitIntentPopup
+   395→   395→- [ ] `src/components/marketing/ExitIntentPopup.tsx`
+   396→   396→- [ ] Triggers when: mouse leaves top of viewport (desktop) OR 30s elapsed (mobile)
+   397→   397→- [ ] Shows once per session (sessionStorage)
+   398→   398→- [ ] Content: "Enjoy 10% off your first order" + email capture + "Reveal code" button
+   399→   399→- [ ] Success: shows code "AURA10", "Shop now" button
+   400→   400→- [ ] Close: X button, Esc, click outside
+   401→   401→- [ ] Framer Motion scale-in, respects reduced-motion
+   402→   402→
+   403→   403→### 4.6 FirstOrderBanner
+   404→   404→- [ ] `src/components/marketing/FirstOrderBanner.tsx`
+   405→   405→- [ ] Top-of-page dismissible banner: "First order? Enjoy 10% off — Sign up"
+   406→   406→- [ ] Dismiss persists (localStorage, 30 days)
+   407→   407→- [ ] CTA links to signup
+   408→   408→
+   409→   409→### 4.7 CountdownTimer
+   410→   410→- [ ] `src/components/marketing/CountdownTimer.tsx`
+   411→   411→- [ ] Reusable component: takes `endDate` prop
+   412→   412→- [ ] Shows: DD : HH : MM : SS
+   413→   413→- [ ] Updates every second
+   414→   414→- [ ] When expired: shows "Sale ended" or hides
+   415→   415→- [ ] Used on: sale section headers, PDP for limited offers
+   416→   416→
+   417→   417→### 4.8 LowStockBadge
+   418→   418→- [ ] `src/components/marketing/LowStockBadge.tsx`
+   419→   419→- [ ] Shows on PDP when stock < 5: "Only X left — selling fast"
+   420→   420→- [ ] Animated pulse on number
+   421→   421→- [ ] Mock: random low stock for some products
+   422→   422→
+   423→   423→---
+   424→   424→
+   425→   425→## Phase 5 — Content & Editorial
+   426→   426→
+   427→   427→### 5.1 Lookbook
+   428→   428→- [ ] `src/app/lookbook/page.tsx` — grid of room scenes
+   429→   429→- [ ] Each scene: full-bleed image, title, "Shop the look" button
+   430→   430→- [ ] `src/app/lookbook/[slug]/page.tsx` — single room scene
+   431→   431→- [ ] `src/components/content/ShopTheLook.tsx` — clickable hotspots on image → product card popover
+   432→   432→- [ ] Hotspot: gold dot, on hover shows product image + name + price + "Add to cart"
+   433→   433→- [ ] Below image: grid of all products in the scene
+   434→   434→- [ ] 6-8 mock room scenes
+   435→   435→
+   436→   436→### 5.2 Collections index
+   437→   437→- [ ] `src/app/collections/page.tsx` — grid of all collections
+   438→   438→- [ ] Each collection: hero image, name, description, product count, "Explore" button
+   439→   439→- [ ] Existing collection pages already work
+   440→   440→
+   441→   441→### 5.3 Artisan profiles
+   442→   442→- [ ] `src/app/artisans/page.tsx` — index of workshop profiles
+   443→   443→- [ ] `src/app/artisans/[slug]/page.tsx` — single workshop story
+   444→   444→- [ ] Content: workshop name, location, founded date, story (long-form), gallery (8-12 images), products from this workshop
+   445→   445→- [ ] 4-5 mock artisan profiles
+   446→   446→
+   447→   447→### 5.4 Sustainability page
+   448→   448→- [ ] `src/app/sustainability/page.tsx`
+   449→   449→- [ ] Sections: materials sourcing index, workshop map, certifications, environmental impact, future commitments
+   450→   450→- [ ] Data table: material → source → workshop → certification
+   451→   451→- [ ] Editorial layout with images
+   452→   452→
+   453→   453→### 5.5 Trade program
+   454→   454→- [ ] `src/app/trade/page.tsx` — landing page
+   455→   455→- [ ] Benefits section, "Apply now" CTA
+   456→   456→- [ ] `src/components/trade/TradeApplicationForm.tsx` — multi-step form
+   457→   457→- [ ] Fields: business name, business type, website, your name, email, phone, trade references (optional), resale certificate upload
+   458→   458→- [ ] Validation per step, progress indicator
+   459→   459→- [ ] Success: "Application received — we'll respond within 3 business days"
+   460→   460→
+   461→   461→### 5.6 Gift guide
+   462→   462→- [ ] `src/app/gifts/page.tsx` — hub with filters: By recipient (for her, for him, for host, for new home), By price (under $50, $50-100, $100-200, $200+), By occasion (housewarming, wedding, birthday, thank you)
+   463→   463→- [ ] `src/app/gifts/[slug]/page.tsx` — curated gift collection
+   464→   464→- [ ] Gift card purchase: `/gift-cards` — design your card (amount, design, recipient email, message, delivery date)
+   465→   465→
+   466→   466→### 5.7 Care guide hub
+   467→   467→- [ ] `src/app/care/page.tsx` — library of care articles by material
+   468→   468→- [ ] Categories: Ceramic, Brass, Wood, Linen, Plant, Stone, Glass
+   469→   469→- [ ] `src/app/care/[slug]/page.tsx` — single care guide (long-form article, reuse JournalReader layout)
+   470→   470→- [ ] 7-8 mock care guides
+   471→   471→
+   472→   472→### 5.8 Press section
+   473→   473→- [ ] `src/components/social/PressSection.tsx` — "As seen in" logos
+   474→   474→- [ ] Mock: Architectural Digest, Vogue, Kinfolk, Dwell, Apartment Therapy
+   475→   475→- [ ] Hover: quote from publication
+   476→   476→- [ ] Links to mock press features
+   477→   477→
+   478→   478→---
+   479→   479→
+   480→   480→## Phase 6 — Mobile & UX Polish
+   481→   481→
+   482→   482→### 6.1 Mobile sticky Add to Cart (already in P2.12, ensure mobile-specific)
+   483→   483→- [ ] Verify safe area inset handling
+   484→   484→- [ ] Test on iOS Safari and Android Chrome
+   485→   485→
+   486→   486→### 6.2 Swipe-to-close on drawers
+   487→   487→- [ ] Add Framer Motion `drag="x"` to all drawer panels (Cart, Wishlist, MobileNav, Filter)
+   488→   488→- [ ] Drag threshold: 25% of width → close, else snap back
+   489→   489→- [ ] Drag handle visible at drawer edge (subtle gold line)
+   490→   490→- [ ] Respects reduced-motion (no drag, just close button)
+   491→   491→
+   492→   492→### 6.3 Bottom tab bar (mobile)
+   493→   493→- [ ] `src/components/layout/MobileTabBar.tsx`
+   494→   494→- [ ] Tabs: Browse (shop icon), Search, Cart (with count), Wishlist (with count), Account
+   495→   495→- [ ] Appears only on mobile (< lg breakpoint)
+   496→   496→- [ ] Active tab highlighted with gold
+   497→   497→- [ ] Hides when keyboard open
+   498→   498→- [ ] Respects safe area inset
+   499→   499→
+   500→   500→### 6.4 Pull-to-refresh
+   501→   501→- [ ] On shop and catalog pages (mobile only)
+   502→   502→- [ ] Framer Motion drag-down gesture
+   503→   503→- [ ] Spinner appears at threshold
+   504→   504→- [ ] Releases → refetch data (TanStack Query `refetch`)
+   505→   505→
+   506→   506→### 6.5 View Transitions API
+   507→   507→- [ ] Enable in `next.config.ts` (`experimental: { viewTransition: true }`)
+   508→   508→- [ ] Add `@view-transition` CSS
+   509→   509→- [ ] Tag key elements with `view-transition-name`
+   510→   510→- [ ] Test route transitions: home → shop → PDP
+   511→   511→- [ ] Fallback: existing Framer Motion AnimatePresence (no regression)
+   512→   512→
+   513→   513→### 6.6 Personalization
+   514→   514→- [ ] `src/components/personalization/RecommendedForYou.tsx` — homepage row
+   515→   515→- [ ] Mock recommendation: based on recently viewed categories, fallback to featured
+   516→   516→- [ ] `src/components/personalization/BrowseHistory.tsx` — "Pick up where you left off" row (recently viewed)
+   517→   517→- [ ] `src/components/personalization/PreferenceCenter.tsx` — in account preferences (already in 1.11)
+   518→   518→
+   519→   519→### 6.7 UGC & social
+   520→   520→- [ ] `src/components/social/InstagramFeed.tsx` — real layout (mock data, swap to Instagram API later)
+   521→   521→- [ ] `src/components/social/CustomerPhotosGallery.tsx` — on PDP, photos tagged @auraliving
+   522→   522→- [ ] `src/components/social/ShopTheGram.tsx` — shoppable Instagram grid (click image → product popover)
+   523→   523→- [ ] All use mock data, structured for real API swap
+   524→   524→
+   525→   525→---
+   526→   526→
+   527→   527→## Phase 7 — Performance, SEO & Analytics
+   528→   528→
+   529→   529→### 7.1 Image optimization
+   530→   530→- [ ] Migrate all `<img>` to Next.js `<Image>` across: HeroSlider, ProductCard, ProductDetail, CartDrawer, WishlistDrawer, CategoryShowcase, CuratedCollection, TestimonialSection, InstagramFeed, PageHero, JournalReader, CheckoutFlow, Lookbook, Artisan pages
+   531→   531→- [ ] Explicit `width` and `height` on every image (no CLS)
+   532→   532→- [ ] `sizes` attribute for responsive loading
+   533→   533→- [ ] `priority` on above-fold images (hero, first 4 product cards)
+   534→   534→- [ ] `loading="lazy"` on below-fold (default)
+   535→   535→- [ ] `placeholder="blur"` + `blurDataURL` for product images (generate via sharp at build)
+   536→   536→- [ ] Configure `next.config.ts`: `images.formats: ['image/avif', 'image/webp']`, `images.remotePatterns` for Unsplash
+   537→   537→- [ ] Audit Lighthouse CLS = 0, LCP < 2.5s
+   538→   538→
+   539→   539→### 7.2 Loading states
+   540→   540→- [ ] `src/components/ui/Skeleton.tsx` (already from shadcn) — wire into:
+   541→   541→  - [ ] HeroSlider first paint
+   542→   542→  - [ ] Product grid (card skeletons)
+   543→   543→  - [ ] PDP gallery
+   544→   544→  - [ ] Reviews list
+   545→   545→  - [ ] Account order list
+   546→   546→  - [ ] Search results
+   547→   547→  - [ ] Shop grid during filter change
+   548→   548→- [ ] `src/app/loading.tsx` — branded route-level loader (Aura logo pulse)
+   549→   549→- [ ] Suspense boundaries around async sections
+   550→   550→- [ ] All skeletons match the dimensions of content they replace
+   551→   551→
+   552→   552→### 7.3 SEO — metadata
+   553→   553→- [ ] `src/app/layout.tsx` — global metadata (title template, description, OpenGraph defaults, Twitter card)
+   554→   554→- [ ] Per-page `metadata` exports on every route: Home, Shop, PDP, Collections, Journal, About, Account, Auth, Legal
+   555→   555→- [ ] Dynamic metadata on PDP: `title: product.name`, `description: product.description`, `openGraph.images: [product.images[0]]`
+   556→   556→- [ ] Dynamic metadata on Journal article: `title: article.title`, `authors: [article.author]`, `publishedTime`, `modifiedTime`
+   557→   557→
+   558→   558→### 7.4 SEO — sitemap & robots
+   559→   559→- [ ] `src/app/sitemap.ts` — dynamic sitemap including: all static pages, all products, all collections, all journal articles
+   560→   560→- [ ] `src/app/robots.ts` — robots.txt with sitemap reference, disallow /account, /admin
+   561→   561→- [ ] Submit-ready for Google Search Console
+   562→   562→
+   563→   563→### 7.5 SEO — structured data
+   564→   564→- [ ] `src/components/seo/ProductJsonLd.tsx` — `Product` schema (name, image, description, sku, brand, offers, aggregateRating)
+   565→   565→- [ ] `src/components/seo/BreadcrumbJsonLd.tsx` — `BreadcrumbList` schema
+   566→   566→- [ ] `src/components/seo/FaqJsonLd.tsx` — `FAQPage` schema on FAQ page
+   567→   567→- [ ] `src/components/seo/ArticleJsonLd.tsx` — `Article` schema on journal articles
+   568→   568→- [ ] `src/components/seo/CollectionPageJsonLd.tsx` — `CollectionPage` schema
+   569→   569→- [ ] All rendered server-side as `<script type="application/ld+json">`
+   570→   570→- [ ] Validate with Google Rich Results Test
+   571→   571→
+   572→   572→### 7.6 SEO — canonical & hreflang
+   573→   573→- [ ] Canonical URL on every page (`<link rel="canonical">`)
+   574→   574→- [ ] `hreflang` tags (prep for i18n — `en-US` default)
+   575→   575→- [ ] OG URL matches canonical
+   576→   576→
+   577→   577→### 7.7 Analytics — instrumentation
+   578→   578→- [ ] `src/lib/analytics/ga4.ts` — GA4 event tracker (you add measurement ID later)
+   579→   579→- [ ] `src/lib/analytics/ecommerce.ts` — `view_item_list`, `view_item`, `select_item`, `add_to_cart`, `remove_from_cart`, `view_cart`, `begin_checkout`, `add_shipping_info`, `add_payment_info`, `purchase`
+   580→   580→- [ ] `src/lib/analytics/meta-pixel.ts` — Meta Pixel events
+   581→   581→- [ ] `src/components/analytics/AnalyticsProvider.tsx` — context provider, loads scripts only after cookie consent
+   582→   582→- [ ] All events fire through `src/lib/analytics/track(eventName, params)` — single function, swap destinations later
+   583→   583→- [ ] Wire events to: product view, add to cart, begin checkout, purchase, search, sign up, login
+   584→   584→
+   585→   585→### 7.8 PWA
+   586→   586→- [ ] `src/app/manifest.ts` — PWA manifest (name, icons, theme color, display: standalone)
+   587→   587→- [ ] Service worker: cache product images, offline catalog browsing
+   588→   588→- [ ] "Add to home screen" prompt on mobile (after 2nd visit, dismissible)
+   589→   589→
+   590→   590→---
+   591→   591→
+   592→   592→## Phase 8 — Design System Polish
+   593→   593→
+   594→   594→### 8.1 Component library completion
+   595→   595→- [ ] `src/components/ui/AuraInput.tsx` — floating label variant, error state, disabled state
+   596→   596→- [ ] `src/components/ui/AuraTextarea.tsx` — auto-grow, char counter
+   597→   597→- [ ] `src/components/ui/AuraSelect.tsx` — custom dropdown with search
+   598→   598→- [ ] `src/components/ui/AuraTooltip.tsx` — gold-accent tooltip
+   599→   599→- [ ] `src/components/ui/AuraToast.tsx` — already have shadcn toaster, wrap with Aura styling
+   600→   600→- [ ] `src/components/ui/EmptyState.tsx` — reusable: illustration slot, title, description, CTA
+   601→   601→- [ ] `src/components/ui/LoadingSpinner.tsx` — branded spinner (line animation)
+   602→   602→- [ ] `src/components/ui/Pagination.tsx` — page-based pagination with prev/next
+   603→   603→- [ ] All components: cva variants, accessible, typed, documented with JSDoc
+   604→   604→
+   605→   605→### 8.2 Dark mode
+   606→   606→- [ ] Add `[data-theme="dark"]` token block in `globals.css` — invert canvas, paper, ink, cream
+   607→   607→- [ ] Gold accent stays same (works on both)
+   608→   608→- [ ] Theme toggle in header (sun/moon icon)
+   609→   609→- [ ] `src/store/use-theme-store.ts` — Zustand persist, respects `prefers-color-scheme` initial
+   610→   610→- [ ] No flash of wrong theme (inline script in layout)
+   611→   611→- [ ] Test every page in dark mode — fix contrast issues
+   612→   612→
+   613→   613→### 8.3 Accessibility mode
+   614→   614→- [ ] High-contrast mode: `[data-contrast="high"]` — stronger borders, pure black/white
+   615→   615→- [ ] Font size adjuster: `[data-font-size="sm|md|lg"]` — scales all type tokens
+   616→   616→- [ ] Dyslexia-friendly font: `[data-font="dyslexic"]` — swap to OpenDyslexic
+   617→   617→- [ ] All as token swaps in `globals.css`, zero component changes
+   618→   618→- [ ] Settings in a "Display preferences" panel (gear icon in header)
+   619→   619→
+   620→   620→### 8.4 Accessibility v2
+   621→   621→- [ ] ARIA live regions for: cart count (`aria-live="polite"`), filter result count, search results, form errors (`aria-live="assertive"`)
+   622→   622→- [ ] Screen reader announcements for async state changes (via `useAnnounce` hook)
+   623→   623→- [ ] "Read aloud" button on product descriptions (Web Speech API)
+   624→   624→- [ ] Keyboard shortcuts: `/` focus search, `Esc` close overlays, `g h` go home, `g s` go shop, `g c` open cart
+   625→   625→- [ ] Skip links for every major section (already have main, add for nav, footer, sidebar)
+   626→   626→- [ ] Color contrast audit: WCAG AAA where possible (7:1 for body text), AA minimum (4.5:1)
+   627→   627→- [ ] axe-core audit passes 0 violations
+   628→   628→
+   629→   629→### 8.5 Animation polish
+   630→   630→- [ ] View Transitions API (already in 6.5)
+   631→   631→- [ ] Page loader with brand mark animation (line draws "Aura")
+   632→   632→- [ ] Custom cursor on desktop (subtle gold dot follower, hidden on touch)
+   633→   633→- [ ] `will-change` hints audited on all animated elements
+   634→   634→- [ ] `prefers-reduced-motion` audited site-wide — every animation has a static fallback
+   635→   635→- [ ] 60fps verified on all animations (Chrome DevTools Performance tab)
+   636→   636→
+   637→   637→### 8.6 Micro-interactions
+   638→   638→- [ ] Button press: scale 0.98 + shadow change (already partial)
+   639→   639→- [ ] Card hover: lift + image scale (already partial)
+   640→   640→- [ ] Link hover: gold underline draw (already)
+   641→   641→- [ ] Add to cart: button morphs to checkmark → cart count bounces (already)
+   642→   642→- [ ] Wishlist: heart fills with spring (already)
+   643→   643→- [ ] Toast: slide in from bottom-right, auto-dismiss 4s, stack multiple
+   644→   644→- [ ] Form submit: button shows spinner, success checkmark, then resets
+   645→   645→
+   646→   646→---
+   647→   647→
+   648→   648→## Phase 9 — Internationalization (Optional)
+   649→   649→
+   650→   650→### 9.1 Multi-currency
+   651→   651→- [ ] Currency selector in header (USD default, EUR, GBP, CAD, AUD)
+   652→   652→- [ ] `src/lib/format/currency.ts` — format price by currency (symbol position, decimals)
+   653→   653→- [ ] Mock exchange rates (static table, swap to real API later)
+   654→   654→- [ ] All prices reformat on currency change
+   655→   655→- [ ] Persists in localStorage
+   656→   656→
+   657→   657→### 9.2 Multi-language
+   658→   658→- [ ] `next-intl` setup (already installed)
+   659→   659→- [ ] Translation files: `src/messages/en.json`, `fr.json`, `de.json`, `ja.json`
+   660→   660→- [ ] Language selector in header
+   661→   661→- [ ] All UI strings extracted to translation files
+   662→   662→- [ ] Product content stays English (mock) — real i18n when backend ready
+   663→   663→- [ ] RTL support prep (for future Arabic/Hebrew)
+   664→   664→
+   665→   665→### 9.3 Region-specific
+   666→   666→- [ ] VAT-inclusive pricing for EU (show "VAT included" note)
+   667→   667→- [ ] Shipping restrictions by region (some products can't ship internationally — plants)
+   668→   668→- [ ] Duties calculator mock at checkout for international orders
+   669→   669→
+   670→   670→---
+   671→   671→
+   672→   672→## Phase 10 — Final Production Readiness
+   673→   673→
+   674→   674→### 10.1 Error handling
+   675→   675→- [ ] `src/app/error.tsx` — branded 500 error boundary with "Try again" + "Back home"
+   676→   676→- [ ] `src/app/not-found.tsx` — branded 404 with search + popular categories
+   677→   677→- [ ] API error handling: every fetch has try/catch, shows error toast or inline error
+   678→   678→- [ ] Network error: retry button
+   679→   679→- [ ] 404 on product slug: "Product not found" + related products
+   680→   680→
+   681→   681→### 10.2 Performance audit
+   682→   682→- [ ] Lighthouse: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100
+   683→   683→- [ ] Core Web Vitals: LCP < 2.5s, FID < 100ms, CLS = 0
+   684→   684→- [ ] Bundle size: First Load JS < 200KB
+   685→   685→- [ ] Image sizes: all under 200KB
+   686→   686→- [ ] No render-blocking resources
+   687→   687→- [ ] Code splitting: CartDrawer, WishlistDrawer, ProductDetail, CheckoutFlow, JournalReader all lazy-loaded
+   688→   688→
+   689→   689→### 10.3 Cross-browser testing
+   690→   690→- [ ] Chrome (latest)
+   691→   691→- [ ] Safari (latest + Safari iOS)
+   692→   692→- [ ] Firefox (latest)
+   693→   693→- [ ] Edge (latest)
+   694→   694→- [ ] Samsung Internet (mobile)
+   695→   695→- [ ] All animations work, all layouts hold, no console errors
+   696→   696→
+   697→   697→### 10.4 Final code audit
+   698→   698→- [ ] Zero `console.log` in production code
+   699→   699→- [ ] Zero `TODO` or `FIXME` comments
+   700→   700→- [ ] Zero `any` types (except shadcn primitives)
+   701→   701→- [ ] Zero inline styles
+   702→   702→- [ ] Zero lint warnings
+   703→   703→- [ ] All components have JSDoc comments on props
+   704→   704→- [ ] All exports are named (no default exports except page components)
+   705→   705→- [ ] All files under 300 lines (split if larger)
+   706→   706→- [ ] README.md updated with: setup, structure, conventions, swap-backend instructions
+   707→   707→
+   708→   708→### 10.5 Documentation
+   709→   709→- [ ] `src/lib/api/README.md` — how to swap mock for real backend (one file change)
+   710→   710→- [ ] `src/components/README.md` — component inventory with usage examples
+   711→   711→- [ ] `src/store/README.md` — state management overview
+   712→   712→- [ ] `DESIGN_SYSTEM.md` — token reference, component variants, motion specs
+   713→   713→- [ ] `ACCESSIBILITY.md` — a11y features, keyboard shortcuts, tested screen readers
+   714→   714→
+   715→   715→---
+   716→   716→
+   717→   717→## ✅ Definition of Done — per checkbox
+   718→   718→
+   719→   719→A checkbox is only checked when ALL of these are true:
+   720→   720→- [ ] Feature works end-to-end in the browser (verified via Agent Browser)
+   721→   721→- [ ] Lint passes clean (`bun run lint` exits 0)
+   722→   722→- [ ] No console errors or warnings
+   723→   723→- [ ] Mobile responsive (tested at 375px, 768px, 1024px, 1440px)
+   724→   724→- [ ] Accessible (keyboard nav, ARIA, screen reader tested)
+   725→   725→- [ ] `prefers-reduced-motion` honored
+   726→   726→- [ ] No inline styles
+   727→   727→- [ ] TypeScript strict (no `any`, no `@ts-ignore`)
+   728→   728→- [ ] Loading state implemented
+   729→   729→- [ ] Empty state implemented
+   730→   730→- [ ] Error state implemented
+   731→   731→- [ ] JSDoc on component props
+   732→   732→- [ ] Committed with descriptive message
+   733→   733→
+   734→   734→---
+   735→   735→
+   736→   736→## 📊 Progress Tracking
+   737→   737→
+   738→   738→| Phase | Total tasks | Complete | % |
+   739→   739→|---|---|---|---|
+   740→   740→| 0. Foundation | 32 | 30 | 94% |
+   741→   741→| 1. Auth & Accounts | 52 | 52 | 100% |
+   742→   742→| 2. Reviews & PDP | 39 | 39 | 100% |
+   743→   743→| 3. Shop & Search | 28 | 28 | 100% |
+   744→   744→| 4. Cart & Checkout | 31 | 31 | 100% |
+   745→   745→| 5. Content & Editorial | 38 | 38 | 100% |
+   746→   746→| 6. Mobile & UX | 25 | 25 | 100% |
+   747→   747→| 7. Performance & SEO | 42 | 0 | 0% |
+   748→   748→| 8. Design System | 31 | 0 | 0% |
+   749→   749→| 9. Internationalization | 14 | 0 | 0% |
+   750→   750→| 10. Production Readiness | 28 | 0 | 0% |
+   751→   751→| **Total** | **360** | **243** | **68%** |
+   752→   752→
+   753→   753→---
+   754→   754→
+   755→   755→**Next action**: Tell me which phase to start. I recommend Phase 0 (Foundation) — everything else depends on the API client layer being in place. Just say "start Phase 0" and I'll begin, checking off boxes as I go.
+   756→   756→
