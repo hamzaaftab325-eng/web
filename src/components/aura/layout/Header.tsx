@@ -42,7 +42,7 @@ export function Header() {
   const prefersReducedMotion = useReducedMotion();
 
   // Account and content pages have cream backgrounds — force dark text
-  const isLightPage = view.startsWith("account") || view === "shop" || view === "lookbook" || view === "collections" || view === "artisans" || view === "sustainability" || view === "trade" || view === "gifts" || view === "care";
+  const isLightPage = view.startsWith("account") || view === "shop" || view === "collections" || view === "artisans" || view === "sustainability" || view === "care";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);

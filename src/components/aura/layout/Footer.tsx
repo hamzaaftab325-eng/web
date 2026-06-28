@@ -137,14 +137,6 @@ export function Footer() {
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => setView("trade")}
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
-                >
-                  Trade Program
-                </button>
-              </li>
-              <li>
                 <a
                   href="mailto:concierge@auraliving.com"
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
@@ -159,14 +151,6 @@ export function Footer() {
           <div className="md:col-span-2">
             <p className="t-label-caps c-paper/50 mb-4">Discover</p>
             <ul className="space-y-2">
-              <li>
-                <button
-                  onClick={() => setView("lookbook")}
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
-                >
-                  Lookbook
-                </button>
-              </li>
               <li>
                 <button
                   onClick={() => setView("artisans")}
@@ -189,14 +173,6 @@ export function Footer() {
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Care Guides
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setView("gifts")}
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
-                >
-                  Gifts
                 </button>
               </li>
             </ul>

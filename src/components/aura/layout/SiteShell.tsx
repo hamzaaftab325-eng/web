@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useUIStore } from "@/store/use-ui-store";
 import { productBySlug } from "@/data/products";
+import { viewToUrl, urlToView } from "@/lib/view-url";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MobileNav } from "./MobileNav";
@@ -32,12 +34,9 @@ import { PressSection } from "@/components/aura/sections/PressSection";
 import { ShopView } from "@/components/aura/sections/ShopView";
 import { AboutView } from "@/components/aura/sections/AboutView";
 import { JournalView } from "@/components/aura/sections/JournalView";
-import { LookbookView } from "@/components/aura/sections/LookbookView";
 import { CollectionsView } from "@/components/aura/sections/CollectionsView";
 import { ArtisansView } from "@/components/aura/sections/ArtisansView";
 import { SustainabilityView } from "@/components/aura/sections/SustainabilityView";
-import { TradeView } from "@/components/aura/sections/TradeView";
-import { GiftsView } from "@/components/aura/sections/GiftsView";
 import { CareView } from "@/components/aura/sections/CareView";
 import { JournalReader } from "@/components/aura/sections/JournalReader";
 
@@ -56,12 +55,51 @@ import { ResetPasswordView } from "@/components/aura/auth/ResetPasswordView";
 const AUTH_VIEWS = new Set(["login", "signup", "forgot-password", "reset-password"]);
 
 export function SiteShell() {
+  const router = useRouter();
   const view = useUIStore((s) => s.view);
   const activeProductSlug = useUIStore((s) => s.activeProductSlug);
   const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);
   const openProduct = useUIStore((s) => s.openProduct);
   const setQuickViewProduct = useUIStore((s) => s.setQuickViewProduct);
   const prefersReducedMotion = useReducedMotion();
+
+  // Track whether the URL change was triggered by us (to avoid loops)
+  const isInternalNav = useRef(false);
+
+  // Effect 1: Sync view → URL
+  // When the Zustand view changes (via setView), push the corresponding URL.
+  useEffect(() => {
+    if (isInternalNav.current) {
+      isInternalNav.current = false;
+      return;
+    }
+    const url = viewToUrl(view);
+    if (url && typeof window !== "undefined" && url !== window.location.pathname) {
+      router.push(url);
+    }
+  }, [view, router]);
+
+  // Effect 2: Sync URL → view (on back/forward and direct URL access)
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlView = urlToView(window.location.pathname);
+      if (urlView) {
+        if (urlView !== useUIStore.getState().view) {
+          isInternalNav.current = true;
+          useUIStore.setState({ view: urlView });
+        }
+      } else if (window.location.pathname !== "/") {
+        // Unknown URL (e.g., deleted pages like /lookbook) — redirect to home
+        router.replace("/");
+      }
+    };
+
+    // Initial sync from URL on mount (handles direct URL access like /sustainability)
+    handlePopState();
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [router]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
@@ -122,12 +160,9 @@ export function SiteShell() {
             {view === "shop" && <ShopView />}
             {view === "about" && <AboutView />}
             {view === "journal" && <JournalView />}
-            {view === "lookbook" && <LookbookView />}
             {view === "collections" && <CollectionsView />}
             {view === "artisans" && <ArtisansView />}
             {view === "sustainability" && <SustainabilityView />}
-            {view === "trade" && <TradeView />}
-            {view === "gifts" && <GiftsView />}
             {view === "care" && <CareView />}
             {view === "account" && <AccountDashboard />}
             {view === "account-orders" && <AccountOrders />}
