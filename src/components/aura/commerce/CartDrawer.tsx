@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-
 import { useRouter } from "next/navigation";
 import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/use-cart-store";
+import { useUIStore } from "@/store/use-ui-store";
 import { formatPrice, cn } from "@/lib/utils";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 
@@ -21,8 +22,11 @@ export function CartDrawer() {
 
   const prefersReducedMotion = useReducedMotion();
 
+  const setCheckoutOpen = useUIStore((s) => s.setCheckoutOpen);
+
   const goCheckout = () => {
     close();
+    setCheckoutOpen(true);
   };
 
   const goShop = () => {
