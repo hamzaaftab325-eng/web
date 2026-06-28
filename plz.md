@@ -434,21 +434,21 @@
 - [ ] 6-8 mock room scenes
 
 ### 5.2 Collections index
-- [ ] `src/app/collections/page.tsx` — grid of all collections
-- [ ] Each collection: hero image, name, description, product count, "Explore" button
-- [ ] Existing collection pages already work
+- [x] `src/app/collections/page.tsx` — grid of all collections
+- [x] Each collection: hero image, name, description, product count, "Explore" button
+- [x] Existing collection pages already work
 
 ### 5.3 Artisan profiles
-- [ ] `src/app/artisans/page.tsx` — index of workshop profiles
-- [ ] `src/app/artisans/[slug]/page.tsx` — single workshop story
-- [ ] Content: workshop name, location, founded date, story (long-form), gallery (8-12 images), products from this workshop
-- [ ] 4-5 mock artisan profiles
+- [x] `src/app/artisans/page.tsx` — index of workshop profiles
+- [x] `src/app/artisans/[slug]/page.tsx` — single workshop story
+- [x] Content: workshop name, location, founded date, story (long-form), gallery (8-12 images), products from this workshop
+- [x] 4-5 mock artisan profiles
 
 ### 5.4 Sustainability page
-- [ ] `src/app/sustainability/page.tsx`
-- [ ] Sections: materials sourcing index, workshop map, certifications, environmental impact, future commitments
-- [ ] Data table: material → source → workshop → certification
-- [ ] Editorial layout with images
+- [x] `src/app/sustainability/page.tsx`
+- [x] Sections: materials sourcing index, workshop map, certifications, environmental impact, future commitments
+- [x] Data table: material → source → workshop → certification
+- [x] Editorial layout with images
 
 ### 5.5 Trade program
 - [ ] `src/app/trade/page.tsx` — landing page
@@ -464,16 +464,16 @@
 - [ ] Gift card purchase: `/gift-cards` — design your card (amount, design, recipient email, message, delivery date)
 
 ### 5.7 Care guide hub
-- [ ] `src/app/care/page.tsx` — library of care articles by material
-- [ ] Categories: Ceramic, Brass, Wood, Linen, Plant, Stone, Glass
-- [ ] `src/app/care/[slug]/page.tsx` — single care guide (long-form article, reuse JournalReader layout)
-- [ ] 7-8 mock care guides
+- [x] `src/app/care/page.tsx` — library of care articles by material
+- [x] Categories: Ceramic, Brass, Wood, Linen, Plant, Stone, Glass
+- [x] `src/app/care/[slug]/page.tsx` — single care guide (long-form article, reuse JournalReader layout)
+- [x] 7-8 mock care guides
 
 ### 5.8 Press section
-- [ ] `src/components/social/PressSection.tsx` — "As seen in" logos
-- [ ] Mock: Architectural Digest, Vogue, Kinfolk, Dwell, Apartment Therapy
-- [ ] Hover: quote from publication
-- [ ] Links to mock press features
+- [x] `src/components/social/PressSection.tsx` — "As seen in" logos
+- [x] Mock: Architectural Digest, Vogue, Kinfolk, Dwell, Apartment Therapy
+- [x] Hover: quote from publication
+- [x] Links to mock press features
 
 ---
 
@@ -742,13 +742,13 @@ A checkbox is only checked when ALL of these are true:
 | 2. Reviews & PDP | 39 | 39 | 100% |
 | 3. Shop & Search | 28 | 28 | 100% |
 | 4. Cart & Checkout | 31 | 31 | 100% |
-| 5. Content & Editorial | 38 | 38 | 100% |
+| 5. Content & Editorial | 35 | 19 | 54% |
 | 6. Mobile & UX | 25 | 25 | 100% |
 | 7. Performance & SEO | 42 | 0 | 0% |
 | 8. Design System | 31 | 0 | 0% |
 | 9. Internationalization | 14 | 0 | 0% |
 | 10. Production Readiness | 28 | 0 | 0% |
-| **Total** | **360** | **243** | **68%** |
+| **Total** | **357** | **224** | **63%** |
 
 ---
 

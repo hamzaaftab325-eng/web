@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Quote } from "lucide-react";
+import { Quote, ArrowUpRight } from "lucide-react";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { cn } from "@/lib/utils";
 
 /**
  * PressSection — "As Seen In" feature with five publications.
+ *
  * Hovering (or focusing) a publication reveals the corresponding
- * quote in a dark popover. Designed to drop into any marketing surface.
+ * quote in a dark popover, with a "Read the feature" link to the
+ * mock press article (opens in a new tab). Designed to drop into
+ * any marketing surface.
  */
 
 interface PressItem {
@@ -26,6 +29,8 @@ interface PressItem {
   author: string;
   /** Author role / context. */
   authorRole: string;
+  /** Mock URL to the press feature article (opens in new tab). */
+  featureUrl: string;
 }
 
 const PRESS_ITEMS: PressItem[] = [
@@ -38,6 +43,7 @@ const PRESS_ITEMS: PressItem[] = [
       "Aura Living is doing the rarest thing in home goods right now — making objects slowly, naming the people who make them, and refusing to chase a trend. Their arched mirror is on my shortlist for every project.",
     author: "Mara Henderson",
     authorRole: "AD100 Designer",
+    featureUrl: "https://www.architecturaldigest.com/story/aura-living-ad100-2025",
   },
   {
     id: "press-02",
@@ -48,6 +54,7 @@ const PRESS_ITEMS: PressItem[] = [
       "The Halo lamp is the only object I've bought this year that's stopped me in the hallway every evening since. There is something about that matte glaze and the honeyed light that no photograph has quite captured.",
     author: "Elise Moreau",
     authorRole: "Decor Editor",
+    featureUrl: "https://www.vogue.com/article/aura-living-quiet-rooms-spring-2025",
   },
   {
     id: "press-03",
@@ -58,6 +65,7 @@ const PRESS_ITEMS: PressItem[] = [
       "What's remarkable about Aura Living isn't the catalogue — it's the sourcing index. Every piece has a workshop, a name, and a story attached. It's the kind of transparency we should expect from everyone, and almost no one offers.",
     author: "Theo Lindqvist",
     authorRole: "Contributing Writer",
+    featureUrl: "https://kinfolk.com/aura-living-slow-makers-profile",
   },
   {
     id: "press-04",
@@ -68,6 +76,7 @@ const PRESS_ITEMS: PressItem[] = [
       "The Brass Arc Floor Lamp is a single three-metre sweep of solid brass, bent cold in a press built in 1962. There is nothing else in its price range that's made this way — and very little above it, either.",
     author: "Jonah Park",
     authorRole: "Senior Editor",
+    featureUrl: "https://www.dwell.com/article/brass-arc-floor-lamp-best-of-the-year",
   },
   {
     id: "press-05",
@@ -78,6 +87,7 @@ const PRESS_ITEMS: PressItem[] = [
       "The hand-painted ceramic pot is twelve dollars more than the version at the big-box store, and it's worth ten times that. It's thrown by a person. It has a maker's mark. It will outlast the plant that lives in it.",
     author: "Carla Ng",
     authorRole: "Style Editor",
+    featureUrl: "https://www.apartmenttherapy.com/aura-living-hand-painted-ceramic-pot-best-small-object",
   },
 ];
 
@@ -145,6 +155,10 @@ export function PressSection() {
                     {item.publication}
                   </h3>
                   <p className="t-body-sm c-ink-muted mt-3">{item.tagline}</p>
+                  <p className="t-label-caps c-ink-faint mt-5 flex items-center gap-1.5">
+                    <ArrowUpRight size={11} strokeWidth={1.5} />
+                    Read the {item.year} feature
+                  </p>
                 </div>
 
                 {/* Hover quote popover (dark, in-place) */}
@@ -172,7 +186,15 @@ export function PressSection() {
                           <p className="t-headline-sm c-paper">{item.author}</p>
                           <p className="t-caption c-paper/60">{item.authorRole}</p>
                         </div>
-                        <p className="t-label-caps c-gold-deep">{item.publication}</p>
+                        <a
+                          href={item.featureUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 t-label-caps c-gold-deep hover:c-paper transition-colors link-underline"
+                        >
+                          Read the feature
+                          <ArrowUpRight size={12} strokeWidth={1.5} />
+                        </a>
                       </div>
                     </motion.div>
                   )}

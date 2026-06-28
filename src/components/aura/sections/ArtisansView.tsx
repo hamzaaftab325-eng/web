@@ -14,18 +14,13 @@ import type { Artisan } from "@/data/artisans";
 /**
  * ArtisansView — index of four workshop profiles plus a full
  * detail view with story, gallery, and linked products.
+ *
+ * The story is rendered verbatim from the artisan's `story` array
+ * (one paragraph per entry). The first paragraph is set in italic
+ * display type as a lead; subsequent paragraphs render as body.
  */
 
 const productBySlug = (slug: string) => products.find((p) => p.slug === slug);
-
-// Split a story string into roughly equal paragraphs at sentence
-// boundaries so the detail view reads with editorial rhythm.
-function storyParagraphs(story: string): string[] {
-  const sentences = story.match(/[^.!?]+[.!?]+/g) ?? [story];
-  if (sentences.length <= 2) return [story];
-  const mid = Math.ceil(sentences.length / 2);
-  return [sentences.slice(0, mid).join(" "), sentences.slice(mid).join(" ")];
-}
 
 export function ArtisansView() {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
@@ -182,7 +177,7 @@ function ArtisanDetail({
     .map((slug) => productBySlug(slug))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
-  const paragraphs = storyParagraphs(artisan.story);
+  const paragraphs = artisan.story;
 
   return (
     <motion.div
