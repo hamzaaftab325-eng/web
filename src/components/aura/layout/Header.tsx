@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { categories } from "@/data/categories";
 import { collections } from "@/data/collections";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 
 const navLinks: { label: string; view: "shop" | "about" | "journal" }[] = [
   { label: "Shop", view: "shop" },
@@ -164,7 +165,13 @@ export function Header() {
           </nav>
 
           {/* Utility icons */}
-          <div className="flex items-center gap-4 md:gap-5">
+          <div className="flex items-center gap-3 md:gap-4">
+            <ThemeToggle
+              className={cn(
+                "p-1",
+                (scrolled || isLightPage) ? "text-ink" : "text-paper"
+              )}
+            />
             <button
               onClick={goAccount}
               aria-label={user ? "Account" : "Sign in"}

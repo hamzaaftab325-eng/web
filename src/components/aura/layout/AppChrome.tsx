@@ -23,6 +23,7 @@ import { CookieConsent } from "@/components/analytics/CookieConsent";
 import { InstallPrompt } from "@/components/analytics/InstallPrompt";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 /**
  * AppChrome — the persistent UI shell that wraps every page.
@@ -45,6 +46,7 @@ const AUTH_PATHS = new Set(["/login", "/signup", "/forgot-password", "/reset-pas
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
+  useKeyboardShortcuts();
 
   const activeProductSlug = useUIStore((s) => s.activeProductSlug);
   const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);

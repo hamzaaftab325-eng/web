@@ -69,6 +69,14 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* No-flash theme script — runs before paint to set data-theme */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('aura-theme');var m=t?JSON.parse(t).state?.mode:'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');var c=t?JSON.parse(t).state?.contrast:'default';if(c==='high')document.documentElement.setAttribute('data-contrast','high');var f=t?JSON.parse(t).state?.fontSize:'md';if(f!=='md')document.documentElement.setAttribute('data-font-size',f);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body
         className={`${playfairDisplay.variable} ${inter.variable} antialiased bg-canvas c-ink`}
       >
