@@ -23,8 +23,8 @@ export function FilterSidebar() {
     addFilter,
     removeFilter,
     clearFilters,
-    mobileNavOpen,
-    setMobileNavOpen,
+    filterDrawerOpen,
+    setFilterDrawerOpen,
   } = useUIStore();
   const prefersReducedMotion = useReducedMotion();
 
@@ -44,7 +44,7 @@ export function FilterSidebar() {
 
   const clearAll = () => clearFilters();
 
-  const closeMobile = () => setMobileNavOpen(false);
+  const closeMobile = () => setFilterDrawerOpen(false);
 
   return (
     <>
@@ -63,7 +63,7 @@ export function FilterSidebar() {
 
       {/* Mobile drawer */}
       <AnimatePresence>
-        {mobileNavOpen && (
+        {filterDrawerOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
