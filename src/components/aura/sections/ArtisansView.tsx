@@ -338,7 +338,7 @@ function ArtisanDetail({
           <div className="mt-16 md:mt-20 text-center">
             <button
               onClick={() => router.push("/shop")}
-              className="inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-8 py-4 hover:bg-gold-deep transition-colors rounded-sm"
+              className="inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-6 py-3.5 hover:bg-gold-deep transition-colors rounded-sm"
             >
               Browse the full shop
               <ArrowRight size={14} strokeWidth={1.5} />

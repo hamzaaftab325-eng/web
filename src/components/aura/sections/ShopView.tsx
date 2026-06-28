@@ -179,7 +179,7 @@ export function ShopView() {
             {/* Mobile filter trigger */}
             <button
               onClick={() => setFilterDrawerOpen(true)}
-              className="lg:hidden inline-flex items-center gap-2 t-label-caps c-ink border border-hairline px-4 py-3 self-start"
+              className="lg:hidden inline-flex items-center gap-2 t-label-caps c-ink border border-hairline-cream px-4 py-3 self-start"
             >
               <SlidersHorizontal size={14} strokeWidth={1.5} />
               Filter & Sort

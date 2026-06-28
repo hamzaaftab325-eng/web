@@ -27,7 +27,7 @@ export function CuratedCollection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           {/* Text */}
           <div className="lg:col-span-5 order-2 lg:order-1">
-            <p className="t-label-caps c-gold mb-4">Featured Collection</p>
+            <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />Featured Collection</p>
             <SplitTextReveal
               as="h2"
               text={collection.name}
@@ -68,7 +68,7 @@ export function CuratedCollection() {
 
             <button
               onClick={() => setCollection(collection.slug)}
-              className="group inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-8 py-4 hover:bg-gold transition-colors"
+              className="group inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-6 py-3.5 hover:bg-gold-deep transition-colors rounded-sm"
             >
               Explore the Collection
               <ArrowRight

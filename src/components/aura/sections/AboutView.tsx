@@ -88,7 +88,7 @@ export function AboutView() {
               transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="md:col-span-5"
             >
-              <p className="t-label-caps c-gold mb-3">The Workshop</p>
+              <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />The Workshop</p>
               <h2 className="t-headline-lg c-ink leading-tight mb-6">
                 One studio. Three rooms. A single standard.
               </h2>
@@ -125,7 +125,7 @@ export function AboutView() {
       <section className="section-stack">
         <div className="container-aura">
           <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-            <p className="t-label-caps c-gold mb-3">What We Believe</p>
+            <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />What We Believe</p>
             <TextBlurReveal
               as="h2"
               className="t-display-md c-ink leading-tight"
@@ -167,7 +167,7 @@ export function AboutView() {
                     transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
                   },
                 }}
-                className="border border-hairline p-8 hover:border-gold/40 transition-colors"
+                className="border border-hairline-cream p-8 hover:border-gold/40 transition-colors"
               >
                 <v.icon size={24} strokeWidth={1.25} className="c-ink mb-5" />
                 <h3 className="t-headline-sm c-ink mb-3">{v.title}</h3>
@@ -200,7 +200,7 @@ export function AboutView() {
           </TextBlurReveal>
           <button
             onClick={() => router.push("/shop")}
-            className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-8 py-4 hover:bg-gold transition-colors"
+            className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-6 py-3.5 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm"
           >
             Explore the Shop
             <ArrowRight

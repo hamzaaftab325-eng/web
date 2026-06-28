@@ -21,7 +21,7 @@ export function CategoryShowcase() {
       <div className="container-aura">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
           <div>
-            <p className="t-label-caps c-gold mb-3">Categories</p>
+            <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />Categories</p>
             <TextBlurReveal
               as="h2"
               className="t-display-md c-ink leading-tight max-w-xl"

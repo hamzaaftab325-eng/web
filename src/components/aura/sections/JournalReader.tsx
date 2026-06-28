@@ -163,7 +163,7 @@ export function JournalReader() {
               <p className="t-body c-ink-muted mb-4">Read with us, monthly.</p>
               <button
                 onClick={() => openArticle(null)}
-                className="inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-6 py-3 hover:bg-gold-deep transition-colors rounded-sm"
+                className="inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-6 py-3.5 hover:bg-gold-deep transition-colors rounded-sm"
               >
                 Back to all essays
                 <ArrowRight size={14} strokeWidth={1.5} />
@@ -373,7 +373,7 @@ function ClosingCTA({
       <div className="mt-8 pt-6 border-t border-hairline-cream">
         <button
           onClick={() => setView("shop")}
-          className="inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-6 py-3 hover:bg-gold-deep transition-colors rounded-sm"
+          className="inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-6 py-3.5 hover:bg-gold-deep transition-colors rounded-sm"
         >
           Browse the full shop
           <ArrowRight size={14} strokeWidth={1.5} />

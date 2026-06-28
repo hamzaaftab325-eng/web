@@ -33,7 +33,7 @@ export function BrandValues() {
     <section className="section-stack bg-canvas">
       <div className="container-aura">
         <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-          <p className="t-label-caps c-gold mb-3">Our Values</p>
+          <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />Our Values</p>
           <TextBlurReveal
             as="h2"
             className="t-display-md c-ink leading-tight mb-4"
@@ -60,7 +60,7 @@ export function BrandValues() {
               }}
               className="text-center md:text-left"
             >
-              <div className="inline-flex items-center justify-center w-12 h-12 mb-5 border border-hairline rounded-full">
+              <div className="inline-flex items-center justify-center w-12 h-12 mb-5 border border-hairline-cream rounded-full">
                 <v.icon size={20} strokeWidth={1.25} className="c-ink" />
               </div>
               <h3 className="t-headline-sm c-ink mb-3">{v.title}</h3>

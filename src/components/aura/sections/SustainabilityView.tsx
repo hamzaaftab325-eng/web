@@ -593,7 +593,7 @@ export function SustainabilityView() {
               </TextBlurReveal>
               <button
                 onClick={() => router.push("/about")}
-                className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-8 py-4 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm"
+                className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-6 py-3.5 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm"
               >
                 Read the Report
                 <ArrowRight

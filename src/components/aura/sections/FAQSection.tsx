@@ -22,7 +22,7 @@ export function FAQSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           {/* Sidebar */}
           <div className="lg:col-span-4">
-            <p className="t-label-caps c-gold mb-3">Questions</p>
+            <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />Questions</p>
             <TextBlurReveal
               as="h2"
               className="t-display-md c-ink leading-tight mb-8"

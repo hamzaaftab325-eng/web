@@ -125,7 +125,7 @@ export function JournalView() {
             </div>
             <div className="md:col-span-5">
               <div className="flex items-center gap-3 mb-4">
-                <span className="t-label-caps c-gold">{articles[0].category}</span>
+                <span className="t-label-caps c-gold-deep">{articles[0].category}</span>
                 <span className="t-caption c-ink-faint">·</span>
                 <span className="t-caption c-ink-faint">
                   {articles[0].readTime} read
@@ -182,7 +182,7 @@ export function JournalView() {
                   />
                 </div>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="t-label-caps c-gold">{article.category}</span>
+                  <span className="t-label-caps c-gold-deep">{article.category}</span>
                   <span className="t-caption c-ink-faint">·</span>
                   <span className="t-caption c-ink-faint">{article.date}</span>
                 </div>

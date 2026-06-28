@@ -216,7 +216,7 @@ export function PressSection() {
             className="bg-ink c-paper p-8 md:p-10 rounded-sm flex flex-col justify-between min-h-[260px]"
           >
             <div>
-              <p className="t-label-caps c-gold mb-4">Press &amp; partnerships</p>
+              <p className="t-label-caps c-gold-deep mb-4 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />Press &amp; partnerships</p>
               <h3 className="t-headline-md c-paper leading-tight mb-3">
                 Writing about Aura?
               </h3>

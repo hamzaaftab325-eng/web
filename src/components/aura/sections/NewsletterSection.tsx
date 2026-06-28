@@ -33,7 +33,7 @@ export function NewsletterSection() {
 
       <div className="container-aura relative">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="t-label-caps c-gold mb-3">Stay in touch</p>
+          <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2"><span className="w-6 h-px bg-gold" aria-hidden />Stay in touch</p>
           <TextBlurReveal
             as="h2"
             className="t-display-md c-paper leading-tight mb-4"
@@ -70,7 +70,7 @@ export function NewsletterSection() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="group inline-flex items-center justify-center gap-2 bg-paper c-ink t-label-caps px-7 py-3.5 hover:bg-gold transition-colors disabled:opacity-60"
+                  className="group inline-flex items-center justify-center gap-2 bg-paper c-ink t-label-caps px-6 py-3.5 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm disabled:opacity-60"
                 >
                   {status === "submitting" ? (
                     <motion.span

@@ -37,7 +37,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="t-label-caps c-gold mb-6"
+            className="t-label-caps c-gold-deep mb-5 flex items-center gap-2"
           >
             New — The Plant Edit
           </motion.p>
@@ -73,7 +73,7 @@ export function HeroSection() {
           >
             <button
               onClick={() => setView("shop")}
-              className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-8 py-4 hover:bg-gold transition-colors"
+              className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-6 py-3.5 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm"
             >
               Shop the Collection
               <ArrowRight
