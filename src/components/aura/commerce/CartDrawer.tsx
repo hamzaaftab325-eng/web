@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
+import { X, ShoppingBag, Plus, Minus, Trash2, Heart, Clock, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { formatPrice, cn } from "@/lib/utils";
@@ -18,6 +18,8 @@ export function CartDrawer() {
   const increment = useCartStore((s) => s.increment);
   const decrement = useCartStore((s) => s.decrement);
   const removeLine = useCartStore((s) => s.removeLine);
+  const saveForLater = useCartStore((s) => s.saveForLater);
+  const moveToWishlist = useCartStore((s) => s.moveToWishlist);
   const subtotal = useCartStore((s) => s.subtotal());
 
   const prefersReducedMotion = useReducedMotion();
@@ -26,7 +28,7 @@ export function CartDrawer() {
 
   const goCheckout = () => {
     close();
-    setCheckoutOpen(true);
+    router.push("/cart");
   };
 
   const goShop = () => {
@@ -154,10 +156,17 @@ export function CartDrawer() {
                             {line.name}
                           </p>
                           {line.variantLabel && (
-                            <p className="t-caption c-ink-faint mb-2">
+                            <p className="t-caption c-ink-faint mb-1">
                               {line.variantLabel}
                             </p>
                           )}
+                          {/* Estimated delivery */}
+                          <div className="flex items-center gap-1 mb-2">
+                            <Clock size={10} strokeWidth={1.5} className="c-ink-faint" />
+                            <p className="t-caption c-ink-faint">
+                              Arrives in 3-5 days
+                            </p>
+                          </div>
                           <div className="flex items-center justify-between mt-2">
                             <div className="inline-flex items-center border border-hairline">
                               <button
@@ -181,6 +190,23 @@ export function CartDrawer() {
                             <p className="t-body c-ink t-num font-medium">
                               {formatPrice(line.price * line.quantity)}
                             </p>
+                          </div>
+                          {/* Quick actions */}
+                          <div className="flex items-center gap-3 mt-2">
+                            <button
+                              onClick={() => saveForLater(line.key)}
+                              className="inline-flex items-center gap-1 t-caption c-ink-faint hover:c-gold-deep transition-colors link-underline"
+                            >
+                              <Clock size={10} strokeWidth={1.5} />
+                              Save
+                            </button>
+                            <button
+                              onClick={() => moveToWishlist(line.key)}
+                              className="inline-flex items-center gap-1 t-caption c-ink-faint hover:c-gold-deep transition-colors link-underline"
+                            >
+                              <Heart size={10} strokeWidth={1.5} />
+                              Wishlist
+                            </button>
                           </div>
                         </div>
 
@@ -215,9 +241,10 @@ export function CartDrawer() {
 
                   <button
                     onClick={goCheckout}
-                    className="w-full bg-ink c-paper t-label-caps py-4 hover:bg-gold hover:c-paper transition-colors"
+                    className="w-full bg-ink c-paper t-label-caps py-4 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm inline-flex items-center justify-center gap-2"
                   >
-                    Proceed to Checkout
+                    View Cart & Checkout
+                    <ArrowRight size={14} strokeWidth={1.5} />
                   </button>
                   <button
                     onClick={goShop}

@@ -8,6 +8,7 @@ import { addToCart, removeFromCart, beginCheckout, purchase } from "@/lib/analyt
 
 interface CartState {
   lines: CartLine[];
+  savedForLater: CartLine[];
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -20,6 +21,9 @@ interface CartState {
   setQuantity: (key: string, quantity: number) => void;
   increment: (key: string) => void;
   decrement: (key: string) => void;
+  saveForLater: (key: string) => void;
+  moveToCart: (key: string) => void;
+  moveToWishlist: (key: string) => void;
   clear: () => void;
   subtotal: () => number;
   count: () => number;
@@ -29,6 +33,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       lines: [],
+      savedForLater: [],
       isOpen: false,
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
@@ -42,7 +47,6 @@ export const useCartStore = create<CartState>()(
           ? `${product.id}__${variant.id}`
           : product.id;
 
-        // Fire analytics: add_to_cart
         addToCart({
           currency: "USD",
           value: product.price * quantity,
@@ -82,7 +86,6 @@ export const useCartStore = create<CartState>()(
       removeLine: (key) => {
         const line = get().lines.find((l) => l.key === key);
         if (line) {
-          // Fire analytics: remove_from_cart
           removeFromCart({
             currency: "USD",
             value: line.price * line.quantity,
@@ -121,6 +124,36 @@ export const useCartStore = create<CartState>()(
             .filter((l) => l.quantity > 0),
         })),
 
+      saveForLater: (key) => {
+        const line = get().lines.find((l) => l.key === key);
+        if (!line) return;
+        set((s) => ({
+          lines: s.lines.filter((l) => l.key !== key),
+          savedForLater: [...s.savedForLater, line],
+        }));
+      },
+
+      moveToCart: (key) => {
+        const line = get().savedForLater.find((l) => l.key === key);
+        if (!line) return;
+        set((s) => ({
+          savedForLater: s.savedForLater.filter((l) => l.key !== key),
+          lines: [...s.lines, line],
+        }));
+      },
+
+      moveToWishlist: (key) => {
+        const line = get().lines.find((l) => l.key === key);
+        if (!line) return;
+        // Import wishlist store lazily to avoid circular dependency
+        import("@/store/use-wishlist-store").then((mod) => {
+          mod.useWishlistStore.getState().toggle(line.slug);
+        });
+        set((s) => ({
+          lines: s.lines.filter((l) => l.key !== key),
+        }));
+      },
+
       clear: () => set({ lines: [] }),
       subtotal: () =>
         get().lines.reduce((sum, l) => sum + l.price * l.quantity, 0),
@@ -129,7 +162,7 @@ export const useCartStore = create<CartState>()(
     {
       name: "aura-living-cart",
       storage: createJSONStorage(() => localStorage),
-      partialize: (s) => ({ lines: s.lines }),
+      partialize: (s) => ({ lines: s.lines, savedForLater: s.savedForLater }),
     }
   )
 );
