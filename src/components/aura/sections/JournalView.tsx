@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
-import { SplitTextReveal } from "@/components/aura/animation/SplitTextReveal";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { journalArticles } from "@/data/journal";
 
 /**
@@ -94,29 +94,15 @@ export function JournalView() {
   const openArticle = useUIStore((s) => s.openArticle);
 
   return (
-    <div className="bg-canvas pt-[88px] md:pt-[120px]">
-      {/* Hero */}
-      <section className="bg-cream py-12 md:py-20">
-        <div className="container-aura">
-          <p className="t-label-caps c-gold mb-5">The Journal</p>
-          <SplitTextReveal
-            as="h1"
-            text="Notes on rooms,\nmaterials, and slow making."
-            splitBy="line"
-            stagger={0.1}
-            duration={0.9}
-            className="t-display-lg c-ink leading-[1.05] max-w-3xl mb-6"
-          />
-          <TextBlurReveal
-            as="p"
-            delay={0.4}
-            className="t-body-lg c-ink-muted max-w-xl"
-          >
-            Essays, workshop visits, and care guides — written by our small
-            team, published slowly.
-          </TextBlurReveal>
-        </div>
-      </section>
+    <div className="bg-canvas">
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/journal.png"
+        alt="An editor's desk with an open notebook, fountain pen, and a small ceramic vase of dried flowers."
+        eyebrow="The Journal"
+        headline="Notes on rooms, materials, and slow making."
+        subtitle="Essays, workshop visits, and care guides — written by our small team, published slowly."
+      />
 
       {/* Featured article */}
       <section className="py-12 md:py-20">

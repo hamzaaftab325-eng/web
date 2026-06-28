@@ -19,6 +19,7 @@ import {
 import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { AuraInput, AuraTextarea } from "@/components/aura/ui/AuraInput";
 import { cn } from "@/lib/utils";
 
@@ -136,35 +137,15 @@ export function TradeView() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-canvas to-cream/20 pt-[72px] md:pt-[88px] min-h-screen">
-      {/* Hero */}
-      <section className="relative overflow-hidden py-12 md:py-20">
-        <div
-          className="pointer-events-none absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-gold-pale opacity-60 blur-3xl"
-          aria-hidden
-        />
-        <div className="container-aura relative">
-          <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2">
-            <span className="w-6 h-px bg-gold" aria-hidden />
-            Trade Program
-          </p>
-          <TextBlurReveal
-            as="h1"
-            className="t-display-lg c-ink leading-[1.05] max-w-3xl mb-6"
-          >
-            For designers who specify slowly.
-          </TextBlurReveal>
-          <TextBlurReveal
-            as="p"
-            delay={0.2}
-            className="t-body-lg c-ink-muted max-w-xl"
-          >
-            Tiered pricing, dedicated concierge, freight included. We work
-            with interior designers, stylists, and architects who put their
-            name on the rooms they finish.
-          </TextBlurReveal>
-        </div>
-      </section>
+    <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/trade.png"
+        alt="A design studio meeting table with material samples, swatches, and an open catalogue."
+        eyebrow="Trade Program"
+        headline="For designers who specify slowly."
+        subtitle="Tiered pricing, dedicated concierge, freight included. We work with interior designers, stylists, and architects who put their name on the rooms they finish."
+      />
 
       {/* Benefits grid */}
       <section className="pb-16 md:pb-24">

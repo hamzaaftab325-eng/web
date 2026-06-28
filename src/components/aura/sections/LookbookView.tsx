@@ -8,6 +8,7 @@ import { useUIStore } from "@/store/use-ui-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
 import { products } from "@/data/products";
 import { lookbookScenes, lookbookBySlug } from "@/data/lookbook";
@@ -48,7 +49,7 @@ export function LookbookView() {
   }, [activeSlug]);
 
   return (
-    <div className="bg-gradient-to-b from-canvas to-cream/20 pt-[72px] md:pt-[88px] min-h-screen">
+    <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
       <AnimatePresence mode="wait">
         {scene ? (
           <SceneDetail
@@ -65,38 +66,18 @@ export function LookbookView() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Hero — shared header block with gold-pale blur orb                          */
+/* Hero — full-bleed image hero (shared PageHero component)                   */
 /* -------------------------------------------------------------------------- */
 
 function LookbookHero() {
   return (
-    <section className="relative overflow-hidden py-12 md:py-20">
-      {/* Gold-pale blur orb */}
-      <div
-        className="pointer-events-none absolute -top-24 -right-24 w-[360px] h-[360px] rounded-full bg-gold-pale opacity-60 blur-3xl"
-        aria-hidden
-      />
-      <div className="container-aura relative">
-        <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2">
-          <span className="w-6 h-px bg-gold" aria-hidden />
-          The Lookbook
-        </p>
-        <TextBlurReveal
-          as="h1"
-          className="t-display-lg c-ink leading-[1.05] max-w-3xl mb-6"
-        >
-          Rooms, styled slowly.
-        </TextBlurReveal>
-        <TextBlurReveal
-          as="p"
-          delay={0.2}
-          className="t-body-lg c-ink-muted max-w-xl"
-        >
-          Six styled scenes from our studio — each one built around pieces we
-          live with. Tap a hotspot on any image to shop the look.
-        </TextBlurReveal>
-      </div>
-    </section>
+    <PageHero
+      image="/hero/lookbook.png"
+      alt="A beautifully styled living room with warm afternoon light, brass, ceramic, and a mirror arranged on a console."
+      eyebrow="The Lookbook"
+      headline="Rooms, styled slowly."
+      subtitle="Six styled scenes from our studio — each one built around pieces we live with. Tap a hotspot on any image to shop the look."
+    />
   );
 }
 
@@ -203,8 +184,8 @@ function SceneDetail({
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Back */}
-      <section className="py-6 md:py-8">
+      {/* Back — padded for fixed header */}
+      <section className="pt-24 md:pt-28 pb-6 md:pb-8">
         <div className="container-aura">
           <button
             onClick={onBack}

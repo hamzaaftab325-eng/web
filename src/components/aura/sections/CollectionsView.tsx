@@ -3,8 +3,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { collections } from "@/data/collections";
 import { products } from "@/data/products";
 import { formatPrice, cn } from "@/lib/utils";
@@ -19,34 +19,15 @@ export function CollectionsView() {
   const setCollection = useUIStore((s) => s.setCollection);
 
   return (
-    <div className="bg-gradient-to-b from-canvas to-cream/20 pt-[72px] md:pt-[88px] min-h-screen">
-      {/* Hero */}
-      <section className="relative overflow-hidden py-12 md:py-20">
-        <div
-          className="pointer-events-none absolute -top-24 -right-24 w-[380px] h-[380px] rounded-full bg-gold-pale opacity-60 blur-3xl"
-          aria-hidden
-        />
-        <div className="container-aura relative">
-          <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2">
-            <span className="w-6 h-px bg-gold" aria-hidden />
-            Collections
-          </p>
-          <TextBlurReveal
-            as="h1"
-            className="t-display-lg c-ink leading-[1.05] max-w-3xl mb-6"
-          >
-            Three edits, one palette.
-          </TextBlurReveal>
-          <TextBlurReveal
-            as="p"
-            delay={0.2}
-            className="t-body-lg c-ink-muted max-w-xl"
-          >
-            Curated selections from the catalogue — gathered by palette,
-            purpose, or price. Each one is a complete point of view.
-          </TextBlurReveal>
-        </div>
-      </section>
+    <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/collections.png"
+        alt="Three curated room vignettes side by side, each styled around a different palette."
+        eyebrow="Collections"
+        headline="Three edits, one palette."
+        subtitle="Curated selections from the catalogue — gathered by palette, purpose, or price. Each one is a complete point of view."
+      />
 
       {/* Collection cards */}
       <section className="pb-20 md:pb-32">

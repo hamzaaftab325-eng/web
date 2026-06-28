@@ -9,8 +9,7 @@ import { collections, collectionBySlug } from "@/data/collections";
 import { useUIStore, type SortKey } from "@/store/use-ui-store";
 import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
 import { FilterSidebar } from "@/components/aura/commerce/FilterSidebar";
-import { SplitTextReveal } from "@/components/aura/animation/SplitTextReveal";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { cn, formatPrice } from "@/lib/utils";
 
 const PRICE_BANDS: Record<string, { min: number; max: number }> = {
@@ -137,11 +136,20 @@ export function ShopView() {
     : "Considered pieces, sourced from small workshops we know by name.";
 
   return (
-    <div className="bg-canvas pt-[88px] md:pt-[120px]">
-      {/* Hero strip */}
-      <section className="bg-cream py-12 md:py-16">
+    <div className="bg-canvas">
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/shop.png"
+        alt="A curated home décor showroom with lamps, mirrors, and ceramics arranged on warm wood shelves."
+        eyebrow={collection ? "Collection" : category ? "Category" : "Shop"}
+        headline={heading}
+        subtitle={subheading}
+      />
+
+      {/* Breadcrumb (below hero, dark-on-light) */}
+      <section className="bg-canvas pt-6 md:pt-8">
         <div className="container-aura">
-          <nav className="t-caption c-ink-faint mb-6 flex items-center gap-2">
+          <nav className="t-caption c-ink-faint flex items-center gap-2">
             <button
               onClick={() => useUIStore.getState().setView("home")}
               className="hover:c-gold transition-colors"
@@ -163,22 +171,6 @@ export function ShopView() {
               </>
             )}
           </nav>
-
-          <SplitTextReveal
-            as="h1"
-            text={heading}
-            splitBy="line"
-            stagger={0.08}
-            duration={0.9}
-            className="t-display-lg c-ink leading-[1.05] mb-4 max-w-3xl"
-          />
-          <TextBlurReveal
-            as="p"
-            delay={0.3}
-            className="t-body-lg c-ink-muted max-w-xl"
-          >
-            {subheading}
-          </TextBlurReveal>
         </div>
       </section>
 

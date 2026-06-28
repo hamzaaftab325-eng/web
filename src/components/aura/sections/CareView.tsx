@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Check } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { careGuides, careGuideBySlug } from "@/data/care-guides";
 import type { CareGuide } from "@/data/care-guides";
 
@@ -25,7 +26,7 @@ export function CareView() {
   }, [activeSlug]);
 
   return (
-    <div className="bg-gradient-to-b from-canvas to-cream/20 pt-[72px] md:pt-[88px] min-h-screen">
+    <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
       <AnimatePresence mode="wait">
         {guide ? (
           <GuideDetail
@@ -48,33 +49,14 @@ export function CareView() {
 function GuideLibrary({ onOpen }: { onOpen: (slug: string) => void }) {
   return (
     <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden py-12 md:py-20">
-        <div
-          className="pointer-events-none absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-gold-pale opacity-60 blur-3xl"
-          aria-hidden
-        />
-        <div className="container-aura relative">
-          <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2">
-            <span className="w-6 h-px bg-gold" aria-hidden />
-            Care Guides
-          </p>
-          <TextBlurReveal
-            as="h1"
-            className="t-display-lg c-ink leading-[1.05] max-w-3xl mb-6"
-          >
-            How to care for your pieces.
-          </TextBlurReveal>
-          <TextBlurReveal
-            as="p"
-            delay={0.2}
-            className="t-body-lg c-ink-muted max-w-xl"
-          >
-            Seven material-specific guides — written by our small team, with
-            the same slow standard we apply to everything else.
-          </TextBlurReveal>
-        </div>
-      </section>
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/care.png"
+        alt="Care tools arranged on a linen cloth — a horsehair brush, microfiber cloth, beeswax polish, and a dried fern frond."
+        eyebrow="Care Guides"
+        headline="How to care for your pieces."
+        subtitle="Seven material-specific guides — written by our small team, with the same slow standard we apply to everything else."
+      />
 
       {/* Guide grid */}
       <section className="pb-20 md:pb-32">
@@ -149,8 +131,8 @@ function GuideDetail({
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Back */}
-      <section className="py-6 md:py-8">
+      {/* Back — padded for fixed header */}
+      <section className="pt-24 md:pt-28 pb-6 md:pb-8">
         <div className="container-aura">
           <button
             onClick={onBack}

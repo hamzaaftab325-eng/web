@@ -86,8 +86,8 @@ export function AccountLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-canvas pt-[72px] md:pt-[88px]">
-      <div className="container-aura py-8 md:py-12">
+    <div className="min-h-screen bg-canvas">
+      <div className="container-aura pt-24 md:pt-28 pb-8 md:pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           <div className="lg:hidden flex items-center justify-between mb-4">
             <button onClick={() => setFilterDrawerOpen(true)} className="inline-flex items-center gap-2 t-label-caps c-ink border border-hairline-cream px-4 py-2.5 rounded-sm"><Menu size={14} strokeWidth={1.5} />Account Menu</button>

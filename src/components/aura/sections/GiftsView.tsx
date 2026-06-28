@@ -4,8 +4,8 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gift, ArrowRight, Sparkles, Mail } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
 import { products } from "@/data/products";
 import { cn } from "@/lib/utils";
@@ -100,34 +100,15 @@ export function GiftsView() {
   }, [recipient, price]);
 
   return (
-    <div className="bg-gradient-to-b from-canvas to-cream/20 pt-[72px] md:pt-[88px] min-h-screen">
-      {/* Hero */}
-      <section className="relative overflow-hidden py-12 md:py-20">
-        <div
-          className="pointer-events-none absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-gold-pale opacity-60 blur-3xl"
-          aria-hidden
-        />
-        <div className="container-aura relative">
-          <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2">
-            <span className="w-6 h-px bg-gold" aria-hidden />
-            Gifts
-          </p>
-          <TextBlurReveal
-            as="h1"
-            className="t-display-lg c-ink leading-[1.05] max-w-3xl mb-6"
-          >
-            Gifts that finish a room.
-          </TextBlurReveal>
-          <TextBlurReveal
-            as="p"
-            delay={0.2}
-            className="t-body-lg c-ink-muted max-w-xl"
-          >
-            Considered pieces, chosen by recipient or price. Each one wrapped
-            in our signature cream paper and gold-foil seal.
-          </TextBlurReveal>
-        </div>
-      </section>
+    <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/gifts.png"
+        alt="A beautifully wrapped gift in cream paper with a gold-foil seal and a hand-tied linen ribbon."
+        eyebrow="Gifts"
+        headline="Gifts that finish a room."
+        subtitle="Considered pieces, chosen by recipient or price. Each one wrapped in our signature cream paper and gold-foil seal."
+      />
 
       {/* Gift card CTA banner (dark gradient) */}
       <section className="pb-12 md:pb-16">

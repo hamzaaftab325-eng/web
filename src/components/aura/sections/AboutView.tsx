@@ -3,48 +3,24 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Hammer, Leaf, Compass, Heart } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
-import { SplitTextReveal } from "@/components/aura/animation/SplitTextReveal";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { PressSection } from "@/components/aura/sections/PressSection";
 
 export function AboutView() {
   const setView = useUIStore((s) => s.setView);
 
   return (
-    <div className="bg-canvas pt-[88px] md:pt-[120px]">
-      {/* Hero */}
-      <section className="relative h-[60vh] min-h-[480px] overflow-hidden bg-ink flex items-end">
-        <motion.img
-          src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1920&h=1080&fit=crop&q=80"
-          alt="A ceramics workshop — hands shaping a vessel on the wheel."
-          initial={{ scale: 1.05 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-0 w-full h-full object-cover opacity-65"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent" />
-        <div className="relative z-10 container-aura pb-16 md:pb-24">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="t-label-caps c-gold mb-5"
-          >
-            Our Story
-          </motion.p>
-          <SplitTextReveal
-            as="h1"
-            text="A small atelier,\nsourcing slowly."
-            splitBy="line"
-            stagger={0.12}
-            duration={0.9}
-            trigger="mount"
-            delay={0.4}
-            className="t-display-xl c-paper leading-[1.05] max-w-3xl"
-          />
-        </div>
-      </section>
+    <div className="bg-canvas">
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/about.png"
+        alt="A ceramics workshop — hands shaping a vessel on the wheel."
+        eyebrow="Our Story"
+        headline="A small atelier, sourcing slowly."
+        subtitle="We started Aura Living in a converted garage in Portland, Oregon, with a single arched mirror, a borrowed truck, and a list of workshops we wanted to visit."
+      />
 
       {/* Narrative */}
       <section className="section-stack">

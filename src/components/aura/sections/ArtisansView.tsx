@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, MapPin, Hammer, Calendar } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
 import { artisans, artisanBySlug } from "@/data/artisans";
 import { products } from "@/data/products";
@@ -31,7 +32,7 @@ export function ArtisansView() {
   }, [activeSlug]);
 
   return (
-    <div className="bg-gradient-to-b from-canvas to-cream/20 pt-[72px] md:pt-[88px] min-h-screen">
+    <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
       <AnimatePresence mode="wait">
         {artisan ? (
           <ArtisanDetail
@@ -54,33 +55,14 @@ export function ArtisansView() {
 function ArtisanIndex({ onOpen }: { onOpen: (slug: string) => void }) {
   return (
     <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden py-12 md:py-20">
-        <div
-          className="pointer-events-none absolute -top-24 -left-24 w-[380px] h-[380px] rounded-full bg-gold-pale opacity-60 blur-3xl"
-          aria-hidden
-        />
-        <div className="container-aura relative">
-          <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2">
-            <span className="w-6 h-px bg-gold" aria-hidden />
-            The Workshops
-          </p>
-          <TextBlurReveal
-            as="h1"
-            className="t-display-lg c-ink leading-[1.05] max-w-3xl mb-6"
-          >
-            The hands behind the pieces.
-          </TextBlurReveal>
-          <TextBlurReveal
-            as="p"
-            delay={0.2}
-            className="t-body-lg c-ink-muted max-w-xl"
-          >
-            Four workshops, six countries, one shared standard. Every Aura
-            piece is made by a person we know by name.
-          </TextBlurReveal>
-        </div>
-      </section>
+      {/* Page hero — full-bleed image under fixed header */}
+      <PageHero
+        image="/hero/artisans.png"
+        alt="An artisan's workshop interior — a pottery wheel with a half-thrown vessel, glaze jars, and brass tools."
+        eyebrow="The Workshops"
+        headline="The hands behind the pieces."
+        subtitle="Four workshops, six countries, one shared standard. Every Aura piece is made by a person we know by name."
+      />
 
       {/* Profile grid */}
       <section className="pb-20 md:pb-32">
@@ -186,8 +168,8 @@ function ArtisanDetail({
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Back */}
-      <section className="py-6 md:py-8">
+      {/* Back — padded for fixed header */}
+      <section className="pt-24 md:pt-28 pb-6 md:pb-8">
         <div className="container-aura">
           <button
             onClick={onBack}
