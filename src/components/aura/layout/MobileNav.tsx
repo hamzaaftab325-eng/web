@@ -10,12 +10,9 @@ import { cn } from "@/lib/utils";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
-import { LanguageSelector } from "@/components/aura/ui/LanguageSelector";
-import { useTranslation } from "@/hooks/use-translation";
 
 export function MobileNav() {
   const router = useRouter();
-  const { t } = useTranslation();
   const open = useUIStore((s) => s.mobileNavOpen);
   const setOpen = useUIStore((s) => s.setMobileNavOpen);
   const setCategory = useUIStore((s) => s.setCategory);
@@ -94,12 +91,12 @@ export function MobileNav() {
                 className="space-y-1"
               >
                 {[
-                  { label: t("nav.browse"), action: () => goView("/") },
-                  { label: t("nav.shop"), action: () => goView("/shop") },
-                  { label: t("nav.collections"), action: () => goView("/collections") },
+                  { label: "Home", action: () => goView("/") },
+                  { label: "Shop All", action: () => goView("/shop") },
+                  { label: "Collections", action: () => goView("/collections") },
                   { label: "Artisans", action: () => goView("/artisans") },
-                  { label: t("nav.about"), action: () => goView("/about") },
-                  { label: t("nav.journal"), action: () => goView("/journal") },
+                  { label: "About", action: () => goView("/about") },
+                  { label: "Journal", action: () => goView("/journal") },
                   { label: "Sustainability", action: () => goView("/sustainability") },
                   { label: "Care Guides", action: () => goView("/care") },
                 ].map((item) => (
@@ -158,9 +155,8 @@ export function MobileNav() {
             </div>
 
             <div className="px-6 py-6 border-t border-hairline">
-              {/* Quick settings — language, theme, display (mobile access) */}
+              {/* Quick settings — theme + display (mobile access) */}
               <div className="flex items-center justify-between gap-4 mb-6">
-                <LanguageSelector className="text-ink" />
                 <ThemeToggle className="text-ink" />
                 <DisplayPreferences className="text-ink" />
               </div>
