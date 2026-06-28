@@ -216,10 +216,10 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="tel:+15035550142"
+                  href="tel:+923001234567"
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
                 >
-                  +1 (503) 555-0142
+                  +92 300 1234567
                 </a>
               </li>
             </ul>

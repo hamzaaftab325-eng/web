@@ -332,7 +332,7 @@ function ClosingCTA({
         Pieces mentioned in this essay
       </h2>
       <p className="t-body c-ink-muted leading-relaxed mb-8 max-w-xl">
-        Each one made by hand, sourced slowly, and shipped from our Portland
+        Each one made by hand, sourced slowly, and shipped from our Lahore
         studio. Tap any card to see the full piece.
       </p>
 

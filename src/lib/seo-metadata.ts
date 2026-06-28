@@ -34,7 +34,7 @@ const PAGE_META: Record<ViewKey, PageMeta> = {
   about: {
     title: "About — Aura Living",
     description:
-      "Founded in Portland, Oregon, Aura Living sources slowly from workshops we visit by name. Read the story behind the atelier and the makers who shape every piece.",
+      "Founded in Lahore, Punjab, Aura Living sources slowly from workshops we visit by name. Read the story behind the atelier and the makers who shape every piece.",
     ogImage: "/hero/about.png",
   },
   journal: {

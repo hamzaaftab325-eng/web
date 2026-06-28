@@ -66,7 +66,7 @@ const SOURCING_ROWS: SourcingRow[] = [
   },
   {
     material: "Living plants",
-    origin: "Salem, Oregon",
+    origin: "Pattoki, Punjab",
     workshop: "Willamette Greenhouse",
     certified: "USDA Organic · neonicotinoid-free",
   },
@@ -94,7 +94,7 @@ const WORKSHOPS: WorkshopLocation[] = [
   { name: "Atelier Pieri", location: "Carrara, Italy", craft: "Marble & travertine", founded: "1971" },
   { name: "Lin Belge", location: "Ghent, Belgium", craft: "Belgian linen", founded: "2001" },
   { name: "Dhaka Weaving Collective", location: "Dhaka, Bangladesh", craft: "Seagrass & jute", founded: "1996" },
-  { name: "Willamette Greenhouse", location: "Salem, Oregon", craft: "Living plants", founded: "2009" },
+  { name: "Willamette Greenhouse", location: "Pattoki, Punjab", craft: "Living plants", founded: "2009" },
   { name: "Atelier Vetro", location: "Murano, Italy", craft: "Hand-blown glass", founded: "1989" },
   { name: "Hokkaido Stone Works", location: "Asahikawa, Japan", craft: "Obsidian & basalt", founded: "2003" },
 ];
@@ -110,7 +110,7 @@ const CERTIFICATIONS: Certification[] = [
   { name: "Fair Trade Federation", issuer: "Fair Trade Federation (USA)", scope: "Dhaka Weaving Cooperative  full-member verification" },
   { name: "European Flax", issuer: "European Confederation of Flax and Hemp", scope: "Traceable European flax fibre, retted in the field" },
   { name: "Masters of Linen", issuer: "CELC Masters of Linen", scope: "Spinning and weaving within the European flax chain" },
-  { name: "USDA Organic", issuer: "United States Department of Agriculture", scope: "Willamette Greenhouse  soil, pest-control, and propagation" },
+  { name: "USDA Organic", issuer: "Pakistan Department of Agriculture", scope: "Willamette Greenhouse  soil, pest-control, and propagation" },
   { name: "RoHS Compliant", issuer: "EU Restriction of Hazardous Substances", scope: "All brass, wiring, and switches across the catalogue" },
   { name: "Quarry-traced", issuer: "ETICS verified, internal audit", scope: "Marble and travertine  every block logged from quarry to workshop" },
   { name: "Plastic-free Packaging", issuer: "Aura Living internal standard", scope: "100% of shipments  recycled paper, cotton tape, no plastic fill" },

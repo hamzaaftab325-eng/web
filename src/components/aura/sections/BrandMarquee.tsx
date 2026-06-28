@@ -6,7 +6,7 @@ const items = [
   "Slow Made",
   "Workshop Traced",
   "Lifetime Care",
-  "Designed in Portland",
+  "Designed in Lahore",
 ];
 
 export function BrandMarquee() {

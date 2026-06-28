@@ -6,7 +6,7 @@ export const testimonials: Testimonial[] = [
     quote:
       "The Halo ceramic lamp arrived in the most considered packaging I've ever unboxed. The glaze is even warmer in person — it's the single object that made my whole living room feel finished.",
     name: "Marisol Kendrick",
-    location: "Portland, OR",
+    location: "Lahore, Pakistan",
     rating: 5,
     productSlug: "ceramic-table-lamp",
   },

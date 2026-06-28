@@ -15,7 +15,7 @@ const mockOrder = {
   id: "o1", orderNumber: "AURA-483032", date: "2026-03-22", status: "shipped" as const,
   items: [{ key: "k1", productId: "mirror-arched-floor", slug: "arched-floor-mirror", name: "Aperture Arched Floor Mirror", image: "/product/arched-floor-mirror.png", price: 395, variantLabel: "Natural Oak", quantity: 1 }],
   subtotal: 395, shipping: 45, tax: 32.59, total: 472.59,
-  shippingAddress: { firstName: "Anna", lastName: "Reeves", street: "123 NW Hoyt St", apartment: "Apt 4B", city: "Portland", state: "OR", zip: "97209", country: "United States", phone: "+1 (503) 555-0142" },
+  shippingAddress: { firstName: "Anna", lastName: "Reeves", street: "123 Gulberg III", apartment: "House 45", city: "Lahore", state: "Punjab", zip: "54660", country: "Pakistan", phone: "+92 300 1234567" },
   trackingNumber: "1Z999AA10123456791", carrier: "White Glove", estimatedDelivery: "2026-03-29",
 };
 

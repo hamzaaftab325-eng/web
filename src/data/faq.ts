@@ -6,7 +6,7 @@ export const faqs: FAQItem[] = [
     category: "Shipping",
     question: "How long will my order take to arrive?",
     answer:
-      "In-stock small items (accessories, candles, prints) ship within 1-2 business days via UPS Ground and arrive in 3-5 business days within the contiguous United States. Larger items (mirrors, floor lamps, planters) ship via white-glove freight in 5-10 business days; you'll receive a tracking link and a scheduling call once the order is dispatched. Living plants ship Monday through Wednesday to avoid weekend holds.",
+      "In-stock small items (accessories, candles, prints) ship within 1-2 business days via TCS or Leopards Courier and arrive in 2-4 business days across Pakistan. Larger items (mirrors, floor lamps, planters) ship via white-glove freight in 5-8 business days; you will receive a tracking link and a scheduling call once the order is dispatched. Living plants ship Monday through Wednesday to avoid weekend holds.",
   },
   {
     id: "f2",
@@ -55,6 +55,6 @@ export const faqs: FAQItem[] = [
     category: "Product Care",
     question: "Where are your materials sourced?",
     answer:
-      "Our ceramics are thrown in small workshops in Portugal and Bangladesh. Our brass and steel components are fabricated in a family-run metal shop outside Brescia, Italy. Our plants are greenhouse-grown in California and shipped from our Portland facility. Marble and stone are sourced from quarries in Tuscany (Carrara) and Vermont. We publish a full materials sourcing index on our About page — transparency matters to us.",
+      "Our ceramics are thrown in small workshops in Portugal and Bangladesh. Our brass and steel components are fabricated in a family-run metal shop outside Brescia, Italy. Our plants are greenhouse-grown locally in Pattoki, Punjab and shipped from our Lahore facility. Marble and stone are sourced from quarries in Tuscany (Carrara) and Balochistan. We publish a full materials sourcing index on our About page — transparency matters to us.",
   },
 ];

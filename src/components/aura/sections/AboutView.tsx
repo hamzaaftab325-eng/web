@@ -28,7 +28,7 @@ export function AboutView() {
             as="p"
             className="t-headline-md c-ink font-display italic leading-relaxed mb-12"
           >
-            We started Aura Living in a converted garage in Portland, Oregon,
+            We started Aura Living in a converted garage in Lahore, Punjab,
             with a single arched mirror, a borrowed truck, and a list of
             workshops we wanted to visit.
           </TextBlurReveal>
@@ -47,7 +47,7 @@ export function AboutView() {
               Our ceramics are thrown in small batches in northern Portugal and
               in a cooperative in Bangladesh. Our brass and steel are shaped in
               a family-run metal shop outside Brescia. Our plants are
-              greenhouse-grown in California and shipped from our Portland
+              greenhouse-grown locally and shipped from our Lahore
               studio. Every material has a story, and we publish that sourcing
               index on every product page — because we believe you should know
               where the things in your home come from.
@@ -93,7 +93,7 @@ export function AboutView() {
                 One studio. Three rooms. A single standard.
               </h2>
               <p className="t-body c-ink-muted leading-relaxed mb-8">
-                Our Portland studio is where every piece begins and ends —
+                Our Lahore studio is where every piece begins and ends —
                 sketched, sampled, photographed, packed. We're a team of seven:
                 two designers, two makers, a photographer, a concierge, and a
                 dog. We answer every email ourselves. We wrap every shipment
@@ -102,7 +102,7 @@ export function AboutView() {
               </p>
               <div className="space-y-3">
                 {[
-                  { label: "Founded", value: "2021, Portland OR" },
+                  { label: "Founded", value: "2021, Lahore PK" },
                   { label: "Workshops", value: "11 across 6 countries" },
                   { label: "Team", value: "7 humans, 1 dog" },
                   { label: "Pieces in catalogue", value: "24 — and growing slowly" },

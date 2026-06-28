@@ -165,7 +165,7 @@ export function MobileNav() {
               <p className="t-body c-ink-muted">
                 concierge@auraliving.com
                 <br />
-                +1 (503) 555-0142
+                +92 300 1234567
               </p>
             </div>
           </motion.aside>

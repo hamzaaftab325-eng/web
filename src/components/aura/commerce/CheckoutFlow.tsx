@@ -124,9 +124,9 @@ export function CheckoutFlow() {
     address: "",
     apartment: "",
     city: "",
-    state: "",
+    state: "Punjab",
     zip: "",
-    country: "United States",
+    country: "Pakistan",
     phone: "",
   });
   const [shippingMethod, setShippingMethod] = useState("standard");
@@ -743,15 +743,25 @@ function InformationStep({
             containerClassName="col-span-2"
             autoComplete="address-level2"
           />
+          <div>
+            <label className="t-label-caps c-ink-faint block mb-2">Province</label>
+            <select
+              value={info.state}
+              onChange={(e) => setField("state", e.target.value)}
+              className="w-full px-4 py-3 t-body c-ink bg-transparent border-b border-hairline-strong outline-none focus:border-gold transition-colors"
+            >
+              <option value="">Select province…</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Sindh">Sindh</option>
+              <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
+              <option value="Balochistan">Balochistan</option>
+              <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
+              <option value="Azad Jammu & Kashmir">Azad Jammu &amp; Kashmir</option>
+              <option value="Islamabad Capital Territory">Islamabad Capital Territory</option>
+            </select>
+          </div>
           <AuraInput
-            label="State"
-            required
-            value={info.state}
-            onChange={(e) => setField("state", e.target.value)}
-            autoComplete="address-level1"
-          />
-          <AuraInput
-            label="ZIP"
+            label="Postal Code"
             required
             value={info.zip}
             onChange={(e) => setField("zip", e.target.value)}
@@ -759,12 +769,16 @@ function InformationStep({
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <AuraInput
-            label="Country"
-            value={info.country}
-            onChange={(e) => setField("country", e.target.value)}
-            autoComplete="country-name"
-          />
+          <div>
+            <label className="t-label-caps c-ink-faint block mb-2">Country</label>
+            <select
+              value={info.country}
+              onChange={(e) => setField("country", e.target.value)}
+              className="w-full px-4 py-3 t-body c-ink bg-transparent border-b border-hairline-strong outline-none focus:border-gold transition-colors"
+            >
+              <option value="Pakistan">Pakistan</option>
+            </select>
+          </div>
           <AuraInput
             label="Phone (optional)"
             type="tel"
@@ -772,6 +786,7 @@ function InformationStep({
             onChange={(e) => setField("phone", e.target.value)}
             autoComplete="tel"
             hint="For delivery questions only."
+            placeholder="+92 300 1234567"
           />
         </div>
       </div>

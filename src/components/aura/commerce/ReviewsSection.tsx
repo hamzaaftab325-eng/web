@@ -60,7 +60,7 @@ const MOCK_REVIEWS: Review[] = [
   {
     id: "r-3",
     name: "Priya Subramanian",
-    location: "Portland, OR",
+    location: "Lahore, Pakistan",
     rating: 4,
     title: "Lovely, with one minor caveat",
     body:
