@@ -1,18 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Instagram, Mail } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { categories } from "@/data/categories";
 import { collections } from "@/data/collections";
 
 export function Footer() {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
 
   const [email, setEmail] = useState("");
+
+  const go = (path: string) => {
+    if (path === "/shop") resetShop();
+    router.push(path);
+  };
+
+  const goCategory = (slug: string) => {
+    setCategory(slug as never);
+    router.push("/shop");
+  };
+
+  const goCollection = (slug: string) => {
+    setCollection(slug);
+    router.push("/shop");
+  };
   const [submitted, setSubmitted] = useState(false);
 
   const submit = (e: React.FormEvent) => {
@@ -30,7 +46,7 @@ export function Footer() {
           {/* Brand + newsletter */}
           <div className="md:col-span-4">
             <button
-              onClick={() => setView("home")}
+              onClick={() => go("/")}
               className="block text-left mb-6"
               aria-label="Aura Living home"
             >
@@ -77,10 +93,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => {
-                    resetShop();
-                    setView("shop");
-                  }}
+                  onClick={() => go("/shop")}
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
                 >
                   All Products
@@ -122,7 +135,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => setView("about")}
+                  onClick={() => go("/about")}
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Our Story
@@ -130,7 +143,7 @@ export function Footer() {
               </li>
               <li>
                 <button
-                  onClick={() => setView("journal")}
+                  onClick={() => go("/journal")}
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Journal
@@ -153,7 +166,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => setView("artisans")}
+                  onClick={() => go("/artisans")}
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Artisans
@@ -161,7 +174,7 @@ export function Footer() {
               </li>
               <li>
                 <button
-                  onClick={() => setView("sustainability")}
+                  onClick={() => go("/sustainability")}
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Sustainability
@@ -169,7 +182,7 @@ export function Footer() {
               </li>
               <li>
                 <button
-                  onClick={() => setView("care")}
+                  onClick={() => go("/care")}
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Care Guides
@@ -219,13 +232,13 @@ export function Footer() {
           </p>
           <div className="flex flex-wrap items-center gap-6">
             <button
-              onClick={() => setView("care")}
+              onClick={() => go("/care")}
               className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
             >
               Shipping
             </button>
             <button
-              onClick={() => setView("care")}
+              onClick={() => go("/care")}
               className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
             >
               Returns

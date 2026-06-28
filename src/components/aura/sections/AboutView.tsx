@@ -1,15 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Hammer, Leaf, Compass, Heart } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { PressSection } from "@/components/aura/sections/PressSection";
 
 export function AboutView() {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
 
   return (
     <div className="bg-canvas">
@@ -199,7 +199,7 @@ export function AboutView() {
             ones that catch your eye.
           </TextBlurReveal>
           <button
-            onClick={() => setView("shop")}
+            onClick={() => router.push("/shop")}
             className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-8 py-4 hover:bg-gold transition-colors"
           >
             Explore the Shop

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, ChevronDown, ArrowRight } from "lucide-react";
 import { products } from "@/data/products";
@@ -28,6 +29,7 @@ const sortOptions: { key: SortKey; label: string }[] = [
 ];
 
 export function ShopView() {
+  const router = useRouter();
   const {
     activeCategory,
     activeCollection,
@@ -144,7 +146,7 @@ export function ShopView() {
         <div className="container-aura">
           <nav className="t-caption c-ink-faint flex items-center gap-2">
             <button
-              onClick={() => useUIStore.getState().setView("home")}
+              onClick={() => router.push("/")}
               className="hover:c-gold transition-colors"
             >
               Home

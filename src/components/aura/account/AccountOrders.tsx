@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Package, ArrowRight, ChevronRight } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
-import { useUIStore } from "@/store/use-ui-store";
 import { formatPrice, cn } from "@/lib/utils";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
@@ -24,7 +24,7 @@ const statusConfig: Record<string, { color: string; dot: string; label: string }
 };
 
 export function AccountOrders() {
-  const { openOrder, setView } = useUIStore();
+  const router = useRouter();
   const [sort, setSort] = useState<"recent" | "oldest" | "highest">("recent");
   const sorted = [...mockOrders].sort((a, b) => {
     if (sort === "oldest") return a.date.localeCompare(b.date);
@@ -52,7 +52,7 @@ export function AccountOrders() {
         {sorted.map((order) => {
           const status = statusConfig[order.status] ?? statusConfig.processing!;
           return (
-            <motion.button key={order.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} onClick={() => openOrder(order.id)} className="group w-full bg-gradient-card-warm border border-hairline-cream p-5 md:p-6 card-modern text-left rounded-sm">
+            <motion.button key={order.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} onClick={() => router.push(`/account/orders/${order.id}`)} className="group w-full bg-gradient-card-warm border border-hairline-cream p-5 md:p-6 card-modern text-left rounded-sm">
               <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex -space-x-3">
                   {order.items.slice(0, 4).map((item) => (

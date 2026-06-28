@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Sparkles, ArrowRight, Gift } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
 
 const STORAGE_KEY = "aura-first-order-popup-dismissed";
 const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
@@ -15,8 +15,8 @@ const SHOW_DELAY = 3000;
  * Appears as a floating popup at bottom-right (desktop) / bottom (mobile).
  */
 export function FirstOrderBanner() {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
-  const setView = useUIStore((s) => s.setView);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export function FirstOrderBanner() {
 
   const goToSignup = () => {
     dismiss();
-    setView("signup");
+    router.push("/signup");
   };
 
   return (

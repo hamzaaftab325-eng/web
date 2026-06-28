@@ -21,6 +21,7 @@ import {
 import type { Product, ProductVariant } from "@/types";
 import { cn, formatPrice, sleep } from "@/lib/utils";
 import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/use-cart-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useToast } from "@/hooks/use-toast";
@@ -61,7 +62,7 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
   const openCart = useCartStore((s) => s.openCart);
   const toggleWish = useWishlistStore((s) => s.toggle);
   const isWished = useWishlistStore((s) => s.slugs.includes(product.slug));
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
   const setCategory = useUIStore((s) => s.setCategory);
   const { add: addRecentlyViewed } = useRecentlyViewed();
 
@@ -169,12 +170,13 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
     if (onBack) {
       onBack();
     } else {
-      setView("shop");
+      router.push("/shop");
     }
   };
 
   const onBreadcrumbCategory = () => {
     setCategory(product.category);
+    router.push("/shop");
   };
 
   const related = allProducts
@@ -282,7 +284,7 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
       <div className="container-aura pt-5">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 t-caption c-ink-faint">
           <button
-            onClick={() => setView("home")}
+            onClick={() => router.push("/")}
             className="hover:c-gold-deep transition-colors"
           >
             Home

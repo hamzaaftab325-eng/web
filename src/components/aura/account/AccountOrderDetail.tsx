@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Package, Truck, MapPin, CreditCard, Printer, RotateCcw, Check, Clock } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
-import { useUIStore } from "@/store/use-ui-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { productBySlug } from "@/data/products";
 import { formatPrice, cn } from "@/lib/utils";
@@ -26,15 +26,16 @@ const timelineSteps = [
   { status: "delivered", label: "Delivered", description: "Delivered on 2026-03-29" },
 ];
 
-export function AccountOrderDetail() {
-  const { activeOrderId, setView, openProduct } = useUIStore();
+export function AccountOrderDetail({ orderId }: { orderId?: string }) {
+  const router = useRouter();
   const addToCart = useCartStore((s) => s.addLine);
+  void orderId; // orderId is available for future use (currently using mock data)
   const order = mockOrder;
   const currentIndex = timelineSteps.findIndex((s) => s.status === order.status);
 
   return (
     <AccountLayout>
-      <button onClick={() => setView("account-orders")} className="inline-flex items-center gap-2 t-label-caps c-ink-muted hover:c-gold-deep transition-colors link-underline mb-6"><ArrowLeft size={14} strokeWidth={1.5} />Back to Orders</button>
+      <button onClick={() => router.push("/account/orders")} className="inline-flex items-center gap-2 t-label-caps c-ink-muted hover:c-gold-deep transition-colors link-underline mb-6"><ArrowLeft size={14} strokeWidth={1.5} />Back to Orders</button>
       <div className="mb-8 pb-8 border-b border-hairline-cream relative">
         <div className="absolute -top-8 -left-8 w-40 h-40 bg-gradient-to-br from-gold-pale to-transparent rounded-full blur-3xl opacity-50 pointer-events-none" aria-hidden />
         <div className="relative flex flex-col md:flex-row md:items-end md:justify-between gap-4">
@@ -78,11 +79,11 @@ export function AccountOrderDetail() {
           <RevealOnScroll stagger={0.05} className="space-y-3">
             {order.items.map((item) => (
               <motion.div key={item.key} variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }} className="flex gap-4 bg-gradient-card-warm border border-hairline-cream p-4 card-modern rounded-sm">
-                <button onClick={() => openProduct(item.slug)} className="relative w-20 h-24 bg-cream overflow-hidden flex-shrink-0 group ring-1 ring-hairline-gold rounded-sm">
+                <button onClick={() => router.push(`/product/${item.slug}`)} className="relative w-20 h-24 bg-cream overflow-hidden flex-shrink-0 group ring-1 ring-hairline-gold rounded-sm">
                   <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 </button>
                 <div className="flex-1 min-w-0">
-                  <button onClick={() => openProduct(item.slug)} className="t-body c-ink font-medium hover:c-gold-deep transition-colors link-underline text-left block">{item.name}</button>
+                  <button onClick={() => router.push(`/product/${item.slug}`)} className="t-body c-ink font-medium hover:c-gold-deep transition-colors link-underline text-left block">{item.name}</button>
                   {item.variantLabel && <p className="t-caption c-ink-faint mt-0.5">{item.variantLabel}</p>}
                   <p className="t-caption c-ink-faint mt-1 t-num">Qty {item.quantity}</p>
                 </div>

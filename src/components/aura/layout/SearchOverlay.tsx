@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
@@ -9,10 +10,9 @@ import { formatPrice } from "@/lib/utils";
 import { search as trackSearch } from "@/lib/analytics/ecommerce";
 
 export function SearchOverlay() {
+  const router = useRouter();
   const open = useUIStore((s) => s.searchOpen);
   const setOpen = useUIStore((s) => s.setSearchOpen);
-  const openProduct = useUIStore((s) => s.openProduct);
-  const setView = useUIStore((s) => s.setView);
 
   const [query, setQuery] = useState("");
 
@@ -66,7 +66,7 @@ export function SearchOverlay() {
 
   const openP = (slug: string) => {
     close();
-    setTimeout(() => openProduct(slug), 100);
+    router.push(`/product/${slug}`);
   };
 
   return (
@@ -134,7 +134,7 @@ export function SearchOverlay() {
                     <button
                       onClick={() => {
                         close();
-                        setView("shop");
+                        router.push("/shop");
                       }}
                       className="link-underline c-gold"
                     >

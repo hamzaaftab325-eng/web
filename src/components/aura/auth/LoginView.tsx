@@ -19,6 +19,7 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { cn } from "@/lib/utils";
 import { login as trackLogin } from "@/lib/analytics/ecommerce";
+import { useRouter } from "next/navigation";
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod schema (no server-side dependency)
@@ -105,10 +106,10 @@ function SlidingToggle({ checked, onChange, label, id }: SlidingToggleProps) {
    LoginView
    ──────────────────────────────────────────────────────────────────────── */
 export function LoginView() {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
   const setUser = useAuthStore((s) => s.setUser);
   const setToken = useAuthStore((s) => s.setToken);
-  const setView = useUIStore((s) => s.setView);
   const authRedirect = useUIStore((s) => s.authRedirect);
   const setAuthRedirect = useUIStore((s) => s.setAuthRedirect);
 
@@ -153,13 +154,13 @@ export function LoginView() {
     // Fire analytics: login
     trackLogin({ method: "email" });
 
-    const target = authRedirect ?? "home";
+    const target = authRedirect ?? "/";
     setAuthRedirect(null);
-    setView(target as never);
+    router.push(target);
   };
 
-  const goSignup = () => setView("signup");
-  const goForgot = () => setView("forgot-password");
+  const goSignup = () => router.push("/signup");
+  const goForgot = () => router.push("/forgot-password");
 
   const footer = (
     <p className="t-body c-ink-muted text-center">

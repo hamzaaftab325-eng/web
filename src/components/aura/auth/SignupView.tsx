@@ -22,6 +22,7 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { cn } from "@/lib/utils";
 import { signUp as trackSignUp } from "@/lib/analytics/ecommerce";
+import { useRouter } from "next/navigation";
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod
@@ -137,10 +138,10 @@ function SquareToggle({ checked, onChange, label, id, invalid }: SquareTogglePro
    SignupView
    ──────────────────────────────────────────────────────────────────────── */
 export function SignupView() {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
   const setUser = useAuthStore((s) => s.setUser);
   const setToken = useAuthStore((s) => s.setToken);
-  const setView = useUIStore((s) => s.setView);
   const setAuthRedirect = useUIStore((s) => s.setAuthRedirect);
 
   const [showPassword, setShowPassword] = React.useState(false);
@@ -196,10 +197,10 @@ export function SignupView() {
     trackSignUp({ method: "email" });
 
     setAuthRedirect(null);
-    setView("account");
+    router.push("/account");
   };
 
-  const goLogin = () => setView("login");
+  const goLogin = () => router.push("/login");
 
   const footer = (
     <p className="t-body c-ink-muted text-center">

@@ -17,7 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { cn } from "@/lib/utils";
@@ -98,7 +98,7 @@ const requiredFields: (keyof AddressForm)[] = [
 ];
 
 export function AccountAddresses() {
-  const { setView } = useUIStore();
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const { toast } = useToast();
 
@@ -678,7 +678,7 @@ export function AccountAddresses() {
       <p className="t-caption c-ink-faint mt-10 text-center md:text-left">
         Need a freight or trade address?{" "}
         <button
-          onClick={() => setView("account")}
+          onClick={() => router.push("/account")}
           className="c-gold-deep hover:c-ink transition-colors link-underline"
         >
           Contact concierge

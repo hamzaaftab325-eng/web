@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Home, Search, ShoppingBag, Heart, User } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
@@ -31,10 +32,10 @@ interface TabConfig {
 }
 
 export function MobileTabBar() {
+  const router = useRouter();
+  const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
 
-  const view = useUIStore((s) => s.view);
-  const setView = useUIStore((s) => s.setView);
   const setSearchOpen = useUIStore((s) => s.setSearchOpen);
   const openCart = useCartStore((s) => s.openCart);
   const openWishlist = useWishlistStore((s) => s.openDrawer);
@@ -64,13 +65,11 @@ export function MobileTabBar() {
     return () => window.visualViewport?.removeEventListener("resize", onResize);
   }, []);
 
-  // Derive active tab from current view
+  // Derive active tab from current pathname
   const activeTab: TabKey =
-    view === "home"
+    pathname === "/" || pathname === "/shop" || pathname === "/collections" || pathname === "/artisans" || pathname === "/sustainability" || pathname === "/care" || pathname === "/about" || pathname === "/journal" || pathname.startsWith("/product")
       ? "home"
-      : view === "shop" || view === "collections" || view === "artisans" || view === "sustainability" || view === "care" || view === "about" || view === "journal"
-      ? "home"
-      : view.startsWith("account")
+      : pathname.startsWith("/account")
       ? "account"
       : "home";
 
@@ -79,7 +78,7 @@ export function MobileTabBar() {
       key: "home",
       label: "Browse",
       icon: Home,
-      action: () => setView("home"),
+      action: () => router.push("/"),
     },
     {
       key: "search",
@@ -105,7 +104,7 @@ export function MobileTabBar() {
       key: "account",
       label: "Account",
       icon: User,
-      action: () => setView(user ? "account" : "login"),
+      action: () => router.push(user ? "/account" : "/login"),
     },
   ];
 

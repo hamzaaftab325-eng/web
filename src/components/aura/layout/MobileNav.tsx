@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { categories } from "@/data/categories";
@@ -9,9 +10,9 @@ import { cn } from "@/lib/utils";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 
 export function MobileNav() {
+  const router = useRouter();
   const open = useUIStore((s) => s.mobileNavOpen);
   const setOpen = useUIStore((s) => s.setMobileNavOpen);
-  const setView = useUIStore((s) => s.setView);
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
@@ -19,27 +20,22 @@ export function MobileNav() {
 
   const close = () => setOpen(false);
 
-  const goView = (
-    v:
-      | "home"
-      | "shop"
-      | "about"
-      | "journal"
-      | "collections"
-      | "artisans"
-      | "sustainability"
-      | "care"
-  ) => {
-    if (v === "shop") resetShop();
-    setView(v);
+  const goView = (path: string) => {
+    if (path === "/shop") resetShop();
+    router.push(path);
+    close();
   };
 
   const goCategory = (slug: string) => {
     setCategory(slug as never);
+    router.push("/shop");
+    close();
   };
 
   const goCollection = (slug: string) => {
     setCollection(slug);
+    router.push("/shop");
+    close();
   };
 
   return (
@@ -93,14 +89,14 @@ export function MobileNav() {
                 className="space-y-1"
               >
                 {[
-                  { label: "Home", action: () => goView("home") },
-                  { label: "Shop All", action: () => goView("shop") },
-                  { label: "Collections", action: () => goView("collections") },
-                  { label: "Artisans", action: () => goView("artisans") },
-                  { label: "About", action: () => goView("about") },
-                  { label: "Journal", action: () => goView("journal") },
-                  { label: "Sustainability", action: () => goView("sustainability") },
-                  { label: "Care Guides", action: () => goView("care") },
+                  { label: "Home", action: () => goView("/") },
+                  { label: "Shop All", action: () => goView("/shop") },
+                  { label: "Collections", action: () => goView("/collections") },
+                  { label: "Artisans", action: () => goView("/artisans") },
+                  { label: "About", action: () => goView("/about") },
+                  { label: "Journal", action: () => goView("/journal") },
+                  { label: "Sustainability", action: () => goView("/sustainability") },
+                  { label: "Care Guides", action: () => goView("/care") },
                 ].map((item) => (
                   <motion.button
                     key={item.label}

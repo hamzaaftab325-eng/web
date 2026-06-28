@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { cn, formatPrice } from "@/lib/utils";
@@ -44,7 +44,7 @@ const sortOptions: { key: SortKey; label: string; icon: typeof ArrowUpDown }[] =
   ];
 
 export function AccountWishlist() {
-  const { setView } = useUIStore();
+  const router = useRouter();
   const { toast } = useToast();
 
   const slugs = useWishlistStore((s) => s.slugs);
@@ -184,7 +184,7 @@ export function AccountWishlist() {
       </div>
 
       {sorted.length === 0 ? (
-        <EmptyWishlist onBrowse={() => setView("shop")} />
+        <EmptyWishlist onBrowse={() => router.push("/shop")} />
       ) : (
         <>
           {/* Summary + actions */}

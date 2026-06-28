@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
@@ -19,15 +20,15 @@ const navLinks: { label: string; view: "shop" | "about" | "journal" }[] = [
 ];
 
 export function Header() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
 
-  const setView = useUIStore((s) => s.setView);
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
-  const view = useUIStore((s) => s.view);
   const openMobile = useUIStore((s) => s.setMobileNavOpen);
   const setSearchOpen = useUIStore((s) => s.setSearchOpen);
 
@@ -42,10 +43,7 @@ export function Header() {
   const prefersReducedMotion = useReducedMotion();
 
   // Only account pages have cream backgrounds (no hero image).
-  // All other pages (shop, collections, artisans, sustainability, care,
-  // about, journal, home) have dark image heroes — header text should
-  // be white over the hero, switching to dark when scrolled (glass-nav).
-  const isLightPage = view.startsWith("account");
+  const isLightPage = pathname.startsWith("/account");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -56,19 +54,27 @@ export function Header() {
 
   const goShop = () => {
     resetShop();
-    setView("shop");
+    router.push("/shop");
     setMegaOpen(false);
   };
 
   const goCategory = (slug: string) => {
     setCategory(slug as never);
+    router.push("/shop");
     setMegaOpen(false);
   };
 
   const goCollection = (slug: string) => {
     setCollection(slug);
+    router.push("/shop");
     setMegaOpen(false);
   };
+
+  const goHome = () => router.push("/");
+  const goAbout = () => router.push("/about");
+  const goJournal = () => router.push("/journal");
+  const goCollections = () => router.push("/collections");
+  const goAccount = () => router.push(user ? "/account" : "/login");
 
   return (
     <header
@@ -94,7 +100,7 @@ export function Header() {
 
           {/* Logo */}
           <button
-            onClick={() => setView("home")}
+            onClick={goHome}
             className="flex-shrink-0 flex items-center gap-2 group"
             aria-label="Aura Living home"
           >
@@ -117,7 +123,7 @@ export function Header() {
             >
               <button
                 onClick={goShop}
-                data-active={view === "shop"}
+                data-active={pathname === "/shop"}
                 className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
               >
                 Shop
@@ -132,11 +138,8 @@ export function Header() {
               className="relative"
             >
               <button
-                onClick={() => {
-                  setMegaOpen(false);
-                  setView("collections");
-                }}
-                data-active={view === "collections"}
+                onClick={goCollections}
+                data-active={pathname === "/collections"}
                 className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
               >
                 Collections
@@ -144,16 +147,16 @@ export function Header() {
             </div>
 
             <button
-              onClick={() => setView("about")}
-              data-active={view === "about"}
+              onClick={goAbout}
+              data-active={pathname === "/about"}
               className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
             >
               About
             </button>
 
             <button
-              onClick={() => setView("journal")}
-              data-active={view === "journal"}
+              onClick={goJournal}
+              data-active={pathname === "/journal"}
               className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "c-paper")}
             >
               Journal
@@ -163,7 +166,7 @@ export function Header() {
           {/* Utility icons */}
           <div className="flex items-center gap-4 md:gap-5">
             <button
-              onClick={() => setView(user ? "account" : "login")}
+              onClick={goAccount}
               aria-label={user ? "Account" : "Sign in"}
               className={cn("transition-colors p-1 relative hover:text-gold", (scrolled || isLightPage) ? "text-ink" : "text-paper")}
             >

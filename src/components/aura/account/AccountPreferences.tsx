@@ -18,7 +18,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/use-auth-store";
 import { cn, formatPrice } from "@/lib/utils";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
@@ -108,7 +108,7 @@ const BUDGET_MAX = 500;
 const BUDGET_STEP = 50;
 
 export function AccountPreferences() {
-  const { setView } = useUIStore();
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
   const { toast } = useToast();
@@ -523,7 +523,7 @@ export function AccountPreferences() {
             <AuraButton
               type="button"
               variant="ghost"
-              onClick={() => setView("account")}
+              onClick={() => router.push("/account")}
             >
               Cancel
             </AuraButton>

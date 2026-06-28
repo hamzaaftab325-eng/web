@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, BookOpen, Check } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
@@ -121,7 +121,7 @@ function GuideDetail({
   guide: CareGuide;
   onBack: () => void;
 }) {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
 
   return (
     <motion.div
@@ -206,7 +206,7 @@ function GuideDetail({
                 <ArrowRight size={14} strokeWidth={1.5} />
               </a>
               <button
-                onClick={() => setView("shop")}
+                onClick={() => router.push("/shop")}
                 className="inline-flex items-center gap-2 t-label-caps c-ink hover:c-gold-deep transition-colors link-underline"
               >
                 Browse the shop

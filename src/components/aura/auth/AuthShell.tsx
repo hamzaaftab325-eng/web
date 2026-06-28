@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
-import { useUIStore } from "@/store/use-ui-store";
 import { cn } from "@/lib/utils";
 
 type BackTarget = "home" | "login";
@@ -50,12 +50,12 @@ export function AuthShell({
   quote = DEFAULT_QUOTE,
   className,
 }: AuthShellProps) {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
   const goBack = () => {
-    if (backTo === "login") setView("login");
-    else setView("home");
+    if (backTo === "login") router.push("/login");
+    else router.push("/");
   };
 
   const containerVariants = {
@@ -94,7 +94,7 @@ export function AuthShell({
           </button>
           <button
             type="button"
-            onClick={() => setView("home")}
+            onClick={() => router.push("/")}
             className="flex items-baseline gap-1.5 group"
             aria-label="Aura Living home"
           >

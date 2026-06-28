@@ -1,15 +1,16 @@
 "use client";
 
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/use-cart-store";
-import { useUIStore } from "@/store/use-ui-store";
 import { formatPrice, cn } from "@/lib/utils";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 
 const FREE_SHIP_THRESHOLD = 150;
 
 export function CartDrawer() {
+  const router = useRouter();
   const isOpen = useCartStore((s) => s.isOpen);
   const close = useCartStore((s) => s.closeCart);
   const lines = useCartStore((s) => s.lines);
@@ -18,18 +19,15 @@ export function CartDrawer() {
   const removeLine = useCartStore((s) => s.removeLine);
   const subtotal = useCartStore((s) => s.subtotal());
 
-  const setView = useUIStore((s) => s.setView);
-
   const prefersReducedMotion = useReducedMotion();
 
   const goCheckout = () => {
     close();
-    // No real checkout route — show a thank-you toast instead.
   };
 
   const goShop = () => {
     close();
-    setView("shop");
+    router.push("/shop");
   };
 
   const remainingForFreeShip = Math.max(0, FREE_SHIP_THRESHOLD - subtotal);

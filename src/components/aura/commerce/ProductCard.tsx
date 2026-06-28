@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { Heart, Plus } from "lucide-react";
 import Link from "next/link";
 import type { Product } from "@/types";
-import { useUIStore } from "@/store/use-ui-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { formatPrice, cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
-  const openProduct = useUIStore((s) => s.openProduct);
+  const router = useRouter();
   const toggleWish = useWishlistStore((s) => s.toggle);
   const isWished = useWishlistStore((s) => s.slugs.includes(product.slug));
   const addToCart = useCartStore((s) => s.addLine);
@@ -24,7 +24,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
   const [imgLoaded, setImgLoaded] = useState(false);
 
-  const open = () => openProduct(product.slug);
+  const open = () => router.push(`/product/${product.slug}`);
 
   const onAdd = (e: React.MouseEvent) => {
     e.stopPropagation();

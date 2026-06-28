@@ -8,7 +8,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Mail, Check, ArrowRight, ArrowLeft, Inbox } from "lucide-react";
 import { AuthShell } from "./AuthShell";
 import { Button } from "@/components/aura/ui/Button";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -24,8 +24,8 @@ type ForgotValues = z.infer<typeof forgotSchema>;
    ForgotPasswordView
    ──────────────────────────────────────────────────────────────────────── */
 export function ForgotPasswordView() {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
-  const setView = useUIStore((s) => s.setView);
 
   const [submittedEmail, setSubmittedEmail] = React.useState<string | null>(null);
 
@@ -44,7 +44,7 @@ export function ForgotPasswordView() {
     setSubmittedEmail(values.email);
   };
 
-  const goLogin = () => setView("login");
+  const goLogin = () => router.push("/login");
 
   const footer = (
     <p className="t-body c-ink-muted text-center">

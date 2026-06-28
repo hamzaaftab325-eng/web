@@ -23,6 +23,7 @@ import {
 import { cn, formatPrice, sleep, uid } from "@/lib/utils";
 import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { useToast } from "@/hooks/use-toast";
 import { beginCheckout, purchase } from "@/lib/analytics/ecommerce";
@@ -105,7 +106,7 @@ export function CheckoutFlow() {
   const prefersReducedMotion = useReducedMotion();
   const isOpen = useUIStore((s) => s.checkoutOpen);
   const setCheckoutOpen = useUIStore((s) => s.setCheckoutOpen);
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
   const lines = useCartStore((s) => s.lines);
   const subtotal = useCartStore((s) => s.subtotal());
   const cartCount = useCartStore((s) => s.count());
@@ -293,7 +294,7 @@ export function CheckoutFlow() {
 
   const finish = () => {
     setCheckoutOpen(false);
-    setView("shop");
+    router.push("/shop");
   };
 
   return (

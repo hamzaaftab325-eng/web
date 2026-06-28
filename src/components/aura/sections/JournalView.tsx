@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
@@ -90,7 +91,7 @@ const articles = [
 ];
 
 export function JournalView() {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
   const openArticle = useUIStore((s) => s.openArticle);
 
   return (
@@ -219,7 +220,7 @@ export function JournalView() {
             never marketing.
           </TextBlurReveal>
           <button
-            onClick={() => setView("home")}
+            onClick={() => router.push("/")}
             className="inline-flex items-center gap-2 t-label-caps c-ink hover:c-gold transition-colors link-underline"
           >
             Back to Home

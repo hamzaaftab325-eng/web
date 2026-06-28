@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { AuthShell } from "./AuthShell";
 import { Button } from "@/components/aura/ui/Button";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -86,8 +86,8 @@ const STRENGTH_LABEL: Record<0 | 1 | 2 | 3 | 4, string> = {
    ResetPasswordView
    ──────────────────────────────────────────────────────────────────────── */
 export function ResetPasswordView() {
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
-  const setView = useUIStore((s) => s.setView);
 
   const [showNew, setShowNew] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
@@ -122,7 +122,7 @@ export function ResetPasswordView() {
     setCompleted(true);
   };
 
-  const goLogin = () => setView("login");
+  const goLogin = () => router.push("/login");
 
   const footer = (
     <p className="t-body c-ink-muted text-center">

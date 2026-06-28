@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { collections } from "@/data/collections";
 import { productBySlug } from "@/data/products";
@@ -10,6 +11,7 @@ import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { formatPrice } from "@/lib/utils";
 
 export function CuratedCollection() {
+  const router = useRouter();
   const setCollection = useUIStore((s) => s.setCollection);
   const prefersReducedMotion = useReducedMotion();
   const collection = collections[0]; // Warm Tones
@@ -88,7 +90,7 @@ export function CuratedCollection() {
               return (
                 <motion.button
                   key={p.id}
-                  onClick={() => useUIStore.getState().openProduct(p.slug)}
+                  onClick={() => router.push(`/product/${p.slug}`)}
                   initial={prefersReducedMotion ? false : { opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-10% 0px" }}

@@ -1,20 +1,20 @@
 "use client";
 
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { X, Heart, ShoppingBag } from "lucide-react";
 import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useUIStore } from "@/store/use-ui-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { productBySlug } from "@/data/products";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 import { formatPrice } from "@/lib/utils";
 
 export function WishlistDrawer() {
+  const router = useRouter();
   const isOpen = useWishlistStore((s) => s.isOpen);
   const close = useWishlistStore((s) => s.closeDrawer);
   const slugs = useWishlistStore((s) => s.slugs);
   const remove = useWishlistStore((s) => s.remove);
-  const openProduct = useUIStore((s) => s.openProduct);
   const addToCart = useCartStore((s) => s.addLine);
   const prefersReducedMotion = useReducedMotion();
 
@@ -24,7 +24,12 @@ export function WishlistDrawer() {
 
   const goShop = () => {
     close();
-    useUIStore.getState().setView("shop");
+    router.push("/shop");
+  };
+
+  const goToProduct = (slug: string) => {
+    close();
+    router.push(`/product/${slug}`);
   };
 
   return (
@@ -104,10 +109,7 @@ export function WishlistDrawer() {
                       className="flex gap-4 py-5 border-b border-hairline last:border-b-0"
                     >
                       <button
-                        onClick={() => {
-                          close();
-                          openProduct(product.slug);
-                        }}
+                        onClick={() => goToProduct(product.slug)}
                         className="w-20 h-24 flex-shrink-0 bg-cream overflow-hidden"
                       >
                         <img
@@ -123,10 +125,7 @@ export function WishlistDrawer() {
                           {product.subtitle}
                         </p>
                         <button
-                          onClick={() => {
-                            close();
-                            openProduct(product.slug);
-                          }}
+                          onClick={() => goToProduct(product.slug)}
                           className="t-body c-ink font-medium hover:c-gold transition-colors link-underline text-left block truncate"
                         >
                           {product.name}

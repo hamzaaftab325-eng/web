@@ -5,7 +5,7 @@ import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
 import { productBySlug } from "@/data/products";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
 interface RecentlyViewedProps {
@@ -17,7 +17,7 @@ interface RecentlyViewedProps {
 export function RecentlyViewed({ excludeSlug, className }: RecentlyViewedProps) {
   const prefersReducedMotion = useReducedMotion();
   const { slugs, clear, loaded } = useRecentlyViewed();
-  const openProduct = useUIStore((s) => s.openProduct);
+  const router = useRouter();
 
   // Resolve to Product objects, dropping the excluded slug and any unknowns.
   const items = slugs
@@ -68,7 +68,7 @@ export function RecentlyViewed({ excludeSlug, className }: RecentlyViewedProps) 
                 animate={{ opacity: 1, y: 0 }}
                 exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.3) }}
-                onClick={() => openProduct(product.slug)}
+                onClick={() => router.push(`/product/${product.slug}`)}
                 className="group snap-start flex-shrink-0 w-[160px] sm:w-[180px] text-left"
                 aria-label={`View ${product.name}`}
               >

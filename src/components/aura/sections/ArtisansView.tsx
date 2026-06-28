@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, MapPin, Hammer, Calendar } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
@@ -152,7 +152,7 @@ function ArtisanDetail({
   artisan: Artisan;
   onBack: () => void;
 }) {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
 
   const linkedProducts = artisan.productSlugs
     .map((slug) => productBySlug(slug))
@@ -337,7 +337,7 @@ function ArtisanDetail({
 
           <div className="mt-16 md:mt-20 text-center">
             <button
-              onClick={() => setView("shop")}
+              onClick={() => router.push("/shop")}
               className="inline-flex items-center gap-3 bg-ink c-paper t-label-caps px-8 py-4 hover:bg-gold-deep transition-colors rounded-sm"
             >
               Browse the full shop

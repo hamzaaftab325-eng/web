@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Menu, X, ShoppingBag, ChevronRight } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
@@ -8,30 +9,38 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { cn } from "@/lib/utils";
-import type { ViewKey } from "@/types";
 
-const navItems: { label: string; icon: typeof LayoutDashboard; view: ViewKey }[] = [
-  { label: "Dashboard", icon: LayoutDashboard, view: "account" },
-  { label: "Orders", icon: Package, view: "account-orders" },
-  { label: "Addresses", icon: MapPin, view: "account-addresses" },
-  { label: "Wishlist", icon: Heart, view: "account-wishlist" },
-  { label: "Preferences", icon: Settings, view: "account-preferences" },
+const navItems: { label: string; icon: typeof LayoutDashboard; path: string }[] = [
+  { label: "Dashboard", icon: LayoutDashboard, path: "/account" },
+  { label: "Orders", icon: Package, path: "/account/orders" },
+  { label: "Addresses", icon: MapPin, path: "/account/addresses" },
+  { label: "Wishlist", icon: Heart, path: "/account/wishlist" },
+  { label: "Preferences", icon: Settings, path: "/account/preferences" },
 ];
 
 export function AccountLayout({ children }: { children: ReactNode }) {
-  const { view, setView, filterDrawerOpen, setFilterDrawerOpen } = useUIStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { filterDrawerOpen, setFilterDrawerOpen } = useUIStore();
   const user = useAuthStore((s) => s.user);
   const clearAuth = useAuthStore((s) => s.clear);
   const wishCount = useWishlistStore((s) => s.slugs.length);
   const cartCount = useCartStore((s) => s.lines.reduce((n, l) => n + l.quantity, 0));
 
   useEffect(() => {
-    if (!user) { useUIStore.getState().setAuthRedirect(view); setView("login"); }
-  }, [user, view, setView]);
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
 
   if (!user) return null;
 
   const initials = `${user.firstName[0] ?? ""}${user.lastName[0] ?? ""}`.toUpperCase();
+
+  const go = (path: string) => {
+    router.push(path);
+    setFilterDrawerOpen(false);
+  };
 
   const sidebar = (
     <div className="flex flex-col h-full">
@@ -50,11 +59,11 @@ export function AccountLayout({ children }: { children: ReactNode }) {
         <p className="t-label-caps c-ink-faint px-4 mb-2 mt-2 flex items-center gap-2"><span className="w-4 h-px bg-gold/40" aria-hidden />Menu</p>
         <ul className="space-y-1">
           {navItems.map((item) => {
-            const isActive = view === item.view;
-            const badge = item.view === "account-wishlist" ? wishCount : item.view === "account-orders" ? 2 : 0;
+            const isActive = pathname === item.path;
+            const badge = item.path === "/account/wishlist" ? wishCount : item.path === "/account/orders" ? 2 : 0;
             return (
-              <li key={item.view}>
-                <button onClick={() => { setView(item.view); setFilterDrawerOpen(false); }} className={cn("w-full flex items-center gap-3 px-4 py-3 t-body transition-all duration-300 relative group rounded-sm", isActive ? "c-ink font-medium" : "c-ink-muted hover:c-ink hover:bg-cream/60")}>
+              <li key={item.path}>
+                <button onClick={() => go(item.path)} className={cn("w-full flex items-center gap-3 px-4 py-3 t-body transition-all duration-300 relative group rounded-sm", isActive ? "c-ink font-medium" : "c-ink-muted hover:c-ink hover:bg-cream/60")}>
                   {isActive && <motion.span layoutId="account-nav-active" className="absolute inset-0 bg-gold-pale rounded-sm border border-gold/40 shadow-glow-gold" transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} />}
                   {isActive && <motion.span layoutId="account-nav-bar" className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-gold rounded-r-full" transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} />}
                   <item.icon size={18} strokeWidth={isActive ? 1.5 : 1.25} className={cn("flex-shrink-0 relative z-10 transition-colors", isActive ? "c-gold-deep" : "group-hover:c-gold")} />
@@ -68,7 +77,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
         </ul>
       </nav>
       <div className="p-4 border-t border-hairline-cream">
-        <button onClick={() => { clearAuth(); setView("home"); }} className="w-full flex items-center gap-3 px-4 py-3 t-body c-ink-muted hover:c-error transition-colors group rounded-sm hover:bg-error/5">
+        <button onClick={() => { clearAuth(); router.push("/"); }} className="w-full flex items-center gap-3 px-4 py-3 t-body c-ink-muted hover:c-error transition-colors group rounded-sm hover:bg-error/5">
           <LogOut size={18} strokeWidth={1.25} className="group-hover:scale-110 transition-transform" />Sign Out
         </button>
       </div>
@@ -77,7 +86,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
           <div className="relative"><ShoppingBag size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{cartCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper text-[9px] font-semibold rounded-full w-4 h-4 flex items-center justify-center t-num">{cartCount}</span>}</div>
           <span className="t-caption c-ink-faint">Cart</span>
         </button>
-        <button onClick={() => { setView("account-wishlist"); setFilterDrawerOpen(false); }} className="flex flex-col items-center justify-center gap-1 py-3 border border-hairline-cream bg-cream/50 hover:bg-cream hover:border-hairline-gold transition-colors group rounded-sm">
+        <button onClick={() => go("/account/wishlist")} className="flex flex-col items-center justify-center gap-1 py-3 border border-hairline-cream bg-cream/50 hover:bg-cream hover:border-hairline-gold transition-colors group rounded-sm">
           <div className="relative"><Heart size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{wishCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper text-[9px] font-semibold rounded-full w-4 h-4 flex items-center justify-center t-num">{wishCount}</span>}</div>
           <span className="t-caption c-ink-faint">Saved</span>
         </button>
@@ -113,3 +122,5 @@ export function AccountLayout({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
+export default AccountLayout;

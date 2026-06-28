@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { AppChrome } from "@/components/aura/layout/AppChrome";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
@@ -74,7 +75,7 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        {children}
+        <AppChrome>{children}</AppChrome>
         <Toaster />
       </body>
     </html>

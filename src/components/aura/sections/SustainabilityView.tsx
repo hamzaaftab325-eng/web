@@ -13,7 +13,7 @@ import {
   Target,
   Globe,
 } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
+import { useRouter } from "next/navigation";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
@@ -193,7 +193,7 @@ const FUTURE_COMMITMENTS: FutureCommitment[] = [
 ];
 
 export function SustainabilityView() {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
 
   return (
     <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
@@ -592,7 +592,7 @@ export function SustainabilityView() {
                 material, and every audit. Forty pages, no green-washing.
               </TextBlurReveal>
               <button
-                onClick={() => setView("about")}
+                onClick={() => router.push("/about")}
                 className="group inline-flex items-center gap-3 bg-paper c-ink t-label-caps px-8 py-4 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm"
               >
                 Read the Report
