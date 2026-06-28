@@ -21,7 +21,6 @@ import { formatPrice, cn } from "@/lib/utils";
 import { useState } from "react";
 
 const FREE_SHIP_THRESHOLD = 150;
-const GIFT_WRAP_PRICE = 8;
 const TAX_RATE = 0.08;
 
 /** Estimated delivery: 3-5 business days from today. */
@@ -58,7 +57,6 @@ export function CartView() {
   const [promoInput, setPromoInput] = useState("");
   const [promoCode, setPromoCode] = useState<string | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
-  const [giftWrap, setGiftWrap] = useState(false);
 
   const remainingForFreeShip = Math.max(0, FREE_SHIP_THRESHOLD - subtotal);
   const freeShipProgress = Math.min(100, (subtotal / FREE_SHIP_THRESHOLD) * 100);
@@ -68,8 +66,7 @@ export function CartView() {
   const shipping = hasFreeShipping || promoCode === "FREESHIP" ? 0 : 12;
   const taxable = Math.max(0, subtotal - discount);
   const tax = taxable * TAX_RATE;
-  const gift = giftWrap ? GIFT_WRAP_PRICE : 0;
-  const total = Math.max(0, taxable + shipping + tax + gift);
+  const total = Math.max(0, taxable + shipping + tax);
 
   const applyPromo = () => {
     const code = promoInput.trim().toUpperCase();
@@ -384,19 +381,6 @@ export function CartView() {
                 )}
               </div>
 
-              {/* Gift wrap */}
-              <label className="flex items-center gap-3 mb-6 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={giftWrap}
-                  onChange={(e) => setGiftWrap(e.target.checked)}
-                  className="w-4 h-4 accent-gold-deep"
-                />
-                <span className="t-body-sm c-ink">
-                  Add gift wrap (+{formatPrice(GIFT_WRAP_PRICE)})
-                </span>
-              </label>
-
               {/* Totals */}
               <div className="space-y-3 pb-4 border-b border-hairline-cream">
                 <div className="flex justify-between t-body c-ink-muted">
@@ -415,12 +399,6 @@ export function CartView() {
                     {shipping === 0 ? "Free" : formatPrice(shipping)}
                   </span>
                 </div>
-                {gift > 0 && (
-                  <div className="flex justify-between t-body c-ink-muted">
-                    <span>Gift wrap</span>
-                    <span className="t-num">{formatPrice(gift)}</span>
-                  </div>
-                )}
                 <div className="flex justify-between t-body c-ink-muted">
                   <span>Tax (8%)</span>
                   <span className="t-num">{formatPrice(tax)}</span>

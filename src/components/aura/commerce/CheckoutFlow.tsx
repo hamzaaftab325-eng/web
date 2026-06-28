@@ -12,7 +12,6 @@ import {
   Zap,
   Package,
   Tag,
-  Gift,
   ShieldCheck,
   Loader2,
   ShoppingBag,
@@ -29,7 +28,6 @@ import { useToast } from "@/hooks/use-toast";
 import { beginCheckout, purchase } from "@/lib/analytics/ecommerce";
 import { AuraInput, AuraTextarea } from "@/components/aura/ui/AuraInput";
 
-const GIFT_WRAP_PRICE = 8;
 const TAX_RATE = 0.08;
 const FREE_SHIP_THRESHOLD = 150;
 
@@ -99,7 +97,7 @@ interface PaymentForm {
 /**
  * CheckoutFlow — full-screen three-step checkout driven by the UI store's
  * `checkoutOpen` flag. Information → Shipping → Payment, then a confirmation
- * screen. Order summary sidebar holds the promo field, gift-wrap toggle, and
+ * screen. Order summary sidebar holds the promo field, and
  * order notes. Focus is trapped for the duration of the flow.
  */
 export function CheckoutFlow() {
@@ -143,7 +141,6 @@ export function CheckoutFlow() {
   const [promoInput, setPromoInput] = useState("");
   const [promoCode, setPromoCode] = useState<string | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
-  const [giftWrap, setGiftWrap] = useState(false);
   const [orderNotes, setOrderNotes] = useState("");
 
   // Reset flow state each time the modal opens (previous-render pattern —
@@ -204,10 +201,10 @@ export function CheckoutFlow() {
     if (promo && promo.type === "shipping") shipping = 0;
     const taxable = Math.max(0, subtotal - discount);
     const tax = taxable * TAX_RATE;
-    const gift = giftWrap ? GIFT_WRAP_PRICE : 0;
-    const total = Math.max(0, taxable + shipping + tax + gift);
-    return { discount, shipping, tax, gift, total };
-  }, [subtotal, promoCode, shippingMethod, giftWrap]);
+    
+    const total = Math.max(0, taxable + shipping + tax);
+    return { discount, shipping, tax, total };
+  }, [subtotal, promoCode, shippingMethod]);
 
   const applyPromo = () => {
     const code = promoInput.trim().toUpperCase();
@@ -542,60 +539,6 @@ export function CheckoutFlow() {
                         )}
                       </div>
 
-                      {/* Gift wrap toggle */}
-                      <div className="border-t border-hairline pt-4 mb-4">
-                        <button
-                          type="button"
-                          role="checkbox"
-                          aria-checked={giftWrap}
-                          onClick={() => setGiftWrap(!giftWrap)}
-                          className="w-full flex items-center gap-3 text-left"
-                        >
-                          <span
-                            className={cn(
-                              "flex-shrink-0 w-5 h-5 rounded-[2px] border flex items-center justify-center transition-all",
-                              giftWrap
-                                ? "bg-gold border-gold"
-                                : "bg-paper border-hairline-strong"
-                            )}
-                          >
-                            <AnimatePresence>
-                              {giftWrap && (
-                                <motion.span
-                                  initial={{ opacity: 0, scale: 0.6 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  exit={{ opacity: 0, scale: 0.6 }}
-                                  transition={{ duration: 0.18 }}
-                                >
-                                  <Check
-                                    size={13}
-                                    strokeWidth={2.5}
-                                    className="c-paper"
-                                  />
-                                </motion.span>
-                              )}
-                            </AnimatePresence>
-                          </span>
-                          <Gift
-                            size={15}
-                            strokeWidth={1.5}
-                            className={cn(
-                              giftWrap ? "c-gold-deep" : "c-ink",
-                              "shrink-0"
-                            )}
-                          />
-                          <span className="flex-1 min-w-0">
-                            <span className="t-body-sm c-ink font-medium">
-                              Gift wrap
-                            </span>
-                            <span className="t-caption c-ink-faint t-num">
-                              {" "}
-                              + ${GIFT_WRAP_PRICE}
-                            </span>
-                          </span>
-                        </button>
-                      </div>
-
                       {/* Order notes */}
                       <div className="border-t border-hairline pt-4 mb-4">
                         <AuraTextarea
@@ -604,7 +547,7 @@ export function CheckoutFlow() {
                           rows={2}
                           value={orderNotes}
                           onChange={(e) => setOrderNotes(e.target.value)}
-                          placeholder="Delivery instructions, gift message…"
+                          placeholder="Delivery instructions…"
                           containerClassName="w-full"
                         />
                       </div>
@@ -630,12 +573,6 @@ export function CheckoutFlow() {
                               : formatPrice(totals.shipping)
                           }
                         />
-                        {totals.gift > 0 && (
-                          <SummaryRow
-                            label="Gift wrap"
-                            value={formatPrice(totals.gift)}
-                          />
-                        )}
                         <SummaryRow
                           label="Estimated tax"
                           value={formatPrice(totals.tax)}
