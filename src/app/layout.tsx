@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AppChrome } from "@/components/aura/layout/AppChrome";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
@@ -83,7 +84,9 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <AppChrome>{children}</AppChrome>
+        <QueryProvider>
+          <AppChrome>{children}</AppChrome>
+        </QueryProvider>
         <Toaster />
       </body>
     </html>
