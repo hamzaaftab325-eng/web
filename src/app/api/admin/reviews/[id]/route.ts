@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
+import { createNotification } from "@/lib/notifications";
 
 const ReviewUpdateSchema = z.object({
   status: z.enum(["pending", "approved", "rejected"]).optional(),
@@ -22,7 +23,29 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Validation failed", code: "VALIDATION_ERROR" }, { status: 400 });
     }
 
-    const review = await db.review.update({ where: { id }, data: parsed.data });
+    const review = await db.review.update({ where: { id }, data: parsed.data, include: { product: { select: { slug: true } } } });
+
+    // Notify the reviewer if their review was approved or rejected
+    if (parsed.data.status && review.userId) {
+      if (parsed.data.status === "approved") {
+        await createNotification({
+          userId: review.userId,
+          type: "review_approved",
+          title: "Review Approved",
+          message: `Your review for "${review.product?.slug ?? "a product"}" has been approved and is now visible.`,
+          link: `/product/${review.product?.slug ?? ""}`,
+        });
+      } else if (parsed.data.status === "rejected") {
+        await createNotification({
+          userId: review.userId,
+          type: "review_rejected",
+          title: "Review Update",
+          message: `Your review was not approved. Please review our community guidelines.`,
+          link: "/account",
+        });
+      }
+    }
+
     return NextResponse.json({ review, message: "Review updated" });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "UPDATE_ERROR" }, { status: 500 });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
+import { createNotification } from "@/lib/notifications";
 
 const OrderUpdateSchema = z.object({
   status: z.enum(["processing", "packed", "shipped", "delivered", "cancelled"]).optional(),
@@ -61,6 +62,28 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         ...(data.orderNotes !== undefined && { orderNotes: data.orderNotes }),
       },
     });
+
+    // Notify the customer if their order status changed
+    if (data.status && order.userId) {
+      const statusMessages: Record<string, { title: string; message: string }> = {
+        processing: { title: "Order Processing", message: `Your order ${order.orderNumber} is now being processed.` },
+        packed: { title: "Order Packed", message: `Your order ${order.orderNumber} has been packed and is ready for shipment.` },
+        shipped: { title: "Order Shipped", message: `Your order ${order.orderNumber} has been shipped${order.trackingNumber ? ` — tracking: ${order.trackingNumber}` : ""}.` },
+        delivered: { title: "Order Delivered", message: `Your order ${order.orderNumber} has been delivered. Enjoy!` },
+        cancelled: { title: "Order Cancelled", message: `Your order ${order.orderNumber} has been cancelled. Contact us if you have questions.` },
+      };
+      const msg = statusMessages[data.status];
+      if (msg) {
+        await createNotification({
+          userId: order.userId,
+          type: "order_status",
+          title: msg.title,
+          message: msg.message,
+          link: "/account/orders",
+        });
+      }
+    }
+
     return NextResponse.json({ order, message: "Order updated" });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "UPDATE_ERROR" }, { status: 500 });

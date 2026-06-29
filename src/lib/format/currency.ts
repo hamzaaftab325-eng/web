@@ -1,40 +1,40 @@
 /**
- * Server-side currency formatting (for SSR, metadata, JSON-LD).
+ * Currency formatting for Aura Living.
  *
- * For client-side reactive formatting, use the useCurrencyStore hook
- * which respects the user's currency preference.
+ * All prices in the database are stored in PKR (Pakistani Rupee).
+ * The admin enters prices in PKR, the checkout uses PKR, and the
+ * storefront displays PKR. No conversion is needed — just format
+ * the number with the ₨ symbol and proper grouping.
  *
- * Default: PKR (₨) at mock rate of 278.5 PKR per USD.
+ * For future multi-currency support, swap formatPrice to use a
+ * currency store that converts PKR → USD/EUR/GBP at the real rate.
  */
-
-const PKR_RATE = 278.5; // Mock — swap to real API
-const USD_TO_PKR = (usd: number) => Math.round(usd * PKR_RATE);
 
 /**
- * Format a USD price as PKR for server-side rendering.
- * Returns e.g. "₨52,718" for $189.
+ * Format a PKR price with the ₨ symbol and locale grouping.
+ * Returns e.g. "₨5,000" for 5000.
  */
-export function formatPricePKR(usdPrice: number): string {
-  const pkr = USD_TO_PKR(usdPrice);
+export function formatPrice(pkrPrice: number): string {
   const formatted = new Intl.NumberFormat("ur-PK", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(pkr);
+  }).format(Math.round(pkrPrice));
   return `₨${formatted}`;
 }
 
 /**
- * Format a USD price as USD (for fallback / JSON-LD).
+ * Alias for formatPrice — kept for backward compatibility.
  */
-export function formatPriceUSD(usdPrice: number): string {
-  return `$${usdPrice.toFixed(2)}`;
-}
+export const formatPricePKR = formatPrice;
 
 /**
- * Default export — format as PKR (the site's primary currency).
+ * Format a price as USD (for JSON-LD structured data).
+ * Converts PKR → USD at a fixed rate for SEO purposes only.
  */
-export function formatPrice(usdPrice: number): string {
-  return formatPricePKR(usdPrice);
+const USD_RATE = 278.5; // PKR per USD
+export function formatPriceUSD(pkrPrice: number): string {
+  const usd = pkrPrice / USD_RATE;
+  return `$${usd.toFixed(2)}`;
 }
 
-export { PKR_RATE };
+export { USD_RATE };

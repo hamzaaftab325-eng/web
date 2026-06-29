@@ -14,7 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
  *   - All other requests → pass through
  */
 const PAGE_PREFIXES = ["/account", "/admin"];
-const API_PREFIXES = ["/api/user", "/api/admin"];
+const API_PREFIXES = ["/api/user", "/api/admin", "/api/notifications"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -60,5 +60,6 @@ export const config = {
     "/api/user/:path*",
     "/api/orders/:path*",
     "/api/admin/:path*",
+    "/api/notifications/:path*",
   ],
 };

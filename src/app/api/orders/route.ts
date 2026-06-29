@@ -3,6 +3,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
+import { createNotification, notifyAdmins } from "@/lib/notifications";
+import { formatPrice } from "@/lib/format/currency";
 
 /**
  * GET /api/orders — user's order history (requires auth)
@@ -139,6 +141,25 @@ export async function POST(request: NextRequest) {
         }).catch(() => {});
       }
     }
+
+    // Send notifications
+    // 1. Notify the customer (if logged in)
+    if (userId) {
+      await createNotification({
+        userId,
+        type: "order_status",
+        title: "Order Placed",
+        message: `Your order ${order.orderNumber} has been received and is being processed.`,
+        link: "/account/orders",
+      });
+    }
+    // 2. Notify all admins
+    await notifyAdmins(
+      "new_order",
+      "New Order",
+      `Order ${order.orderNumber} placed by ${email} — ${formatPrice(total)}`,
+      `/admin/orders/${order.id}`
+    );
 
     return NextResponse.json({
       orderNumber: order.orderNumber,

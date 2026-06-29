@@ -6,19 +6,20 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format a USD price value as PKR (Pakistani Rupee) for server-side rendering.
- * The site's primary currency is PKR. Prices stored in USD, converted at mock
- * rate of 278.5 PKR per USD. Client-side useFormatPrice() upgrades to user's
- * currency choice. Tabular numerals handled via CSS `.t-num`.
+ * Format a price for display.
+ *
+ * All prices in the database are stored in PKR (Pakistani Rupee).
+ * The admin enters prices in PKR, the checkout uses PKR, and the
+ * storefront displays PKR. No conversion is needed — just format
+ * the number with the ₨ symbol and locale grouping.
+ *
+ * Returns e.g. "₨5,000" for 5000.
  */
-const PKR_RATE = 278.5;
-
-export function formatPrice(usdValue: number): string {
-  const pkr = Math.round(usdValue * PKR_RATE);
+export function formatPrice(pkrValue: number): string {
   const formatted = new Intl.NumberFormat("ur-PK", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(pkr);
+  }).format(Math.round(pkrValue));
   return `₨${formatted}`;
 }
 

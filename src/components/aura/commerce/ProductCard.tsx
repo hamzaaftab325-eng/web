@@ -9,6 +9,7 @@ import type { Product } from "@/types";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { formatPrice, cn } from "@/lib/utils";
+import { getCardUrl } from "@/lib/cloudinary-client";
 
 interface ProductCardProps {
   product: Product;
@@ -57,7 +58,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-cream to-cream-deep animate-pulse" />
         )}
         <motion.img
-          src={product.images[0]}
+          src={getCardUrl(product.images[0])}
           alt={product.name}
           loading={priority ? "eager" : "lazy"}
           onLoad={() => setImgLoaded(true)}

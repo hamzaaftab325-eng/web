@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { verifyToken } from "@/lib/auth";
+import { getAccessToken } from "@/lib/auth-cookies";
+import { notifyAdmins } from "@/lib/notifications";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ productSlug: string }> }) {
   try {
@@ -29,19 +32,49 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const product = await db.product.findUnique({ where: { slug: productSlug } });
     if (!product) return NextResponse.json({ error: "Product not found", code: "NOT_FOUND" }, { status: 404 });
 
+    // Check if the current user has purchased this product (verified buyer)
+    let verifiedBuyer = false;
+    let userId: string | undefined;
+    const accessToken = getAccessToken(request);
+    if (accessToken) {
+      try {
+        const payload = verifyToken(accessToken);
+        const user = await db.user.findUnique({ where: { id: payload.userId } });
+        if (user) {
+          userId = user.id;
+          // Check if user has a delivered order containing this product
+          const orders = await db.order.findMany({
+            where: { userId: user.id, status: "delivered" },
+            include: { items: { where: { productSlug } } },
+          });
+          verifiedBuyer = orders.some(o => o.items.length > 0);
+        }
+      } catch { /* ignore — guest review */ }
+    }
+
     const review = await db.review.create({
       data: {
         productId: product.id,
+        ...(userId && { userId }),
         authorName: body.authorName ?? "Anonymous",
         authorLocation: body.authorLocation ?? null,
-        rating: body.rating ?? 5,
+        rating: Math.min(5, Math.max(1, Number(body.rating) || 5)),
         title: body.title ?? null,
         body: body.body ?? "",
-        status: "pending",
+        verifiedBuyer,
+        status: "approved", // Auto-approve for now (no email verification yet)
       },
     });
 
-    return NextResponse.json({ message: "Review submitted — pending moderation", review });
+    // Notify admins about the new review (fire-and-forget)
+    void notifyAdmins(
+      "new_review",
+      "New Review",
+      `${body.authorName ?? "Someone"} left a ${Math.min(5, Math.max(1, Number(body.rating) || 5))}-star review on ${product.name}`,
+      "/admin/reviews"
+    );
+
+    return NextResponse.json({ message: "Review submitted", review });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "REVIEW_ERROR" }, { status: 500 });
   }

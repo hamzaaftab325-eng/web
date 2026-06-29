@@ -85,13 +85,16 @@ export default function AdminProductEdit() {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("folder", "aura-living/products");
+        formData.append("productName", name || "product");
+        formData.append("context", "product");
+        formData.append("sortOrder", String(images.length));
         const res = await fetch("/api/upload", { method: "POST", body: formData });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.error ?? "Upload failed");
         }
         const data = await res.json();
-        setImages(prev => [...prev, { url: data.url, altText: "" }]);
+        setImages(prev => [...prev, { url: data.fullUrl ?? data.url, altText: data.altText ?? "" }]);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
