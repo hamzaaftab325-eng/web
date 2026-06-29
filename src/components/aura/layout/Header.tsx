@@ -47,10 +47,11 @@ export function Header() {
   const prefersReducedMotion = useReducedMotion();
 
   // Pages with light/cream backgrounds (no dark hero image) need dark header text.
-  // Account pages + product detail pages have cream backgrounds.
-  // All other pages (home, shop, about, journal, collections, artisans,
-  // sustainability, care) have dark image heroes — white header text.
-  const isLightPage = pathname.startsWith("/account") || pathname.startsWith("/product");
+  // Account, admin, product detail, cart, and auth pages all have cream backgrounds.
+  // Home page + content pages (about, journal, collections, artisans, sustainability,
+  // care, shop) have dark image heroes — white header text when not scrolled.
+  const LIGHT_PAGE_PREFIXES = ["/account", "/admin", "/product", "/cart", "/login", "/signup", "/forgot-password", "/reset-password"];
+  const isLightPage = LIGHT_PAGE_PREFIXES.some(prefix => pathname.startsWith(prefix));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);

@@ -17,6 +17,11 @@ import {
   ChevronRight,
   ShieldCheck,
   ArrowUpRight,
+  Users,
+  MessageSquare,
+  Tag,
+  Truck,
+  Mail,
 } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -26,7 +31,12 @@ const navItems: { label: string; icon: typeof LayoutDashboard; path: string; des
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin", description: "Overview & insights" },
   { label: "Products", icon: Package, path: "/admin/products", description: "Catalog & inventory" },
   { label: "Orders", icon: ShoppingBag, path: "/admin/orders", description: "Fulfillment queue" },
+  { label: "Customers", icon: Users, path: "/admin/customers", description: "User accounts & roles" },
+  { label: "Reviews", icon: MessageSquare, path: "/admin/reviews", description: "Moderation queue" },
+  { label: "Promotions", icon: Tag, path: "/admin/promo-codes", description: "Discount codes" },
+  { label: "Shipping", icon: Truck, path: "/admin/shipping", description: "Methods & rates" },
   { label: "Content", icon: FileText, path: "/admin/content", description: "Pages & media" },
+  { label: "Subscribers", icon: Mail, path: "/admin/subscribers", description: "Email list" },
   { label: "Analytics", icon: BarChart3, path: "/admin/analytics", description: "Sales & traffic" },
   { label: "Settings", icon: Settings, path: "/admin/settings", description: "Store config" },
 ];

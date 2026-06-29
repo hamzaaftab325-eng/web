@@ -173,6 +173,46 @@ export default function AdminOrderDetail() {
                 {order.carrier && <p className="t-caption c-ink-faint mt-1">via {order.carrier}</p>}
               </div>
             )}
+
+            {/* Tracking info editor */}
+            <div className="mt-4 pt-4 border-t border-hairline-cream space-y-3">
+              <p className="t-label-caps c-ink-faint">Tracking Information</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  placeholder="Tracking number"
+                  defaultValue={order.trackingNumber ?? ""}
+                  onBlur={(e) => {
+                    const val = e.target.value;
+                    if (val !== (order.trackingNumber ?? "")) {
+                      fetch(`/api/admin/orders/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ trackingNumber: val || null }),
+                      }).then(() => setOrder({ ...order, trackingNumber: val || undefined }));
+                    }
+                  }}
+                  className="w-full px-3 py-2 t-body-sm c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors"
+                />
+                <input
+                  type="text"
+                  placeholder="Carrier (e.g. TCS, DHL)"
+                  defaultValue={order.carrier ?? ""}
+                  onBlur={(e) => {
+                    const val = e.target.value;
+                    if (val !== (order.carrier ?? "")) {
+                      fetch(`/api/admin/orders/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ carrier: val || null }),
+                      }).then(() => setOrder({ ...order, carrier: val || undefined }));
+                    }
+                  }}
+                  className="w-full px-3 py-2 t-body-sm c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors"
+                />
+              </div>
+              <p className="t-caption c-ink-faint">Changes save automatically when you click away.</p>
+            </div>
           </section>
         </div>
 
