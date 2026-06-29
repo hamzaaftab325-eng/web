@@ -6,9 +6,6 @@ const nextConfig: NextConfig = {
   // which doesn't fit Vercel's serverless model (causes API routes to hang).
   // Use `build:standalone` + `start:standalone` scripts for self-hosted deploys.
   reactStrictMode: true,
-  experimental: {
-    viewTransition: true,
-  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
