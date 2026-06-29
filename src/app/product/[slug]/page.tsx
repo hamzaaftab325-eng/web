@@ -5,12 +5,10 @@ import { ProductDetailPage } from "@/components/aura/commerce/ProductDetailPage"
 import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
-const BASE_URL = "https://aura-living-1.vercel.app";
+// Force dynamic rendering — don't try to query DB at build time
+export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  const products = await db.product.findMany({ where: { isActive: true }, select: { slug: true } });
-  return products.map((p) => ({ slug: p.slug }));
-}
+const BASE_URL = "https://aura-living-1.vercel.app";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
