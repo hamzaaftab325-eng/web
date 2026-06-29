@@ -52,3 +52,7 @@ prompt
 server.log
 # Skills directory
 /skills/
+# Junk files
+src/middleware.ts.bak
+tool-results/
+upload/
