@@ -4,10 +4,18 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
+/**
+ * Prisma client singleton.
+ *
+ * On Vercel serverless, the client is recreated per warm instance. We log
+ * only `error` and `warn` in production to keep cold-start log noise down.
+ */
+const isProd = process.env.NODE_ENV === 'production'
+
 export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: ['query'],
+    log: isProd ? ['error', 'warn'] : ['query', 'error', 'warn'],
   })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+if (!isProd) globalForPrisma.prisma = db
