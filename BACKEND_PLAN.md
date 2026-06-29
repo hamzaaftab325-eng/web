@@ -17,7 +17,7 @@
 | B7 | Cloudinary image upload | [x] |
 | B8 | Admin panel | [x] |
 | B9 | Analytics dashboard | [x] |
-| B10 | Final integration + polish | [~] |
+| B10 | Final integration + polish | [x] |
 
 ## Payment Roadmap: COD now → JazzCash + EasyPaisa + Bank Transfer later
 
@@ -29,12 +29,15 @@
 - Orders: list, create, detail
 - Reviews: list by product, submit, mark helpful
 - User: addresses (CRUD), wishlist (GET/POST/DELETE)
-- Admin: analytics overview, analytics chart data, orders list, order detail (GET+PUT)
-- Health: /api/health
+- Admin: analytics overview, analytics chart data, orders list, order detail (GET+PUT), products list (GET+POST), product detail (GET+PUT+DELETE)
+- Upload: /api/upload (admin-only Cloudinary image upload)
+- Health: /api/health (liveness + readiness probe)
 
 ## Admin Panel Pages:
 - /admin — Dashboard (revenue, orders, products, customers, recent orders, low stock)
 - /admin/products — Product list with search
+- /admin/products/new — Create new product form (with Cloudinary image upload)
+- /admin/products/[id]/edit — Edit product form (with soft-delete)
 - /admin/orders — Order list with status filter
 - /admin/orders/[id] — Order detail with status update
 - /admin/analytics — Sales charts, top products, search terms

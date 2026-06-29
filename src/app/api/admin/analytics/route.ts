@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       totalRevenue: orders.reduce((s, o) => s + Number(o.total), 0),
       totalOrders: orders.length,
       avgOrderValue: orders.length > 0 ? orders.reduce((s, o) => s + Number(o.total), 0) / orders.length : 0,
-      topProducts: topProducts.map(p => ({ name: p.productName, slug: p.productSlug, quantity: p._sum.quantity ?? 0, revenue: (p._sum.quantity ?? 0) * Number(p._avg.price ?? 0) })),
+      topProducts: topProducts.map(p => ({ productName: p.productName, productSlug: p.productSlug, quantity: p._sum.quantity ?? 0, revenue: (p._sum.quantity ?? 0) * Number(p._avg.price ?? 0) })),
       totalProducts: products.length,
       totalPageViews: pageViews,
       searchTerms: searchLogs.map(s => ({ query: s.query, results: s.resultsCount ?? 0 })),

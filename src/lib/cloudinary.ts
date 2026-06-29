@@ -2,6 +2,7 @@
  * Cloudinary upload helper — signed upload from server.
  * Used by admin panel to upload product images, hero slides, etc.
  */
+import crypto from "crypto";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const API_KEY = process.env.CLOUDINARY_API_KEY;
@@ -17,7 +18,8 @@ export interface CloudinaryUploadResult {
 }
 
 /**
- * Upload an image to Cloudinary from a base64 string or buffer.
+ * Upload an image to Cloudinary.
+ * Accepts a Buffer (file bytes) or string (data URL / remote URL).
  * Returns the secure URL + metadata.
  */
 export async function uploadToCloudinary(
@@ -31,8 +33,13 @@ export async function uploadToCloudinary(
   const timestamp = Math.round(Date.now() / 1000);
   const signature = await generateSignature(`folder=${folder}&timestamp=${timestamp}`, API_SECRET);
 
+  // Cloudinary accepts either a data URL (base64) or a remote URL as the `file` field.
+  const filePayload = Buffer.isBuffer(file)
+    ? `data:image/jpeg;base64,${file.toString("base64")}`
+    : file;
+
   const formData = new FormData();
-  formData.append("file", file as string);
+  formData.append("file", filePayload);
   formData.append("folder", folder);
   formData.append("timestamp", String(timestamp));
   formData.append("api_key", API_KEY);
@@ -45,7 +52,7 @@ export async function uploadToCloudinary(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.error?.message ?? "Upload failed");
+    throw new Error(error?.error?.message ?? "Upload failed");
   }
 
   return response.json();
@@ -55,7 +62,6 @@ export async function uploadToCloudinary(
  * Generate SHA-1 signature for Cloudinary signed upload.
  */
 async function generateSignature(paramsToSign: string, apiSecret: string): Promise<string> {
-  const crypto = require("crypto");
   return crypto.createHash("sha1").update(paramsToSign + apiSecret).digest("hex");
 }
 

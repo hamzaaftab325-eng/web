@@ -16,7 +16,7 @@ export default function AdminProducts() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch("/api/products?limit=100")
+    fetch("/api/admin/products?limit=200")
       .then((r) => r.json())
       .then((data) => setProducts(data.products ?? []))
       .catch(() => {})
