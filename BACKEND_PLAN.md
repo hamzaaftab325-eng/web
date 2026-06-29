@@ -11,9 +11,9 @@
 | B1 | Supabase + Prisma + 30-table schema | [x] |
 | B2 | Auth system (JWT) | [x] |
 | B3 | Product API (CRUD) + refactor components | [x] |
-| B4 | Content API (CMS) | [ ] |
-| B5 | Orders + checkout (COD) | [ ] |
-| B6 | Reviews + wishlist + addresses | [ ] |
+| B4 | Content API (CMS) | [x] |
+| B5 | Orders + checkout (COD) | [x] |
+| B6 | Reviews + wishlist + addresses | [x] |
 | B7 | Cloudinary image upload | [ ] |
 | B8 | Admin panel | [ ] |
 | B9 | Analytics dashboard | [ ] |
@@ -21,8 +21,11 @@
 
 ## Payment Roadmap: COD now → JazzCash + EasyPaisa + Bank Transfer later
 
-## Completed:
-- B0: 8 mock data files deleted, 38 components refactored to TanStack Query hooks
-- B1: Prisma schema with 30 models, migration applied to Supabase, all tables created
-- B2: bcrypt password hashing, JWT auth, 7 API routes, middleware, frontend login/signup wired
-- B3: 7 product API routes, 2 catalog routes, all components use hooks
+## Completed API Routes (20+):
+- Auth: register, login, logout, me (GET+PUT), forgot-password, reset-password
+- Products: list, detail, featured, search, materials
+- Catalog: categories, collections
+- Content: hero-slides, faq, testimonials, artisans, care-guides, journal, press, brand-values, instagram, first-order-offer, exit-intent, promo-codes, shipping-methods
+- Orders: list, create, detail
+- Reviews: list by product, submit, mark helpful
+- User: addresses (CRUD), wishlist (GET/POST/DELETE)

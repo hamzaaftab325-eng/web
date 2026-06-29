@@ -263,30 +263,57 @@ export function CheckoutFlow() {
 
   const placeOrder = async () => {
     setPlacing(true);
-    await sleep(1300);
-    const orderNumber = `AURA-${uid("ord").slice(-8).toUpperCase()}`;
 
-    // Fire analytics: purchase (before clearing cart so we have the items)
-    purchase({
-      transaction_id: orderNumber,
-      currency: "USD",
-      value: totals.total,
-      shipping: totals.shipping,
-      tax: totals.tax,
-      items: lines.map((l) => ({
-        item_id: l.productId,
-        item_name: l.name,
-        price: l.price,
-        quantity: l.quantity,
-        item_variant: l.variantLabel,
-      })),
-    });
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: lines.map(l => ({
+            productId: l.productId, slug: l.slug, name: l.name, image: l.image,
+            price: l.price, variantLabel: l.variantLabel, quantity: l.quantity,
+          })),
+          shippingAddress: {
+            firstName: info.firstName, lastName: info.lastName, street: info.address,
+            city: info.city, state: info.state, zip: info.zip, country: info.country, phone: info.phone,
+          },
+          shippingMethod,
+          promoCode,
+          orderNotes,
+          email: info.email,
+          paymentMethod: "cod",
+        }),
+      });
 
-    setPlacedOrder(orderNumber);
-    setPlacing(false);
-    setStep(3);
-    clearCart();
-    toast({ title: "Order placed", description: `Confirmation ${orderNumber}` });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setPlacing(false);
+        toast({ title: "Order failed", description: data.error ?? "Please try again" });
+        return;
+      }
+
+      // Fire analytics
+      purchase({
+        transaction_id: data.orderNumber,
+        currency: "USD",
+        value: totals.total,
+        shipping: totals.shipping,
+        tax: totals.tax,
+        items: lines.map((l) => ({
+          item_id: l.productId, item_name: l.name, price: l.price, quantity: l.quantity, item_variant: l.variantLabel,
+        })),
+      });
+
+      setPlacedOrder(data.orderNumber);
+      setPlacing(false);
+      setStep(3);
+      clearCart();
+      toast({ title: "Order placed", description: `Confirmation ${data.orderNumber}` });
+    } catch {
+      setPlacing(false);
+      toast({ title: "Order failed", description: "Network error. Please try again." });
+    }
   };
 
   const finish = () => {
