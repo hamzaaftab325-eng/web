@@ -41,7 +41,11 @@ export default function AdminProductEdit() {
   useEffect(() => {
     fetch("/api/categories")
       .then(r => r.json())
-      .then(data => setCategories(data.categories ?? []))
+      .then(data => {
+        // Public API returns a flat array, admin API returns { categories: [...] }
+        const list = Array.isArray(data) ? data : (data.categories ?? []);
+        setCategories(list);
+      })
       .catch(() => {});
 
     fetch(`/api/admin/products/${id}`)
