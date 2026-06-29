@@ -9,7 +9,10 @@ export interface AuthUser {
   firstName: string;
   lastName: string;
   createdAt: string;
-  preferences: { newsletter: boolean; newArrivals: boolean; saleAlerts: boolean; orderUpdates: boolean; };
+  phone?: string | null;
+  role?: string;
+  isActive?: boolean;
+  preferences?: { newsletter: boolean; newArrivals: boolean; saleAlerts: boolean; orderUpdates: boolean; };
 }
 
 interface AuthState {

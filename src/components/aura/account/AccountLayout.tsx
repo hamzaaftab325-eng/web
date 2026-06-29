@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Menu, X, ShoppingBag, ChevronRight } from "lucide-react";
@@ -27,13 +27,28 @@ export function AccountLayout({ children }: { children: ReactNode }) {
   const wishCount = useWishlistStore((s) => s.slugs.length);
   const cartCount = useCartStore((s) => s.lines.reduce((n, l) => n + l.quantity, 0));
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user, router]);
+  const [hydrated, setHydrated] = useState(false);
 
-  if (!user) return null;
+  useEffect(() => {
+    // Give the AppChrome auth hydration (fetch /api/auth/me) one tick to resolve
+    // before deciding the user is missing. Avoids spurious redirects on refresh.
+    const t = setTimeout(() => setHydrated(true), 600);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && !user) {
+      router.push("/login?redirect=" + encodeURIComponent(pathname));
+    }
+  }, [hydrated, user, router, pathname]);
+
+  if (!hydrated || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-canvas">
+        <div className="aura-loader-ring"><span className="aura-loader-dot" /></div>
+      </div>
+    );
+  }
 
   const initials = `${user.firstName[0] ?? ""}${user.lastName[0] ?? ""}`.toUpperCase();
 
@@ -77,7 +92,12 @@ export function AccountLayout({ children }: { children: ReactNode }) {
         </ul>
       </nav>
       <div className="p-4 border-t border-hairline-cream">
-        <button onClick={() => { clearAuth(); router.push("/"); }} className="w-full flex items-center gap-3 px-4 py-3 t-body c-ink-muted hover:c-error transition-colors group rounded-sm hover:bg-error/5">
+        <button onClick={async () => {
+          // Hit the server logout endpoint to clear the httpOnly auth cookies.
+          try { await fetch("/api/auth/logout", { method: "POST" }); } catch { /* best-effort */ }
+          clearAuth();
+          router.push("/");
+        }} className="w-full flex items-center gap-3 px-4 py-3 t-body c-ink-muted hover:c-error transition-colors group rounded-sm hover:bg-error/5">
           <LogOut size={18} strokeWidth={1.25} className="group-hover:scale-110 transition-transform" />Sign Out
         </button>
       </div>

@@ -3,6 +3,7 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useUIStore } from "@/store/use-ui-store";
+import { useAuthStore } from "@/store/use-auth-store";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MobileNav } from "./MobileNav";
@@ -54,6 +55,33 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
   const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);
   const setQuickViewProduct = useUIStore((s) => s.setQuickViewProduct);
+
+  // Auth hydration — fetch the current user from the httpOnly cookie on mount.
+  // Keeps the Zustand store in sync after a page refresh or a returning visit.
+  const setUser = useAuthStore((s) => s.setUser);
+  const setToken = useAuthStore((s) => s.setToken);
+  const clearAuth = useAuthStore((s) => s.clear);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled) return;
+        if (data?.user) {
+          setUser(data.user);
+          // The token field in the store is only used as a UI flag — the real
+          // auth token lives in the httpOnly cookie set by the server.
+          setToken("httpOnly");
+        } else {
+          // Cookie missing / expired — clear any stale localStorage user.
+          clearAuth();
+        }
+      })
+      .catch(() => {
+        // Network errors are non-fatal — leave the persisted store as-is.
+      });
+    return () => { cancelled = true; };
+  }, [setUser, setToken, clearAuth]);
 
   const isAuthPage = AUTH_PATHS.has(pathname);
   const isProductPage = pathname.startsWith("/product/");

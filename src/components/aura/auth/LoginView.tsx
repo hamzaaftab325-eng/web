@@ -128,35 +128,30 @@ export function LoginView() {
 
   const onSubmit = async (values: LoginValues) => {
     setServerError(null);
-    // Simulated network round-trip for the mock auth flow.
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: values.email, password: values.password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error ?? "Sign in failed");
+      }
+      // Server sets aura_access + aura_refresh httpOnly cookies.
+      // Also hydrate local store for UI state.
+      setUser(data.user);
+      setToken(data.token);
 
-    const [localPart] = values.email.split("@");
-    const firstName = localPart
-      ? localPart.charAt(0).toUpperCase() + localPart.slice(1).toLowerCase()
-      : "Anna";
+      // Fire analytics: login
+      trackLogin({ method: "email" });
 
-    setUser({
-      id: `aura_${Date.now().toString(36)}`,
-      email: values.email,
-      firstName,
-      lastName: "Marigold",
-      createdAt: new Date().toISOString(),
-      preferences: {
-        newsletter: true,
-        newArrivals: true,
-        saleAlerts: false,
-        orderUpdates: true,
-      },
-    });
-    setToken(`aura_demo_${Date.now().toString(36)}`);
-
-    // Fire analytics: login
-    trackLogin({ method: "email" });
-
-    const target = authRedirect ?? "/";
-    setAuthRedirect(null);
-    router.push(target);
+      const target = authRedirect ?? "/";
+      setAuthRedirect(null);
+      router.push(target);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : "Sign in failed");
+    }
   };
 
   const goSignup = () => router.push("/signup");
@@ -335,15 +330,6 @@ export function LoginView() {
             <ArrowRight size={16} strokeWidth={1.5} className="transition-transform group-hover:translate-x-1" />
           )}
         </Button>
-
-        {/* Demo hint */}
-        <div className="bg-gold-pale/40 border border-hairline-cream px-4 py-3">
-          <p className="t-caption c-ink-muted">
-            <span className="t-label-caps c-gold-deep mr-1.5">Demo</span>
-            Use <span className="c-ink font-medium">anna@auraliving.com</span>{" "}
-            with any 8+ character password.
-          </p>
-        </div>
 
         {/* Divider */}
         <div className="divider-animated my-2" />

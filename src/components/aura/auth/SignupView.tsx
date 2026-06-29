@@ -177,27 +177,35 @@ export function SignupView() {
 
   const onSubmit = async (values: SignupValues) => {
     setServerError(null);
-    await new Promise<void>((resolve) => setTimeout(resolve, 700));
-    setUser({
-      id: `aura_${Date.now().toString(36)}`,
-      email: values.email,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      createdAt: new Date().toISOString(),
-      preferences: {
-        newsletter: values.joinNewsletter,
-        newArrivals: values.joinNewsletter,
-        saleAlerts: false,
-        orderUpdates: true,
-      },
-    });
-    setToken(`aura_demo_${Date.now().toString(36)}`);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          password: values.password,
+          joinNewsletter: values.joinNewsletter,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error ?? "Registration failed");
+      }
+      // Server sets aura_access + aura_refresh httpOnly cookies.
+      // Also hydrate local store for UI state.
+      setUser(data.user);
+      setToken(data.token);
 
-    // Fire analytics: sign_up
-    trackSignUp({ method: "email" });
+      // Fire analytics: sign_up
+      trackSignUp({ method: "email" });
 
-    setAuthRedirect(null);
-    router.push("/account");
+      setAuthRedirect(null);
+      router.push("/account");
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : "Registration failed");
+    }
   };
 
   const goLogin = () => router.push("/login");

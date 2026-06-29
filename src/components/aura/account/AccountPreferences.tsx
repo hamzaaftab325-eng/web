@@ -66,7 +66,7 @@ const currencies = [
 type CurrencyCode = (typeof currencies)[number]["code"];
 
 interface EmailPrefConfig {
-  key: keyof AuthUser["preferences"];
+  key: "newsletter" | "newArrivals" | "saleAlerts" | "orderUpdates";
   label: string;
   description: string;
   icon: typeof Bell;
@@ -114,7 +114,7 @@ export function AccountPreferences() {
   const { toast } = useToast();
 
   // Email prefs — sourced from auth store, edited in local state, committed on save.
-  const [emailPrefs, setEmailPrefs] = useState<AuthUser["preferences"]>(
+  const [emailPrefs, setEmailPrefs] = useState<NonNullable<AuthUser["preferences"]>>(
     user?.preferences ?? {
       newsletter: true,
       newArrivals: true,
@@ -147,7 +147,7 @@ export function AccountPreferences() {
     500: "w-full",
   };
 
-  const toggleEmail = (key: keyof AuthUser["preferences"]) => {
+  const toggleEmail = (key: "newsletter" | "newArrivals" | "saleAlerts" | "orderUpdates") => {
     setEmailPrefs((p) => ({ ...p, [key]: !p[key] }));
   };
 
