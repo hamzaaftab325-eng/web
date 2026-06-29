@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
-import { getAccessToken } from "@/lib/auth-cookies";
+import { requireAdmin } from "@/lib/auth-guard";
 
 export async function GET(request: NextRequest) {
   try {
-    const token = getAccessToken(request);
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const payload = verifyToken(token);
-    if (payload.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const auth = await requireAdmin(request);
+    if (auth instanceof NextResponse) return auth;
 
     const [totalProducts, totalOrders, orders, totalCustomers, recentOrders, lowStockProducts] = await Promise.all([
       db.product.count({ where: { isActive: true } }),

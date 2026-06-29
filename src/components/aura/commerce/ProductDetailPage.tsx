@@ -643,7 +643,7 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
 
       {/* Reviews */}
       <div className="mt-16 lg:mt-24">
-        <ReviewsSection productName={product.name} />
+        <ReviewsSection productName={product.name} productSlug={product.slug} />
       </div>
 
       {/* Related products */}

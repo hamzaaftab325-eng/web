@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
-import { getAccessToken } from "@/lib/auth-cookies";
+import { requireAdmin } from "@/lib/auth-guard";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 
 const ProductUpdateSchema = z.object({
@@ -26,25 +25,13 @@ const ProductUpdateSchema = z.object({
   images: z.array(z.object({ url: z.string().url(), altText: z.string().optional() })).optional(),
 });
 
-async function requireAdmin(request: NextRequest) {
-  const token = getAccessToken(request);
-  if (!token) return null;
-  try {
-    const payload = verifyToken(token);
-    if (payload.role !== "admin") return null;
-    return payload;
-  } catch {
-    return null;
-  }
-}
-
 /**
  * GET /api/admin/products/[id]
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireAdmin(request);
-    if (!auth) return NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
+    if (auth instanceof NextResponse) return auth;
 
     const { id } = await params;
     const product = await db.product.findUnique({
@@ -72,7 +59,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireAdmin(request);
-    if (!auth) return NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
+    if (auth instanceof NextResponse) return auth;
 
     const { id } = await params;
     const body = await request.json();
@@ -151,7 +138,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireAdmin(request);
-    if (!auth) return NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
+    if (auth instanceof NextResponse) return auth;
 
     const { id } = await params;
     const existing = await db.product.findUnique({ where: { id } });

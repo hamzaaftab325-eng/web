@@ -150,10 +150,11 @@ type FilterChipKey = "rating" | "photos" | "verified";
 
 interface ReviewsSectionProps {
   productName?: string;
+  productSlug?: string;
   className?: string;
 }
 
-export function ReviewsSection({ productName, className }: ReviewsSectionProps) {
+export function ReviewsSection({ productName, productSlug, className }: ReviewsSectionProps) {
   const prefersReducedMotion = useReducedMotion();
   const [isLoading, setIsLoading] = useState(true);
   const [sort, setSort] = useState<SortKey>("recent");
@@ -172,14 +173,35 @@ export function ReviewsSection({ productName, className }: ReviewsSectionProps) 
   const [formBody, setFormBody] = useState("");
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [userReviews, setUserReviews] = useState<Review[]>([]);
+  const [apiReviews, setApiReviews] = useState<Review[]>([]);
   const sortRef = useRef<HTMLDivElement>(null);
 
-  // Simulated fetch — the rule says to mock 8 reviews inline and use local
-  // state. The loading state shows the shimmer skeleton.
+  // Fetch real reviews from the API.
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 600);
-    return () => clearTimeout(t);
-  }, []);
+    if (!productSlug) {
+      setIsLoading(false);
+      return;
+    }
+    fetch(`/api/reviews/${productSlug}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        const reviews = Array.isArray(data) ? data.map((r: { id: string; authorName: string; authorLocation?: string; rating: number; title?: string; body: string; verifiedBuyer: boolean; helpfulCount: number; createdAt: string }) => ({
+          id: r.id,
+          name: r.authorName,
+          location: r.authorLocation,
+          rating: r.rating,
+          title: r.title ?? "",
+          body: r.body,
+          date: r.createdAt.split("T")[0],
+          verified: r.verifiedBuyer,
+          hasPhotos: false,
+          helpful: r.helpfulCount,
+        })) : [];
+        setApiReviews(reviews);
+      })
+      .catch(() => setApiReviews([]))
+      .finally(() => setIsLoading(false));
+  }, [productSlug]);
 
   // Close sort dropdown on outside click / Esc.
   useEffect(() => {
@@ -200,7 +222,7 @@ export function ReviewsSection({ productName, className }: ReviewsSectionProps) 
     };
   }, [sortOpen]);
 
-  const allReviews = useMemo(() => [...userReviews, ...MOCK_REVIEWS], [userReviews]);
+  const allReviews = useMemo(() => [...userReviews, ...apiReviews], [userReviews, apiReviews]);
 
   const distribution = useMemo(() => {
     const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };

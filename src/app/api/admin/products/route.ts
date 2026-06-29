@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
-import { getAccessToken } from "@/lib/auth-cookies";
+import { requireAdmin } from "@/lib/auth-guard";
 
 const ProductCreateSchema = z.object({
   slug: z.string().min(2).max(120).regex(/^[a-z0-9-]+$/, "slug must be lowercase kebab-case"),
@@ -31,10 +30,8 @@ const ProductCreateSchema = z.object({
  */
 export async function POST(request: NextRequest) {
   try {
-    const token = getAccessToken(request);
-    if (!token) return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
-    const payload = verifyToken(token);
-    if (payload.role !== "admin") return NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
+    const auth = await requireAdmin(request);
+    if (auth instanceof NextResponse) return auth;
 
     const body = await request.json();
     const parsed = ProductCreateSchema.safeParse(body);
@@ -97,10 +94,8 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
-    const token = getAccessToken(request);
-    if (!token) return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
-    const payload = verifyToken(token);
-    if (payload.role !== "admin") return NextResponse.json({ error: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
+    const auth = await requireAdmin(request);
+    if (auth instanceof NextResponse) return auth;
 
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));

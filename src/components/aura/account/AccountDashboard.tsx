@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Package, MapPin, Heart, ArrowRight, TrendingUp, Sparkles } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -11,15 +12,27 @@ import { formatPrice } from "@/lib/utils";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
-const mockOrders = [
-  { id: "o1", orderNumber: "AURA-482917", date: "2026-03-12", status: "delivered", total: 302.02, items: [{ key: "k1", image: "/product/ceramic-table-lamp.png", name: "Halo Ceramic Table Lamp", quantity: 1 }] },
-  { id: "o2", orderNumber: "AURA-483032", date: "2026-03-22", status: "shipped", total: 472.59, items: [{ key: "k2", image: "/product/arched-floor-mirror.png", name: "Aperture Arched Floor Mirror", quantity: 1 }] },
-];
+interface OrderItem { key: string; image: string; name: string; quantity: number; }
+interface Order {
+  id: string; orderNumber: string; date: string; status: string; total: number;
+  items: OrderItem[];
+}
 
 export function AccountDashboard() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const wishCount = useWishlistStore((s) => s.slugs.length);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/orders")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => setOrders(Array.isArray(data) ? data : []))
+      .catch(() => setOrders([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   if (!user) return null;
 
   const viewToPath: Record<string, string> = {
@@ -30,7 +43,7 @@ export function AccountDashboard() {
   };
 
   const stats = [
-    { label: "Orders", value: mockOrders.length, icon: Package, view: "account-orders", hint: `Last order ${mockOrders[0]?.date ?? ""}`, gradient: "from-cream-deep to-cream", iconBg: "bg-gold-pale", iconColor: "c-gold-deep" },
+    { label: "Orders", value: orders.length, icon: Package, view: "account-orders", hint: orders.length > 0 ? `Last order ${orders[0]?.date ?? ""}` : "No orders yet", gradient: "from-cream-deep to-cream", iconBg: "bg-gold-pale", iconColor: "c-gold-deep" },
     { label: "Wishlist", value: wishCount, icon: Heart, view: "account-wishlist", hint: wishCount > 0 ? `${wishCount} saved pieces` : "No saved pieces", gradient: "from-gold-pale to-cream", iconBg: "bg-cream-deep", iconColor: "c-gold-deep" },
     { label: "Addresses", value: 1, icon: MapPin, view: "account-addresses", hint: "Default: Home", gradient: "from-cream to-cream-deep", iconBg: "bg-gold-pale", iconColor: "c-gold-deep" },
   ];
@@ -65,26 +78,40 @@ export function AccountDashboard() {
           <h2 className="t-headline-md c-ink flex items-center gap-3"><span className="w-8 h-px bg-gold" aria-hidden />Recent Orders</h2>
         </div>
         <div className="space-y-3">
-          {mockOrders.map((order, i) => (
-            <motion.button key={order.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.08 }} onClick={() => router.push(`/account/orders/${order.id}`)} className="group w-full bg-gradient-card-warm border border-hairline-cream p-5 flex items-center gap-4 card-modern text-left rounded-sm">
-              <div className="flex -space-x-3">
-                {order.items.slice(0, 3).map((item) => (
-                  <div key={item.key} className="relative w-12 h-12 bg-cream border-2 border-paper overflow-hidden flex-shrink-0 ring-1 ring-hairline-gold rounded-sm">
-                    <Image src={item.image} alt="" fill sizes="48px" className="object-cover" />
-                  </div>
-                ))}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-1">
-                  <p className="t-body c-ink font-medium">{order.orderNumber}</p>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold-pale t-label-caps c-gold-deep border border-hairline-gold capitalize"><span className="w-1.5 h-1.5 rounded-full bg-gold" aria-hidden />{order.status}</span>
+          {loading ? (
+            <div className="bg-gradient-card-warm border border-hairline-cream p-8 text-center rounded-sm">
+              <div className="aura-loader-ring mx-auto"><span className="aura-loader-dot" /></div>
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="bg-gradient-card-warm border border-hairline-cream p-8 text-center rounded-sm">
+              <Package size={32} strokeWidth={1} className="c-ink-faint mx-auto mb-3" />
+              <p className="t-body c-ink-muted mb-4">No orders yet. When you place your first order, it will appear here.</p>
+              <button onClick={() => router.push("/shop")} className="inline-flex items-center gap-2 bg-ink c-paper t-label-caps px-6 py-3 rounded-sm hover:bg-gold-deep transition-colors">
+                Browse the Shop <ArrowRight size={14} />
+              </button>
+            </div>
+          ) : (
+            orders.slice(0, 5).map((order, i) => (
+              <motion.button key={order.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.08 }} onClick={() => router.push(`/account/orders/${order.id}`)} className="group w-full bg-gradient-card-warm border border-hairline-cream p-5 flex items-center gap-4 card-modern text-left rounded-sm">
+                <div className="flex -space-x-3">
+                  {order.items.slice(0, 3).map((item) => (
+                    <div key={item.key} className="relative w-12 h-12 bg-cream border-2 border-paper overflow-hidden flex-shrink-0 ring-1 ring-hairline-gold rounded-sm">
+                      {item.image ? <Image src={item.image} alt="" fill sizes="48px" className="object-cover" /> : <div className="w-full h-full bg-cream" />}
+                    </div>
+                  ))}
                 </div>
-                <p className="t-caption c-ink-faint">{order.date} · {order.items.length} item{order.items.length === 1 ? "" : "s"}</p>
-              </div>
-              <div className="text-right"><p className="t-body c-ink t-num font-medium">{formatPrice(order.total)}</p></div>
-              <ArrowRight size={16} strokeWidth={1.5} className="c-ink-faint group-hover:c-gold-deep group-hover:translate-x-1 transition-all flex-shrink-0" />
-            </motion.button>
-          ))}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-1">
+                    <p className="t-body c-ink font-medium">{order.orderNumber}</p>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold-pale t-label-caps c-gold-deep border border-hairline-gold capitalize"><span className="w-1.5 h-1.5 rounded-full bg-gold" aria-hidden />{order.status}</span>
+                  </div>
+                  <p className="t-caption c-ink-faint">{order.date} · {order.items.length} item{order.items.length === 1 ? "" : "s"}</p>
+                </div>
+                <div className="text-right"><p className="t-body c-ink t-num font-medium">{formatPrice(order.total)}</p></div>
+                <ArrowRight size={16} strokeWidth={1.5} className="c-ink-faint group-hover:c-gold-deep group-hover:translate-x-1 transition-all flex-shrink-0" />
+              </motion.button>
+            ))
+          )}
         </div>
       </section>
       <section>
