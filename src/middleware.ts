@@ -7,25 +7,23 @@ import { NextRequest, NextResponse } from "next/server";
  * database role check) happens in API route handlers via requireAdmin().
  *
  * Behavior:
- *   - /api/* routes → return 401 JSON if no auth cookie
  *   - /admin, /account pages → redirect to /login?redirect=<path> if no cookie
+ *   - /api/user/*, /api/admin/* → 401 JSON if no auth cookie
+ *   - GET /api/orders → 401 JSON if no auth cookie (order history requires auth)
+ *   - POST /api/orders → ALLOWED for guests (COD checkout doesn't require account)
  *   - All other requests → pass through
- *
- * Note: We check cookie EXISTENCE, not validity. A stale/expired cookie will
- * pass middleware but get rejected by the API handler (which verifies the JWT
- * and fetches the user from the database).
  */
-
 const PAGE_PREFIXES = ["/account", "/admin"];
-const API_PREFIXES = ["/api/user", "/api/orders", "/api/admin"];
+const API_PREFIXES = ["/api/user", "/api/admin"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isPage = PAGE_PREFIXES.some(p => pathname === p || pathname.startsWith(p + "/"));
   const isApi = API_PREFIXES.some(p => pathname.startsWith(p));
+  const isOrdersGet = pathname.startsWith("/api/orders") && request.method === "GET";
 
-  if (!isPage && !isApi) return NextResponse.next();
+  if (!isPage && !isApi && !isOrdersGet) return NextResponse.next();
 
   // Check if auth cookie exists
   const cookieHeader = request.headers.get("cookie") || "";
@@ -40,7 +38,7 @@ export function middleware(request: NextRequest) {
 
   if (!hasAccessCookie && !hasRefreshCookie) {
     // API routes → JSON 401
-    if (isApi) {
+    if (isApi || isOrdersGet) {
       return NextResponse.json(
         { error: "Authentication required", code: "UNAUTHORIZED" },
         { status: 401 }

@@ -48,7 +48,7 @@ export const useCartStore = create<CartState>()(
           : product.id;
 
         addToCart({
-          currency: "USD",
+          currency: "PKR",
           value: product.price * quantity,
           items: [{
             item_id: product.id,
@@ -87,7 +87,7 @@ export const useCartStore = create<CartState>()(
         const line = get().lines.find((l) => l.key === key);
         if (line) {
           removeFromCart({
-            currency: "USD",
+            currency: "PKR",
             value: line.price * line.quantity,
             items: [{
               item_id: line.productId,

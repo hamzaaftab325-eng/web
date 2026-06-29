@@ -8,8 +8,6 @@ import { useUIStore } from "@/store/use-ui-store";
 import { formatPrice, cn } from "@/lib/utils";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 
-const FREE_SHIP_THRESHOLD = 150;
-
 export function CartDrawer() {
   const router = useRouter();
   const isOpen = useCartStore((s) => s.isOpen);
@@ -35,9 +33,6 @@ export function CartDrawer() {
     close();
     router.push("/shop");
   };
-
-  const remainingForFreeShip = Math.max(0, FREE_SHIP_THRESHOLD - subtotal);
-  const freeShipProgress = Math.min(100, (subtotal / FREE_SHIP_THRESHOLD) * 100);
 
   return (
     <AnimatePresence>
@@ -106,29 +101,6 @@ export function CartDrawer() {
               </div>
             ) : (
               <>
-                {/* Free shipping progress */}
-                <div className="px-6 py-4 border-b border-hairline bg-cream/50">
-                  <p className="t-caption c-ink-muted mb-2">
-                    {remainingForFreeShip > 0 ? (
-                      <>
-                        You're <span className="c-gold font-medium t-num">{formatPrice(remainingForFreeShip)}</span> away from free shipping.
-                      </>
-                    ) : (
-                      <span className="c-gold font-medium">
-                        ✓ You've unlocked free shipping.
-                      </span>
-                    )}
-                  </p>
-                  <div className="h-1 bg-hairline rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gold"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${freeShipProgress}%` }}
-                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    />
-                  </div>
-                </div>
-
                 {/* Items */}
                 <div className="flex-1 overflow-y-auto scrollbar-thin px-6 py-4">
                   <AnimatePresence initial={false}>
@@ -231,7 +203,7 @@ export function CartDrawer() {
                   <div className="flex justify-between t-body c-ink-muted">
                     <span>Shipping</span>
                     <span className="t-num">
-                      {subtotal >= FREE_SHIP_THRESHOLD ? "Free" : "Calculated at checkout"}
+                      Calculated at checkout
                     </span>
                   </div>
                   <div className="flex justify-between t-headline-sm c-ink pt-3 border-t border-hairline">

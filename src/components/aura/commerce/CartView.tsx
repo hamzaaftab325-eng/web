@@ -18,10 +18,6 @@ import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { formatPrice, cn } from "@/lib/utils";
-import { useState } from "react";
-
-const FREE_SHIP_THRESHOLD = 150;
-const TAX_RATE = 0.08;
 
 /** Estimated delivery: 3-5 business days from today. */
 function getEstimatedDelivery(): string {
@@ -53,32 +49,6 @@ export function CartView() {
   const clear = useCartStore((s) => s.clear);
   const subtotal = useCartStore((s) => s.subtotal());
   const wishCount = useWishlistStore((s) => s.slugs.length);
-
-  const [promoInput, setPromoInput] = useState("");
-  const [promoCode, setPromoCode] = useState<string | null>(null);
-  const [promoError, setPromoError] = useState<string | null>(null);
-
-  const remainingForFreeShip = Math.max(0, FREE_SHIP_THRESHOLD - subtotal);
-  const freeShipProgress = Math.min(100, (subtotal / FREE_SHIP_THRESHOLD) * 100);
-  const hasFreeShipping = subtotal >= FREE_SHIP_THRESHOLD;
-
-  const discount = promoCode === "AURA10" ? subtotal * 0.1 : 0;
-  const shipping = hasFreeShipping || promoCode === "FREESHIP" ? 0 : 12;
-  const taxable = Math.max(0, subtotal - discount);
-  const tax = taxable * TAX_RATE;
-  const total = Math.max(0, taxable + shipping + tax);
-
-  const applyPromo = () => {
-    const code = promoInput.trim().toUpperCase();
-    if (!code) return;
-    if (code === "AURA10" || code === "FREESHIP") {
-      setPromoCode(code);
-      setPromoError(null);
-      setPromoInput("");
-    } else {
-      setPromoError("Invalid promo code");
-    }
-  };
 
   const goCheckout = () => {
     setCheckoutOpen(true);
@@ -132,38 +102,6 @@ export function CartView() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Left: cart items */}
           <div className="lg:col-span-8">
-            {/* Free shipping progress */}
-            {lines.length > 0 && (
-              <div className="bg-gradient-card-warm border border-hairline-cream rounded-sm p-4 md:p-5 mb-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Truck size={14} strokeWidth={1.5} className="c-gold-deep" />
-                  <p className="t-body-sm c-ink">
-                    {hasFreeShipping ? (
-                      <span className="c-success font-medium">
-                        ✓ You've unlocked free shipping!
-                      </span>
-                    ) : (
-                      <>
-                        You're{" "}
-                        <span className="c-gold-deep font-medium t-num">
-                          {formatPrice(remainingForFreeShip)}
-                        </span>{" "}
-                        away from free shipping.
-                      </>
-                    )}
-                  </p>
-                </div>
-                <div className="h-1.5 bg-cream-deep rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${freeShipProgress}%` }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="h-full bg-gold rounded-full"
-                  />
-                </div>
-              </div>
-            )}
-
             {/* Cart line items */}
             <div className="space-y-4">
               <AnimatePresence mode="popLayout">
@@ -337,78 +275,26 @@ export function CartView() {
             <div className="bg-gradient-card-warm border border-hairline-cream rounded-sm p-6 md:p-8 sticky top-[100px]">
               <h2 className="t-headline-sm c-ink mb-6">Order Summary</h2>
 
-              {/* Promo code */}
-              <div className="mb-6">
-                <p className="t-label-caps c-ink-faint mb-2">Promo Code</p>
-                {promoCode ? (
-                  <div className="flex items-center justify-between bg-gold-pale/50 border border-hairline-gold rounded-sm px-4 py-2.5">
-                    <span className="inline-flex items-center gap-2 t-body-sm c-gold-deep font-medium">
-                      <Tag size={12} strokeWidth={1.5} />
-                      {promoCode}
-                    </span>
-                    <button
-                      onClick={() => setPromoCode(null)}
-                      className="t-caption c-ink-faint hover:c-error transition-colors"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={promoInput}
-                        onChange={(e) => setPromoInput(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && applyPromo()}
-                        placeholder="Enter code"
-                        className="flex-1 px-3 py-2.5 t-body-sm c-ink bg-transparent border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors"
-                      />
-                      <button
-                        onClick={applyPromo}
-                        className="px-4 py-2.5 t-label-caps bg-ink c-paper hover:bg-gold-deep transition-colors rounded-sm"
-                      >
-                        Apply
-                      </button>
-                    </div>
-                    {promoError && (
-                      <p className="t-caption c-error mt-1.5">{promoError}</p>
-                    )}
-                    <p className="t-caption c-ink-faint mt-1.5">
-                      Try: AURA10 or FREESHIP
-                    </p>
-                  </>
-                )}
-              </div>
-
               {/* Totals */}
               <div className="space-y-3 pb-4 border-b border-hairline-cream">
                 <div className="flex justify-between t-body c-ink-muted">
                   <span>Subtotal ({lines.reduce((n, l) => n + l.quantity, 0)} items)</span>
                   <span className="t-num c-ink">{formatPrice(subtotal)}</span>
                 </div>
-                {discount > 0 && (
-                  <div className="flex justify-between t-body c-success">
-                    <span>Discount (AURA10)</span>
-                    <span className="t-num">−{formatPrice(discount)}</span>
-                  </div>
-                )}
                 <div className="flex justify-between t-body c-ink-muted">
                   <span>Shipping</span>
-                  <span className="t-num">
-                    {shipping === 0 ? "Free" : formatPrice(shipping)}
-                  </span>
+                  <span className="t-num c-ink-faint">Calculated at checkout</span>
                 </div>
                 <div className="flex justify-between t-body c-ink-muted">
-                  <span>Tax (8%)</span>
-                  <span className="t-num">{formatPrice(tax)}</span>
+                  <span>Payment</span>
+                  <span className="t-num c-ink">Cash on Delivery</span>
                 </div>
               </div>
 
               {/* Total */}
               <div className="flex justify-between t-headline-sm c-ink py-4">
-                <span>Total</span>
-                <span className="t-num c-gold-deep font-medium">{formatPrice(total)}</span>
+                <span>Subtotal</span>
+                <span className="t-num c-gold-deep font-medium">{formatPrice(subtotal)}</span>
               </div>
 
               {/* Checkout button */}
@@ -432,15 +318,15 @@ export function CartView() {
               <div className="mt-6 pt-6 border-t border-hairline-cream space-y-2">
                 <p className="t-caption c-ink-faint flex items-center gap-2">
                   <Truck size={12} strokeWidth={1.5} className="c-gold-deep" />
-                  Free shipping on orders over {formatPrice(FREE_SHIP_THRESHOLD)}
+                  Shipping calculated at checkout
                 </p>
                 <p className="t-caption c-ink-faint flex items-center gap-2">
                   <RotateCcw size={12} strokeWidth={1.5} className="c-gold-deep" />
-                  30-day returns on all pieces
+                  14-day returns on all pieces
                 </p>
                 <p className="t-caption c-ink-faint flex items-center gap-2">
                   <Tag size={12} strokeWidth={1.5} className="c-gold-deep" />
-                  Secure checkout · PKR pricing
+                  Cash on Delivery · PKR pricing
                 </p>
               </div>
             </div>
