@@ -1,6 +1,19 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+/**
+ * Node.js-runtime auth helpers.
+ *
+ * API routes import from here — they run on the Node.js runtime where
+ * `bcryptjs` and `jsonwebtoken` work fine.
+ *
+ * `src/middleware.ts` (Edge Runtime) MUST NOT import from here — it imports
+ * from `./auth-jwt` instead, which uses `jose` (Edge-safe).
+ *
+ * JWTs signed here (HS256) are verifiable by `verifyTokenEdge` in auth-jwt.ts
+ * and vice versa, because both use the same secret + algorithm.
+ */
+
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-dev-secret-change-in-production-32chars";
 
 export async function hashPassword(password: string): Promise<string> {
