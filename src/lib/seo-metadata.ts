@@ -49,12 +49,6 @@ const PAGE_META: Record<ViewKey, PageMeta> = {
       "Curated selections from the Aura Living catalogue — gathered by palette, purpose, or price. Each collection is a complete point of view.",
     ogImage: "/hero/collections.png",
   },
-  artisans: {
-    title: "Artisans — Aura Living",
-    description:
-      "Meet the workshops behind every Aura Living piece. Four ateliers across six countries — each one visited by name, each one making objects by hand.",
-    ogImage: "/hero/artisans.png",
-  },
   sustainability: {
     title: "Sustainability — Aura Living",
     description:

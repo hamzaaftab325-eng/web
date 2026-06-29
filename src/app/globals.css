@@ -443,6 +443,28 @@
   .bg-gold      { background-color: var(--gold); }
   .bg-error     { background-color: var(--error); }
   .bg-success   { background-color: var(--success); }
+  .bg-gold-deep { background-color: var(--gold-deep); }
+
+  /* Hover variants for custom color utilities — Tailwind 4 doesn't auto-generate
+     hover: for @layer utilities classes, so we define them explicitly. */
+  .hover\:bg-ink:hover        { background-color: var(--ink); }
+  .hover\:bg-gold:hover       { background-color: var(--gold); }
+  .hover\:bg-gold-deep:hover  { background-color: var(--gold-deep); }
+  .hover\:bg-gold-pale:hover  { background-color: var(--gold-pale); }
+  .hover\:bg-error:hover      { background-color: var(--error); }
+  .hover\:bg-success:hover    { background-color: var(--success); }
+  .hover\:bg-cream:hover      { background-color: var(--cream); }
+  .hover\:bg-cream-deep:hover { background-color: var(--cream-deep); }
+  .hover\:bg-paper:hover      { background-color: var(--paper); }
+
+  .hover\:c-ink:hover         { color: var(--ink); }
+  .hover\:c-paper:hover       { color: var(--paper); }
+  .hover\:c-gold:hover        { color: var(--gold); }
+  .hover\:c-gold-deep:hover   { color: var(--gold-deep); }
+  .hover\:c-error:hover       { color: var(--error); }
+  .hover\:c-success:hover     { color: var(--success); }
+  .hover\:c-ink-muted:hover   { color: var(--ink-muted); }
+  .hover\:c-ink-faint:hover   { color: var(--ink-faint); }
 
   /* Gradient backgrounds */
   .bg-gradient-gold { background: linear-gradient(135deg, var(--gold-pale) 0%, var(--cream) 100%); }

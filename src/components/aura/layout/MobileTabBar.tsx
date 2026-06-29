@@ -67,7 +67,7 @@ export function MobileTabBar() {
 
   // Derive active tab from current pathname
   const activeTab: TabKey =
-    pathname === "/" || pathname === "/shop" || pathname === "/collections" || pathname === "/artisans" || pathname === "/sustainability" || pathname === "/care" || pathname === "/about" || pathname === "/journal" || pathname.startsWith("/product")
+    pathname === "/" || pathname === "/shop" || pathname === "/collections" || pathname === "/sustainability" || pathname === "/care" || pathname === "/about" || pathname === "/journal" || pathname.startsWith("/product")
       ? "home"
       : pathname.startsWith("/account")
       ? "account"

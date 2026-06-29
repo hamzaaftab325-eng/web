@@ -146,7 +146,9 @@ export function LoginView() {
       // Fire analytics: login
       trackLogin({ method: "email" });
 
-      const target = authRedirect ?? "/";
+      // Redirect: if there's a saved auth redirect, use it.
+      // Otherwise, admins go to /admin, customers go to /.
+      const target = authRedirect ?? (data.user?.role === "admin" ? "/admin" : "/");
       setAuthRedirect(null);
       router.push(target);
     } catch (e) {

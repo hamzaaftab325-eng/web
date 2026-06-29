@@ -18,7 +18,6 @@ export default function NotFound() {
     { label: "Shop", href: "/shop" },
     { label: "About", href: "/about" },
     { label: "Collections", href: "/collections" },
-    { label: "Artisans", href: "/artisans" },
     { label: "Journal", href: "/journal" },
     { label: "Sustainability", href: "/sustainability" },
   ];

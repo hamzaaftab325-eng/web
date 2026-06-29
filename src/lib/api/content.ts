@@ -1,9 +1,7 @@
 import { api } from "./client";
-import type { FAQItem, Testimonial, Artisan, CareGuide, JournalArticle, HeroSlide, PressItem, BrandValue, InstagramPost } from "@/types";
+import type { FAQItem, Testimonial, CareGuide, JournalArticle, HeroSlide, PressItem, BrandValue, InstagramPost } from "@/types";
 export async function getFAQ(): Promise<FAQItem[]> { return api.get<FAQItem[]>("/api/content/faq"); }
 export async function getTestimonials(): Promise<Testimonial[]> { return api.get<Testimonial[]>("/api/content/testimonials"); }
-export async function getArtisans(): Promise<Artisan[]> { return api.get<Artisan[]>("/api/content/artisans"); }
-export async function getArtisan(slug: string): Promise<Artisan | null> { return api.get<Artisan>(`/api/content/artisans/${slug}`); }
 export async function getCareGuides(): Promise<CareGuide[]> { return api.get<CareGuide[]>("/api/content/care-guides"); }
 export async function getCareGuide(slug: string): Promise<CareGuide | null> { return api.get<CareGuide>(`/api/content/care-guides/${slug}`); }
 export async function getArticles(): Promise<JournalArticle[]> { return api.get<JournalArticle[]>("/api/content/journal"); }

@@ -48,7 +48,7 @@ export function Header() {
 
   // Pages with light/cream backgrounds (no dark hero image) need dark header text.
   // Account, admin, product detail, cart, and auth pages all have cream backgrounds.
-  // Home page + content pages (about, journal, collections, artisans, sustainability,
+  // Home page + content pages (about, journal, collections, sustainability,
   // care, shop) have dark image heroes — white header text when not scrolled.
   const LIGHT_PAGE_PREFIXES = ["/account", "/admin", "/product", "/cart", "/login", "/signup", "/forgot-password", "/reset-password"];
   const isLightPage = LIGHT_PAGE_PREFIXES.some(prefix => pathname.startsWith(prefix));
@@ -82,7 +82,15 @@ export function Header() {
   const goAbout = () => router.push("/about");
   const goJournal = () => router.push("/journal");
   const goCollections = () => router.push("/collections");
-  const goAccount = () => router.push(user ? "/account" : "/login");
+  const goAccount = () => {
+    if (!user) {
+      router.push("/login");
+    } else if (user.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/account");
+    }
+  };
 
   return (
     <header

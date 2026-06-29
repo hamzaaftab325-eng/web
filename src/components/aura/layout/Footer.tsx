@@ -167,14 +167,6 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => go("/artisans")}
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
-                >
-                  Artisans
-                </button>
-              </li>
-              <li>
-                <button
                   onClick={() => go("/sustainability")}
                   className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >

@@ -201,8 +201,10 @@ export function SignupView() {
       // Fire analytics: sign_up
       trackSignUp({ method: "email" });
 
+      // Redirect: admins go to /admin, customers go to /account
+      const target = data.user?.role === "admin" ? "/admin" : "/account";
       setAuthRedirect(null);
-      router.push("/account");
+      router.push(target);
     } catch (e) {
       setServerError(e instanceof Error ? e.message : "Registration failed");
     }

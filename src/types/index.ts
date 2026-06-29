@@ -84,7 +84,7 @@ export type ViewKey =
   | "login" | "signup" | "forgot-password" | "reset-password"
   | "account" | "account-orders" | "account-order-detail"
   | "account-addresses" | "account-wishlist" | "account-preferences"
-  | "collections" | "artisans" | "sustainability" | "care"
+  | "collections" | "sustainability" | "care"
   | "product-detail";
 
 export interface ActiveFilter {
@@ -94,7 +94,6 @@ export interface ActiveFilter {
 }
 
 // Content types
-export interface Artisan { id: string; slug: string; name: string; location: string; founded: string; craft: string; story: string[]; image: string; gallery: string[]; productSlugs: string[]; }
 export interface CareGuide { id: string; slug: string; title: string; material: string; excerpt: string; body: { type: "paragraph" | "heading" | "list"; text?: string; items?: string[] }[]; }
 export interface JournalBodyBlock { type: "paragraph" | "heading" | "quote" | "image" | "list"; text?: string; items?: string[]; image?: string; src?: string; alt?: string; caption?: string; attribution?: string; }
 export interface JournalArticle { id: string; slug: string; title: string; category: string; excerpt: string; heroImage: string; body: JournalBodyBlock[]; author: string; readTime: number; publishedAt: string; }
