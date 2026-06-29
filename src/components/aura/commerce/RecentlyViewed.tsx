@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
-import { productBySlug } from "@/data/products";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import { useRouter } from "next/navigation";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
@@ -19,11 +19,8 @@ export function RecentlyViewed({ excludeSlug, className }: RecentlyViewedProps) 
   const { slugs, clear, loaded } = useRecentlyViewed();
   const router = useRouter();
 
-  // Resolve to Product objects, dropping the excluded slug and any unknowns.
-  const items = slugs
-    .filter((s) => s !== excludeSlug)
-    .map((s) => productBySlug(s))
-    .filter((p): p is NonNullable<ReturnType<typeof productBySlug>> => Boolean(p));
+  const filteredSlugs = slugs.filter((s) => s !== excludeSlug);
+  const { products: items, isLoading } = useProductsBySlugs(filteredSlugs);
 
   if (!loaded || items.length === 0) return null;
 

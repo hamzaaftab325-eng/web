@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, ChevronDown, ArrowRight } from "lucide-react";
-import { products } from "@/data/products";
-import { categories, categoryBySlug } from "@/data/categories";
-import { collections, collectionBySlug } from "@/data/collections";
+import { useProducts } from "@/hooks/queries/use-products";
+import { useCategories } from "@/hooks/queries/use-catalog";
+import { useCollections } from "@/hooks/queries/use-catalog";
 import { useUIStore, type SortKey } from "@/store/use-ui-store";
 import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
 import { FilterSidebar } from "@/components/aura/commerce/FilterSidebar";
@@ -29,6 +29,10 @@ const sortOptions: { key: SortKey; label: string }[] = [
 ];
 
 export function ShopView() {
+  const { data: productData } = useProducts();
+  const products = productData?.products ?? [];
+  const { data: categories = [] } = useCategories();
+  const { data: collections = [] } = useCollections();
   const router = useRouter();
   const {
     activeCategory,
@@ -44,8 +48,8 @@ export function ShopView() {
   const [visibleCount, setVisibleCount] = useState(12);
   const [sortOpen, setSortOpen] = useState(false);
 
-  const collection = activeCollection ? collectionBySlug(activeCollection) : null;
-  const category = activeCategory !== "all" ? categoryBySlug(activeCategory) : null;
+  const collection = activeCollection ? collections.find((c) => c.slug === activeCollection) : null;
+  const category = activeCategory !== "all" ? categories.find((c) => c.slug === activeCategory) : null;
 
   // Compute filtered + sorted products
   const filteredProducts = useMemo(() => {

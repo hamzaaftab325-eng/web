@@ -1,8 +1,3 @@
-import type { Metadata } from "next";
-import { homeMetadata } from "@/lib/seo-metadata";
-import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
-import { faqs } from "@/data/faq";
-
 import { HeroSlider } from "@/components/aura/sections/HeroSlider";
 import { CategoryShowcase } from "@/components/aura/sections/CategoryShowcase";
 import { BrandMarquee } from "@/components/aura/sections/BrandMarquee";
@@ -16,8 +11,6 @@ import { RecentlyViewed } from "@/components/aura/commerce/RecentlyViewed";
 import { NewsletterSection } from "@/components/aura/sections/NewsletterSection";
 import { FAQSection } from "@/components/aura/sections/FAQSection";
 import { RecommendedForYou } from "@/components/aura/personalization/RecommendedForYou";
-
-export const metadata: Metadata = homeMetadata();
 
 export default function Home() {
   return (
@@ -35,9 +28,6 @@ export default function Home() {
       <RecentlyViewed />
       <NewsletterSection />
       <FAQSection />
-      <FaqJsonLd
-        items={faqs.map((f) => ({ question: f.question, answer: f.answer }))}
-      />
     </>
   );
 }

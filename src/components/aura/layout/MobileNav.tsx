@@ -4,15 +4,16 @@ import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
-import { categories } from "@/data/categories";
-import { collections } from "@/data/collections";
 import { cn } from "@/lib/utils";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
+import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
 
 export function MobileNav() {
   const router = useRouter();
+  const { data: categories = [] } = useCategories();
+  const { data: collections = [] } = useCollections();
   const open = useUIStore((s) => s.mobileNavOpen);
   const setOpen = useUIStore((s) => s.setMobileNavOpen);
   const setCategory = useUIStore((s) => s.setCategory);

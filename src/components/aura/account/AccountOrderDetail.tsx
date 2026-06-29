@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Package, Truck, MapPin, CreditCard, Printer, RotateCcw, Check, Clock } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
 import { useCartStore } from "@/store/use-cart-store";
-import { productBySlug } from "@/data/products";
+
 import { formatPrice, cn } from "@/lib/utils";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
@@ -46,7 +46,7 @@ export function AccountOrderDetail({ orderId }: { orderId?: string }) {
           </div>
           <div className="flex gap-3">
             <button onClick={() => window.print()} className="inline-flex items-center gap-2 border border-hairline-cream bg-cream/50 px-4 py-2.5 t-label-caps c-ink hover:border-gold hover:shadow-card-modern transition-all duration-300 rounded-sm"><Printer size={14} strokeWidth={1.5} />Print</button>
-            <button onClick={() => { order.items.forEach((item) => { const p = productBySlug(item.slug); if (p) addToCart(p, { quantity: item.quantity }); }); }} className="inline-flex items-center gap-2 border border-hairline-cream bg-cream/50 px-4 py-2.5 t-label-caps c-ink hover:border-gold hover:shadow-card-modern transition-all duration-300 rounded-sm"><RotateCcw size={14} strokeWidth={1.5} />Buy Again</button>
+            <button onClick={() => { /* Buy Again will be handled via API in B5 */ }} className="inline-flex items-center gap-2 border border-hairline-cream bg-cream/50 px-4 py-2.5 t-label-caps c-ink hover:border-gold hover:shadow-card-modern transition-all duration-300 rounded-sm"><RotateCcw size={14} strokeWidth={1.5} />Buy Again</button>
           </div>
         </div>
       </div>

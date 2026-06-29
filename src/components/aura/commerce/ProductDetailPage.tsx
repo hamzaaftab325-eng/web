@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/use-cart-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useToast } from "@/hooks/use-toast";
-import { products as allProducts } from "@/data/products";
+import { useProducts } from "@/hooks/queries/use-products";
 import AuraChip from "@/components/aura/ui/Chip";
 import { ReadAloud } from "@/components/aura/ui/ReadAloud";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
@@ -180,8 +180,9 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
     router.push("/shop");
   };
 
-  const related = allProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
+  const { data: productData } = useProducts({ category: product.category, limit: 5 });
+  const related = (productData?.products ?? [])
+    .filter((p) => p.id !== product.id)
     .slice(0, 4);
 
   const onSale =

@@ -7,19 +7,20 @@ import { useRouter } from "next/navigation";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
-import { careGuides, careGuideBySlug } from "@/data/care-guides";
-import type { CareGuide } from "@/data/care-guides";
+import { useCareGuides } from "@/hooks/queries/use-content";
+import type { CareGuide } from "@/types";
+
+type CareGuideBlock = { type: "paragraph" | "heading" | "list"; text?: string; items?: string[] };
 
 /**
  * CareView — library of seven material-specific care guides plus
  * a full article view for each one.
  */
 
-type CareGuideBlock = CareGuide["body"][number];
-
 export function CareView() {
+  const { data: careGuides = [] } = useCareGuides();
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
-  const guide = activeSlug ? careGuideBySlug(activeSlug) : undefined;
+  const guide = careGuides.find((g) => g.slug === activeSlug);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -47,6 +48,7 @@ export function CareView() {
 /* -------------------------------------------------------------------------- */
 
 function GuideLibrary({ onOpen }: { onOpen: (slug: string) => void }) {
+  const { data: careGuides = [] } = useCareGuides();
   return (
     <div>
       {/* Page hero — full-bleed image under fixed header */}

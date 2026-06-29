@@ -2,13 +2,16 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { categories } from "@/data/categories";
-import { products } from "@/data/products";
+import { useCategories } from "@/hooks/queries/use-catalog";
+import { useProducts } from "@/hooks/queries/use-products";
 import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
 export function CategoryShowcase() {
+  const { data: categories = [] } = useCategories();
+  const { data: productData } = useProducts();
+  const products = productData?.products ?? [];
   const setCategory = useUIStore((s) => s.setCategory);
 
   const cards = categories.map((c) => ({

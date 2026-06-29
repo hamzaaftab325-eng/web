@@ -92,3 +92,13 @@ export interface ActiveFilter {
   value: string;
   label: string;
 }
+
+// Content types
+export interface Artisan { id: string; slug: string; name: string; location: string; founded: string; craft: string; story: string[]; image: string; gallery: string[]; productSlugs: string[]; }
+export interface CareGuide { id: string; slug: string; title: string; material: string; excerpt: string; body: { type: "paragraph" | "heading" | "list"; text?: string; items?: string[] }[]; }
+export interface JournalBodyBlock { type: "paragraph" | "heading" | "quote" | "image" | "list"; text?: string; items?: string[]; image?: string; src?: string; alt?: string; caption?: string; attribution?: string; }
+export interface JournalArticle { id: string; slug: string; title: string; category: string; excerpt: string; heroImage: string; body: JournalBodyBlock[]; author: string; readTime: number; publishedAt: string; }
+export interface HeroSlide { id: string; image: string; eyebrow: string; headline: string; subtitle: string; ctaLabel: string; ctaAction: string; alt: string; }
+export interface PressItem { id: string; publication: string; year: string; tagline: string; quote: string; author: string; authorRole: string; featureUrl: string; }
+export interface BrandValue { icon: string; title: string; description: string; }
+export interface InstagramPost { id: string; imageUrl: string; caption: string; productSlug?: string; instagramUrl: string; }

@@ -3,7 +3,8 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import { products, productBySlug } from "@/data/products";
+import { useProducts } from "@/hooks/queries/use-products";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
@@ -28,35 +29,26 @@ const MAX_RECOMMENDATIONS = 8;
 export function RecommendedForYou() {
   const { slugs } = useRecentlyViewed();
 
+  const { data: productData } = useProducts();
+  const products = productData?.products ?? [];
+  const { products: recentProducts } = useProductsBySlugs(slugs);
+
   const recommendations = useMemo(() => {
-    // If no recently viewed, show featured products
+    if (products.length === 0) return [];
     if (slugs.length === 0) {
-      return products
-        .filter((p) => p.featured)
-        .slice(0, MAX_RECOMMENDATIONS);
+      return products.filter((p) => p.featured).slice(0, MAX_RECOMMENDATIONS);
     }
-
-    // Collect categories from recently viewed products
-    const recentProducts = slugs
-      .map((slug) => productBySlug(slug))
-      .filter((p): p is NonNullable<typeof p> => Boolean(p));
-
     const recentCategories = new Set(recentProducts.map((p) => p.category));
     const recentSlugs = new Set(slugs);
-
-    // Find products in the same categories, excluding already viewed
     const recommended = products
       .filter((p) => !recentSlugs.has(p.slug))
       .filter((p) => recentCategories.has(p.category))
       .sort((a, b) => {
-        // Featured first, then by name
         if (a.featured && !b.featured) return -1;
         if (!a.featured && b.featured) return 1;
         return a.name.localeCompare(b.name);
       })
       .slice(0, MAX_RECOMMENDATIONS);
-
-    // If not enough recommendations from categories, fill with featured
     if (recommended.length < 4) {
       const featured = products
         .filter((p) => p.featured && !recentSlugs.has(p.slug))
@@ -64,9 +56,8 @@ export function RecommendedForYou() {
         .slice(0, MAX_RECOMMENDATIONS - recommended.length);
       return [...recommended, ...featured];
     }
-
     return recommended;
-  }, [slugs]);
+  }, [slugs, products, recentProducts]);
 
   // Don't render if we don't have enough products to show
   if (recommendations.length < 2) return null;

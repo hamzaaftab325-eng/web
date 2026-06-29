@@ -5,26 +5,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ArrowLeft, Clock, Calendar } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
-import { articleBySlug } from "@/data/journal";
-import type { JournalBodyBlock } from "@/data/journal";
-import { products } from "@/data/products";
+import { useArticles } from "@/hooks/queries/use-content";
+import { useRouter } from "next/navigation";
 import { formatPrice, cn } from "@/lib/utils";
-
-const productBySlug = (slug: string) => products.find((p) => p.slug === slug);
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
+import type { JournalBodyBlock } from "@/types";
 
 /**
- * JournalReader — full-screen overlay article reader triggered by
- * `activeArticleSlug` in the UI store. Renders the article hero,
- * author byline, typed body blocks, an ornamental divider, and a
- * closing CTA. Esc closes, focus is trapped while open, and the
- * underlying page scroll is locked.
+ * JournalReader — full-screen overlay article reader.
  */
 export function JournalReader() {
   const activeSlug = useUIStore((s) => s.activeArticleSlug);
   const openArticle = useUIStore((s) => s.openArticle);
   const openProduct = useUIStore((s) => s.openProduct);
+  const router = useRouter();
 
-  const article = activeSlug ? articleBySlug(activeSlug) : undefined;
+  const { data: articles = [] } = useArticles();
+  const article = activeSlug ? articles.find((a) => a.slug === activeSlug) : undefined;
   const containerRef = useRef<HTMLDivElement | null>(null);
   useFocusTrap(containerRef, Boolean(article));
 
@@ -107,7 +104,7 @@ export function JournalReader() {
                   <span className="w-6 h-px bg-gold" aria-hidden />
                   <span className="t-caption c-ink-faint flex items-center gap-1.5">
                     <Calendar size={11} strokeWidth={1.5} />
-                    {article.date}
+                    {article.publishedAt}
                   </span>
                   <span className="t-caption c-ink-faint flex items-center gap-1.5">
                     <Clock size={11} strokeWidth={1.5} />
@@ -125,14 +122,14 @@ export function JournalReader() {
                 <div className="flex items-center gap-4 pt-6 border-t border-hairline">
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-cream-deep flex-shrink-0">
                     <img
-                      src={article.author.avatar}
-                      alt={article.author.name}
+                      src={''}
+                      alt={article.author}
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div>
-                    <p className="t-headline-sm c-ink">{article.author.name}</p>
-                    <p className="t-caption c-ink-faint">{article.author.role}</p>
+                    <p className="t-headline-sm c-ink">{article.author}</p>
+                    <p className="t-caption c-ink-faint">{''}</p>
                   </div>
                 </div>
               </div>
@@ -152,7 +149,7 @@ export function JournalReader() {
 
             {/* Closing CTA — related products */}
             <ClosingCTA
-              relatedProductSlugs={article.relatedProductSlugs}
+              relatedProductSlugs={[]}
               onViewProduct={openProduct}
             />
           </article>
@@ -285,7 +282,7 @@ function BodyBlock({
       transition={{ delay }}
       className="space-y-3 my-4"
     >
-      {block.items.map((item, i) => (
+      {(block.items ?? []).map((item, i) => (
         <li key={i} className="flex items-start gap-4">
           <span
             className="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-gold-deep"
@@ -310,9 +307,7 @@ function ClosingCTA({
   onViewProduct: (slug: string) => void;
 }) {
   const setView = useUIStore((s) => s.setView);
-  const related = relatedProductSlugs
-    .map((slug) => productBySlug(slug))
-    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const { products: related } = useProductsBySlugs(relatedProductSlugs);
 
   if (related.length === 0) return null;
 

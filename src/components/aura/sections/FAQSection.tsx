@@ -3,18 +3,21 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { faqs } from "@/data/faq";
+import { useFAQ } from "@/hooks/queries/use-content";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "Shipping", "Returns", "Product Care", "Orders"] as const;
 
 export function FAQSection() {
-  const [activeCat, setActiveCat] = useState<(typeof categories)[number]>("All");
-  const [openId, setOpenId] = useState<string | null>(faqs[0].id);
+  const { data: faqs = [] } = useFAQ();
+  const [activeCat, setActiveCat] = useState<string>("All");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const filtered =
     activeCat === "All" ? faqs : faqs.filter((f) => f.category === activeCat);
+
+  if (faqs.length === 0) return null;
 
   return (
     <section className="section-stack bg-cream">

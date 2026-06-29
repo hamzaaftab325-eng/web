@@ -4,8 +4,8 @@ import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-
 import { X, Check } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { LEFT_DRAWER_CONSTRAINTS, leftDrawerDragEnd } from "@/lib/swipe-to-close";
-import { categories } from "@/data/categories";
-import { allMaterials } from "@/data/products";
+import { useCategories } from "@/hooks/queries/use-catalog";
+import { useAllMaterials } from "@/hooks/queries/use-products";
 import { cn, formatPrice } from "@/lib/utils";
 import type { ActiveFilter, CategorySlug } from "@/types";
 
@@ -29,7 +29,8 @@ export function FilterSidebar() {
   } = useUIStore();
   const prefersReducedMotion = useReducedMotion();
 
-  const allMats = allMaterials();
+  const { data: categories = [] } = useCategories();
+  const { data: allMats = [] } = useAllMaterials();
 
   const isFilterActive = (field: string, value: string) =>
     filters.some((f) => f.field === field && f.value === value);
@@ -52,6 +53,7 @@ export function FilterSidebar() {
       {/* Desktop persistent sidebar */}
       <aside className="hidden lg:block w-[260px] flex-shrink-0">
         <FilterContent
+          categories={categories}
           activeCategory={activeCategory}
           setCategory={setCategory}
           filters={filters}
@@ -104,6 +106,7 @@ export function FilterSidebar() {
 
               <div className="flex-1 overflow-y-auto scrollbar-thin">
                 <FilterContent
+          categories={categories}
                   activeCategory={activeCategory}
                   setCategory={setCategory}
                   filters={filters}
@@ -131,6 +134,7 @@ export function FilterSidebar() {
 }
 
 interface FilterContentProps {
+  categories: { slug: string; name: string }[];
   activeCategory: string;
   setCategory: (c: "all" | CategorySlug) => void;
   filters: ActiveFilter[];
@@ -148,6 +152,7 @@ function FilterContent({
   toggleFilter,
   clearAll,
   allMats,
+  categories,
 }: FilterContentProps) {
   const hasActive =
     activeCategory !== "all" || filters.length > 0;
@@ -184,7 +189,7 @@ function FilterContent({
           {categories.map((c) => (
             <li key={c.slug}>
               <button
-                onClick={() => setCategory(c.slug)}
+                onClick={() => setCategory(c.slug as never)}
                 className={cn(
                   "block w-full text-left t-body py-1.5 transition-colors",
                   activeCategory === c.slug ? "c-gold" : "c-ink-muted hover:c-ink"

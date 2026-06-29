@@ -3,23 +3,24 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { collections } from "@/data/collections";
-import { productBySlug } from "@/data/products";
+import { useCollections } from "@/hooks/queries/use-catalog";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import { useUIStore } from "@/store/use-ui-store";
 import { SplitTextReveal } from "@/components/aura/animation/SplitTextReveal";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { formatPrice } from "@/lib/utils";
 
 export function CuratedCollection() {
+  const { data: collections = [] } = useCollections();
+  const collection = collections[0];
   const router = useRouter();
   const setCollection = useUIStore((s) => s.setCollection);
   const prefersReducedMotion = useReducedMotion();
-  const collection = collections[0]; // Warm Tones
 
-  const products = collection.productSlugs
-    .slice(0, 3)
-    .map((s) => productBySlug(s))
-    .filter((p): p is NonNullable<typeof p> => !!p);
+  const { products: collectionProducts } = useProductsBySlugs(collection?.productSlugs?.slice(0, 3) ?? []);
+  const products = collectionProducts;
+
+  if (!collection) return null;
 
   return (
     <section className="section-stack bg-canvas relative overflow-hidden">

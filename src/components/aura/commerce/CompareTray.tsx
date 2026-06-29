@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import type { Product } from "@/types";
 import { cn, formatPrice } from "@/lib/utils";
-import { productBySlug } from "@/data/products";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import { useUIStore } from "@/store/use-ui-store";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 
@@ -100,13 +100,7 @@ export function CompareTray() {
   const containerRef = useRef<HTMLDivElement>(null);
   useFocusTrap(containerRef, open);
 
-  const items = useMemo(
-    () =>
-      slugs
-        .map((s) => productBySlug(s))
-        .filter((p): p is Product => Boolean(p)),
-    [slugs]
-  );
+  const { products: items } = useProductsBySlugs(slugs);
 
   const showTray = slugs.length >= 2;
   const atMax = slugs.length >= COMPARE_MAX;

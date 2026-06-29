@@ -1,32 +1,466 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  heroImage   String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  products    Product[]
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  heroImage   String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  products    ProductCollection[]
+}
+
+model Product {
+  id               String            @id @default(cuid())
+  slug             String            @unique
+  name             String
+  subtitle         String?
+  description      String
+  longDescription  String?
+  price            Decimal           @db.Decimal(10, 2)
+  compareAtPrice   Decimal?          @db.Decimal(10, 2)
+  categoryId       String?
+  badge            String?
+  inStock          Boolean           @default(true)
+  stockQuantity    Int               @default(0)
+  materials        String[]
+  dimensions       String?
+  careInstructions String?
+  featured         Boolean           @default(false)
+  sortOrder        Int               @default(0)
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  category      Category?       @relation(fields: [categoryId], references: [id])
+  collections   ProductCollection[]
+  images        ProductImage[]
+  variants      ProductVariant[]
+  reviews       Review[]
+  orderItems    OrderItem[]
+  @@index([categoryId])
+  @@index([slug])
+  @@index([featured])
+  @@index([isActive])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  altText   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@index([productId])
+}
+
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  label         String
+  swatchColor   String?
+  stockQuantity Int      @default(0)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@index([productId])
+}
+
+model ProductCollection {
+  productId    String
+  collectionId String
+  product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  @@id([productId, collectionId])
 }
 
 model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  phone        String?
+  role         String   @default("customer")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  addresses    Address[]
+  orders       Order[]
+  reviews      Review[]
+  wishlist     Wishlist[]
+  sessions     UserSession[]
+  preferences  UserPreferences?
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  label      String?
+  firstName  String
+  lastName   String
+  street     String
+  apartment  String?
+  city       String
+  province   String
+  postalCode String
+  country    String   @default("Pakistan")
+  phone      String
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model UserPreferences {
+  userId            String   @id
+  newsletter        Boolean  @default(true)
+  newArrivals       Boolean  @default(true)
+  saleAlerts        Boolean  @default(false)
+  orderUpdates      Boolean  @default(true)
+  stylePreferences  String[]
+  budgetMin         Int?
+  budgetMax         Int?
+  updatedAt         DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Wishlist {
+  userId      String
+  productSlug String
+  createdAt   DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId, productSlug])
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  userId       String
+  refreshToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+  userId          String?
+  email           String
+  status          String   @default("processing")
+  subtotal        Decimal  @db.Decimal(10, 2)
+  discount        Decimal  @default(0) @db.Decimal(10, 2)
+  shippingCost    Decimal  @default(0) @db.Decimal(10, 2)
+  tax             Decimal  @default(0) @db.Decimal(10, 2)
+  total           Decimal  @db.Decimal(10, 2)
+  promoCode       String?
+  shippingMethod  String
+  shippingAddress Json
+  trackingNumber  String?
+  carrier         String?
+  estimatedDelivery DateTime?
+  orderNotes      String?
+  paymentMethod   String   @default("cod")
+  paymentStatus   String   @default("pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user  User?       @relation(fields: [userId], references: [id])
+  items OrderItem[]
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id           String   @id @default(cuid())
+  orderId      String
+  productId    String?
+  productSlug  String
+  productName  String
+  productImage String?
+  price        Decimal  @db.Decimal(10, 2)
+  quantity     Int
+  variantLabel String?
+  createdAt    DateTime @default(now())
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id])
+  @@index([orderId])
+  @@index([productId])
+}
+
+model PromoCode {
+  id         String   @id @default(cuid())
+  code       String   @unique
+  type       String
+  value      Decimal  @db.Decimal(10, 2)
+  label      String
+  minOrder   Decimal  @default(0) @db.Decimal(10, 2)
+  maxUses    Int?
+  usesCount  Int      @default(0)
+  startsAt   DateTime?
+  expiresAt  DateTime?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
+model ShippingMethod {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  name          String
+  description   String?
+  baseCost      Decimal  @db.Decimal(10, 2)
+  freeThreshold Decimal? @db.Decimal(10, 2)
+  estimatedDays String?
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+}
+
+model Review {
+  id             String   @id @default(cuid())
+  productId      String
+  userId         String?
+  authorName     String
+  authorLocation String?
+  rating         Int
+  title          String?
+  body           String
+  verifiedBuyer  Boolean  @default(false)
+  helpfulCount   Int      @default(0)
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  product Product? @relation(fields: [productId], references: [id])
+  user    User?    @relation(fields: [userId], references: [id])
+  @@index([productId])
+  @@index([status])
+}
+
+model HeroSlide {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+  imageUrl  String
+  eyebrow   String
+  headline  String
+  subtitle  String?
+  ctaLabel  String
+  ctaLink   String
+  altText   String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
+model BrandMarqueeItem {
+  id String @id @default(cuid())
+  text String
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+}
+model BrandValue {
+  id String @id @default(cuid())
+  icon String
+  title String
+  description String
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+}
+model PressFeature {
+  id String @id @default(cuid())
+  publication String
+  year String?
+  tagline String?
+  quote String
+  author String?
+  authorRole String?
+  featureUrl String?
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+}
+model Testimonial {
+  id String @id @default(cuid())
+  authorName String
+  authorLocation String?
+  quote String
+  rating Int @default(5)
+  productSlug String?
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+}
+model FaqItem {
+  id String @id @default(cuid())
+  category String
+  question String
+  answer String
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Artisan {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  location     String
+  founded      String?
+  craft        String
+  story        String[]
+  image        String
+  gallery      String[]
+  productSlugs String[]
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CareGuide {
+  id String @id @default(cuid())
+  slug String @unique
+  title String
+  material String
+  excerpt String
+  body Json
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+model JournalArticle {
+  id String @id @default(cuid())
+  slug String @unique
+  title String
+  category String
+  excerpt String
+  heroImage String
+  body Json
+  author String
+  readTime Int?
+  publishedAt DateTime?
+  isActive Boolean @default(true)
+  sortOrder Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model InstagramPost {
+  id String @id @default(cuid())
+  imageUrl String
+  caption String?
+  productSlug String?
+  instagramUrl String?
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+}
+model SustainabilityContent {
+  id String @id @default(cuid())
+  section String
+  data Json
+  isActive Boolean @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model FirstOrderOffer {
+  id String @id @default(cuid())
+  isActive Boolean @default(true)
+  discountPercent Decimal @db.Decimal(5, 2)
+  promoCode String
+  popupTitle String
+  popupDescription String?
+  bannerText String?
+  dismissDurationDays Int @default(30)
+  showDelayMs Int @default(3000)
+  updatedAt DateTime @updatedAt
+}
+model ExitIntentPopup {
+  id String @id @default(cuid())
+  isActive Boolean @default(true)
+  title String
+  description String?
+  discountPercent Decimal? @db.Decimal(5, 2)
+  promoCode String?
+  imageUrl String?
+  triggerDelaySeconds Int @default(30)
+  updatedAt DateTime @updatedAt
+}
+model FlashSale {
+  id String @id @default(cuid())
+  name String
+  description String?
+  startDate DateTime
+  endDate DateTime
+  discountPercent Decimal? @db.Decimal(5, 2)
+  promoCode String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+}
+
+model PageView {
+  id String @id @default(cuid())
+  path String
+  userId String?
+  sessionId String?
+  referrer String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
+model ProductView {
+  id String @id @default(cuid())
+  productId String?
+  productSlug String
+  userId String?
+  sessionId String?
+  createdAt DateTime @default(now())
+}
+model SearchLog {
+  id String @id @default(cuid())
+  query String
+  resultsCount Int?
+  userId String?
+  sessionId String?
+  createdAt DateTime @default(now())
+}
+model CartEvent {
+  id String @id @default(cuid())
+  eventType String
+  productId String?
+  productSlug String?
+  quantity Int?
+  userId String?
+  sessionId String?
+  createdAt DateTime @default(now())
+}
+model EmailSubscriber {
+  id String @id @default(cuid())
+  email String
+  source String
+  promoCode String?
+  createdAt DateTime @default(now())
 }

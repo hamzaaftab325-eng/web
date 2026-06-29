@@ -3,7 +3,6 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useUIStore } from "@/store/use-ui-store";
-import { productBySlug } from "@/data/products";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MobileNav } from "./MobileNav";
@@ -15,12 +14,12 @@ import { CustomCursor } from "@/components/aura/ui/CustomCursor";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { useProductBySlug } from "@/hooks/queries/use-product-by-slug";
 
 // Lazy-load heavy overlay components — only loaded when needed
 // This reduces initial bundle size by ~40KB+ (CheckoutFlow, ProductDetailPage, etc.)
 const CartDrawer = dynamic(() => import("@/components/aura/commerce/CartDrawer").then(m => ({ default: m.CartDrawer })), { ssr: false });
 const WishlistDrawer = dynamic(() => import("@/components/aura/commerce/WishlistDrawer").then(m => ({ default: m.WishlistDrawer })), { ssr: false });
-const ProductDetailPage = dynamic(() => import("@/components/aura/commerce/ProductDetailPage").then(m => ({ default: m.ProductDetailPage })), { ssr: false });
 const QuickViewModal = dynamic(() => import("@/components/aura/commerce/QuickViewModal").then(m => ({ default: m.QuickViewModal })), { ssr: false });
 const CompareTray = dynamic(() => import("@/components/aura/commerce/CompareTray").then(m => ({ default: m.CompareTray })), { ssr: false });
 const CheckoutFlow = dynamic(() => import("@/components/aura/commerce/CheckoutFlow").then(m => ({ default: m.CheckoutFlow })), { ssr: false });
@@ -53,20 +52,18 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const prefersReducedMotion = useReducedMotion();
   useKeyboardShortcuts();
 
-  const activeProductSlug = useUIStore((s) => s.activeProductSlug);
   const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);
-  const openProduct = useUIStore((s) => s.openProduct);
   const setQuickViewProduct = useUIStore((s) => s.setQuickViewProduct);
 
   const isAuthPage = AUTH_PATHS.has(pathname);
+  const isProductPage = pathname.startsWith("/product/");
 
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
   }, [pathname, prefersReducedMotion]);
 
-  const activeProduct = activeProductSlug ? productBySlug(activeProductSlug) : undefined;
-  const quickViewProduct = quickViewSlug ? productBySlug(quickViewSlug) ?? null : null;
+  const { data: quickViewProduct } = useProductBySlug(quickViewSlug);
 
   return (
     <AnalyticsProvider>
@@ -83,12 +80,8 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         {!isAuthPage && <ExitIntentPopup />}
 
         {/* Product detail page overlay (triggered from quick view / compare) */}
-        {activeProduct && (
-          <ProductDetailPage product={activeProduct} onBack={() => openProduct(null)} />
-        )}
-
         {/* Quick view modal */}
-        <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+        <QuickViewModal product={quickViewProduct ?? null} onClose={() => setQuickViewProduct(null)} />
 
         {/* Journal article reader overlay */}
         <JournalReader />

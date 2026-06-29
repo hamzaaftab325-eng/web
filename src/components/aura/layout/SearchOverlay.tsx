@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
-import { products } from "@/data/products";
-import { formatPrice } from "@/lib/utils";
+import { useProductSearch } from "@/hooks/queries/use-products";
 import { search as trackSearch } from "@/lib/analytics/ecommerce";
+import { formatPrice } from "@/lib/utils";
 
 export function SearchOverlay() {
   const router = useRouter();
@@ -32,19 +32,7 @@ export function SearchOverlay() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, setOpen]);
 
-  const results = useMemo(() => {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    return products
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.category.includes(q) ||
-          p.subtitle?.toLowerCase().includes(q)
-      )
-      .slice(0, 6);
-  }, [query]);
+  const { data: results = [] } = useProductSearch(query);
 
   // Fire search analytics event (debounced 800ms)
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { testimonials } from "@/data/testimonials";
+import { useTestimonials } from "@/hooks/queries/use-content";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { cn } from "@/lib/utils";
 
 export function TestimonialSection() {
+  const { data: testimonials = [] } = useTestimonials();
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",

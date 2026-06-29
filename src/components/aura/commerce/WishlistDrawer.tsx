@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { X, Heart, ShoppingBag } from "lucide-react";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
-import { productBySlug } from "@/data/products";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 import { formatPrice } from "@/lib/utils";
 
@@ -18,9 +18,7 @@ export function WishlistDrawer() {
   const addToCart = useCartStore((s) => s.addLine);
   const prefersReducedMotion = useReducedMotion();
 
-  const items = slugs
-    .map((s) => productBySlug(s))
-    .filter((p): p is NonNullable<typeof p> => !!p);
+  const { products: items } = useProductsBySlugs(slugs);
 
   const goShop = () => {
     close();

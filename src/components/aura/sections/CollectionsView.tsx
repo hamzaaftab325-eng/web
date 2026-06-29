@@ -5,8 +5,8 @@ import { ArrowRight } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
-import { collections } from "@/data/collections";
-import { products } from "@/data/products";
+import { useCollections } from "@/hooks/queries/use-catalog";
+import { useProducts } from "@/hooks/queries/use-products";
 import { formatPrice, cn } from "@/lib/utils";
 
 /**
@@ -16,6 +16,9 @@ import { formatPrice, cn } from "@/lib/utils";
  * view with the collection pre-set via `setCollection`.
  */
 export function CollectionsView() {
+  const { data: collections = [] } = useCollections();
+  const { data: productData } = useProducts();
+  const products = productData?.products ?? [];
   const setCollection = useUIStore((s) => s.setCollection);
 
   return (

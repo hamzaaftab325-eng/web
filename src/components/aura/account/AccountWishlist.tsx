@@ -24,7 +24,7 @@ import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import AuraButton from "@/components/aura/ui/Button";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
 import { useToast } from "@/hooks/use-toast";
-import { productBySlug } from "@/data/products";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import type { Product } from "@/types";
 
 /**
@@ -57,15 +57,9 @@ export function AccountWishlist() {
   const [adding, setAdding] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
 
-  // Hydrate and de-dupe — guard against slugs that no longer map to a product.
-  const products = useMemo<Product[]>(() => {
-    const resolved: Product[] = [];
-    for (const slug of slugs) {
-      const p = productBySlug(slug);
-      if (p) resolved.push(p);
-    }
-    return resolved;
-  }, [slugs]);
+  // Fetch products by slug via API
+  const { products: rawProducts } = useProductsBySlugs(slugs);
+  const products = rawProducts;
 
   // Sort — "recent" preserves insertion order (newest first when reversed).
   const sorted = useMemo<Product[]>(() => {

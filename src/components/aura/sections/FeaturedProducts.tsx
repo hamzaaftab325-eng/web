@@ -1,19 +1,16 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { products } from "@/data/products";
+import { useFeaturedProducts } from "@/hooks/queries/use-products";
 import { useUIStore } from "@/store/use-ui-store";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
 
 export function FeaturedProducts() {
   const setView = useUIStore((s) => s.setView);
+  const { data: products = [] } = useFeaturedProducts();
 
-  // Show 8 featured / curated pieces
-  const featured = products
-    .filter((p) => p.featured)
-    .slice(0, 4)
-    .concat(products.filter((p) => !p.featured).slice(0, 4));
+  if (products.length === 0) return null;
 
   return (
     <section className="section-stack bg-cream">
@@ -42,7 +39,7 @@ export function FeaturedProducts() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
-          {featured.map((p, i) => (
+          {products.map((p, i) => (
             <ProductCard key={p.id} product={p} priority={i < 4} />
           ))}
         </div>

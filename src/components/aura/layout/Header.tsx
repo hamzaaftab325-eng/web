@@ -8,8 +8,7 @@ import { useUIStore } from "@/store/use-ui-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useAuthStore } from "@/store/use-auth-store";
-import { categories } from "@/data/categories";
-import { collections } from "@/data/collections";
+import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
@@ -27,6 +26,9 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
+
+  const { data: categories = [] } = useCategories();
+  const { data: collections = [] } = useCollections();
 
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);

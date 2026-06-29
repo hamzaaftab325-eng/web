@@ -8,9 +8,10 @@ import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
-import { artisans, artisanBySlug } from "@/data/artisans";
-import { products } from "@/data/products";
-import type { Artisan } from "@/data/artisans";
+import { useArtisans } from "@/hooks/queries/use-content";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
+import type { Artisan } from "@/types";
+import { useProducts } from "@/hooks/queries/use-products";
 
 /**
  * ArtisansView — index of four workshop profiles plus a full
@@ -21,11 +22,10 @@ import type { Artisan } from "@/data/artisans";
  * display type as a lead; subsequent paragraphs render as body.
  */
 
-const productBySlug = (slug: string) => products.find((p) => p.slug === slug);
-
 export function ArtisansView() {
+  const { data: artisans = [] } = useArtisans();
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
-  const artisan = activeSlug ? artisanBySlug(activeSlug) : undefined;
+  const artisan = artisans.find((a) => a.slug === activeSlug);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -53,6 +53,7 @@ export function ArtisansView() {
 /* -------------------------------------------------------------------------- */
 
 function ArtisanIndex({ onOpen }: { onOpen: (slug: string) => void }) {
+  const { data: artisans = [] } = useArtisans();
   return (
     <div>
       {/* Page hero — full-bleed image under fixed header */}
@@ -153,10 +154,7 @@ function ArtisanDetail({
   onBack: () => void;
 }) {
   const router = useRouter();
-
-  const linkedProducts = artisan.productSlugs
-    .map((slug) => productBySlug(slug))
-    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const { products: linkedProducts } = useProductsBySlugs(artisan.productSlugs);
 
   const paragraphs = artisan.story;
 

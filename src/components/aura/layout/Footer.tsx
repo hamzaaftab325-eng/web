@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Instagram, Mail } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
-import { categories } from "@/data/categories";
-import { collections } from "@/data/collections";
+import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 
 export function Footer() {
   const router = useRouter();
+  const { data: categories = [] } = useCategories();
+  const { data: collections = [] } = useCollections();
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
