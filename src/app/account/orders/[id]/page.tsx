@@ -4,6 +4,7 @@ import { AccountOrderDetail } from "@/components/aura/account/AccountOrderDetail
 
 export const metadata: Metadata = pageMetadata("account-order-detail", "/account/orders");
 
-export default function AccountOrderDetailPage({ params }: { params: { id: string } }) {
-  return <AccountOrderDetail orderId={params.id} />;
+export default async function AccountOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <AccountOrderDetail orderId={id} />;
 }
