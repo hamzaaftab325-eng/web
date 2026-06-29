@@ -14,18 +14,29 @@
 | B4 | Content API (CMS) | [x] |
 | B5 | Orders + checkout (COD) | [x] |
 | B6 | Reviews + wishlist + addresses | [x] |
-| B7 | Cloudinary image upload | [ ] |
-| B8 | Admin panel | [ ] |
-| B9 | Analytics dashboard | [ ] |
-| B10 | Final integration + polish | [ ] |
+| B7 | Cloudinary image upload | [x] |
+| B8 | Admin panel | [x] |
+| B9 | Analytics dashboard | [x] |
+| B10 | Final integration + polish | [~] |
 
 ## Payment Roadmap: COD now → JazzCash + EasyPaisa + Bank Transfer later
 
-## Completed API Routes (20+):
+## Total API Routes Built: 30+
 - Auth: register, login, logout, me (GET+PUT), forgot-password, reset-password
 - Products: list, detail, featured, search, materials
 - Catalog: categories, collections
-- Content: hero-slides, faq, testimonials, artisans, care-guides, journal, press, brand-values, instagram, first-order-offer, exit-intent, promo-codes, shipping-methods
+- Content: hero-slides, faq, testimonials, artisans (+[slug]), care-guides (+[slug]), journal (+[slug]), press, brand-values, instagram, first-order-offer, exit-intent, promo-codes/[code], shipping-methods
 - Orders: list, create, detail
 - Reviews: list by product, submit, mark helpful
 - User: addresses (CRUD), wishlist (GET/POST/DELETE)
+- Admin: analytics overview, analytics chart data, orders list, order detail (GET+PUT)
+- Health: /api/health
+
+## Admin Panel Pages:
+- /admin — Dashboard (revenue, orders, products, customers, recent orders, low stock)
+- /admin/products — Product list with search
+- /admin/orders — Order list with status filter
+- /admin/orders/[id] — Order detail with status update
+- /admin/analytics — Sales charts, top products, search terms
+- /admin/content — Content management hub
+- /admin/settings — Store configuration
