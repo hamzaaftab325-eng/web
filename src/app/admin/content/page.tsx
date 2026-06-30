@@ -2,53 +2,25 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight } from "lucide-react";
+import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight, Gift, MousePointerClick, Newspaper, Instagram, Zap } from "lucide-react";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
 const contentSections = [
-  {
-    label: "Hero Slides",
-    description: "Manage the home page carousel — featured collections and seasonal campaigns.",
-    icon: Image,
-    href: "/admin/content/hero-slides",
-  },
-  {
-    label: "FAQ Items",
-    description: "Customer questions about shipping, returns, materials, and care.",
-    icon: HelpCircle,
-    href: "/admin/content/faq",
-  },
-  {
-    label: "Testimonials",
-    description: "Curated customer quotes shown on the home and product pages.",
-    icon: Users,
-    href: "/admin/content/testimonials",
-  },
-  {
-    label: "Journal Articles",
-    description: "Long-form stories about artisans, materials, and slow living.",
-    icon: BookOpen,
-    href: "/admin/content/journal",
-  },
-  {
-    label: "Care Guides",
-    description: "Material-specific care instructions for each product type.",
-    icon: FileText,
-    href: "/admin/content/care-guides",
-  },
-  {
-    label: "Categories",
-    description: "Product categories shown in the mega menu and shop filters.",
-    icon: Sparkles,
-    href: "/admin/content/categories",
-  },
-  {
-    label: "Collections",
-    description: "Curated product collections for seasonal and themed displays.",
-    icon: Sparkles,
-    href: "/admin/content/collections",
-  },
+  { label: "Hero Slides", description: "Manage the home page carousel — featured collections and seasonal campaigns.", icon: Image, href: "/admin/content/hero-slides" },
+  { label: "FAQ Items", description: "Customer questions about shipping, returns, materials, and care.", icon: HelpCircle, href: "/admin/content/faq" },
+  { label: "Testimonials", description: "Curated customer quotes shown on the home and product pages.", icon: Users, href: "/admin/content/testimonials" },
+  { label: "Journal Articles", description: "Long-form stories about artisans, materials, and slow living.", icon: BookOpen, href: "/admin/content/journal" },
+  { label: "Care Guides", description: "Material-specific care instructions for each product type.", icon: FileText, href: "/admin/content/care-guides" },
+  { label: "Categories", description: "Product categories shown in the mega menu and shop filters.", icon: Sparkles, href: "/admin/content/categories" },
+  { label: "Collections", description: "Curated product collections for seasonal and themed displays.", icon: Sparkles, href: "/admin/content/collections" },
+  { label: "First Order Offer", description: "Configure the popup offering first-time visitors a discount.", icon: Gift, href: "/admin/content/first-order-offer" },
+  { label: "Exit Intent Popup", description: "Popup shown when a visitor is about to leave without purchasing.", icon: MousePointerClick, href: "/admin/content/exit-intent" },
+  { label: "Brand Values", description: "The four values shown on the home page — what your atelier stands for.", icon: Sparkles, href: "/admin/content/brand-values" },
+  { label: "Brand Marquee", description: "Scrolling text marquee shown on the home page.", icon: Sparkles, href: "/admin/content/brand-marquee" },
+  { label: "Press Features", description: "Press mentions and publications that feature your atelier.", icon: Newspaper, href: "/admin/content/press" },
+  { label: "Instagram Posts", description: "Instagram feed shown on the home page.", icon: Instagram, href: "/admin/content/instagram" },
+  { label: "Flash Sales", description: "Time-limited discount events with start and end dates.", icon: Zap, href: "/admin/flash-sales" },
 ];
 
 export default function AdminContent() {
@@ -65,7 +37,7 @@ export default function AdminContent() {
         </div>
       </div>
 
-      <RevealOnScroll stagger={0.08} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <RevealOnScroll stagger={0.06} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {contentSections.map((section) => {
           const Icon = section.icon;
           return (

@@ -8,27 +8,44 @@ import { useToast } from "@/hooks/use-toast";
 
 const SESSION_KEY = "aura-exit-intent-shown";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const COUPON_CODE = "AURA10";
 const MOBILE_DELAY = 30_000;
 // Ignore exit signals in the first few seconds after mount so the popup
 // doesn't fire the instant the page loads.
 const ARM_DELAY = 5_000;
 
+interface ExitIntentData {
+  isActive: boolean;
+  title: string;
+  description: string;
+  discountPercent: number | null;
+  promoCode: string;
+  imageUrl: string;
+  triggerDelaySeconds: number;
+}
+
 /**
  * ExitIntentPopup — fires once per session when a desktop shopper moves their
  * cursor out the top of the viewport (classic cart-abandon intent), or after a
- * 30s timer on touch devices. Captures an email and reveals a one-time code.
- * Dismissed via Esc, scrim click, or close button. Once shown it won't reappear
- * until the next session.
+ * timer on touch devices. Captures an email and reveals a one-time code.
+ * Fetches configuration from /api/content/exit-intent.
  */
 export function ExitIntentPopup() {
   const prefersReducedMotion = useReducedMotion();
   const { toast } = useToast();
 
+  const [config, setConfig] = useState<ExitIntentData | null>(null);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
   const [email, setEmail] = useState("");
   const [copied, setCopied] = useState(false);
+
+  // Fetch popup configuration from the API
+  useEffect(() => {
+    fetch("/api/content/exit-intent")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data && data.isActive) setConfig(data); })
+      .catch(() => {});
+  }, []);
 
   const armedRef = useRef(false);
 
@@ -109,9 +126,9 @@ export function ExitIntentPopup() {
 
   const copyCode = async () => {
     try {
-      await navigator.clipboard.writeText(COUPON_CODE);
+      await navigator.clipboard.writeText(config?.promoCode ?? "WELCOME10");
       setCopied(true);
-      toast({ title: "Copied", description: `${COUPON_CODE} on your clipboard.` });
+      toast({ title: "Copied", description: `${config?.promoCode ?? "WELCOME10"} on your clipboard.` });
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
       /* clipboard unavailable */
@@ -119,6 +136,9 @@ export function ExitIntentPopup() {
   };
 
   const close = () => setOpen(false);
+
+  // Don't render if config not loaded or popup is inactive
+  if (!config) return null;
 
   return (
     <AnimatePresence>
@@ -296,7 +316,7 @@ export function ExitIntentPopup() {
                     <div className="text-left">
                       <p className="t-caption c-ink-faint mb-0.5">Your code</p>
                       <p className="t-headline-md c-gold-deep t-num tracking-[0.15em]">
-                        {COUPON_CODE}
+                        {config?.promoCode ?? "WELCOME10"}
                       </p>
                     </div>
                     <button
