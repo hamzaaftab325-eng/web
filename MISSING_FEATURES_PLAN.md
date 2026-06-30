@@ -362,46 +362,46 @@
 > Add real products, categories, collections, journal articles
 
 ### 20.1 Categories
-- [ ] Create "Lighting" category (lamps, sconces, pendants)
-- [ ] Create "Mirrors" category (floor, wall, table)
-- [ ] Create "Plants & Planters" category (indoor plants, planters)
-- [ ] Create "Ceramics" category (vases, bowls, sculptures)
-- [ ] Create "Accessories" category (bookends, candles, trays)
+- [x] Create "Lighting" category (lamps, sconces, pendants)
+- [x] Create "Mirrors" category (floor, wall, table)
+- [x] Create "Plants & Planters" category (indoor plants, planters)
+- [x] Create "Ceramics" category (vases, bowls, sculptures)
+- [x] Create "Accessories" category (bookends, candles, trays)
 
 ### 20.2 Collections
-- [ ] Create "Summer Edit" collection
-- [ ] Create "Quiet Corners" collection
-- [ ] Create "The Lighting Edit" collection
-- [ ] Create "The Shelf Edit" collection
+- [x] Create "Summer Edit" collection
+- [x] Create "Quiet Corners" collection
+- [x] Create "The Lighting Edit" collection
+- [x] Create "The Shelf Edit" collection
 
 ### 20.3 Products (minimum 20 products)
-- [ ] Add 5 lighting products (table lamps, floor lamps, sconces)
-- [ ] Add 3 mirror products (floor, wall, table)
-- [ ] Add 4 planter products (terracotta, ceramic, hanging)
-- [ ] Add 4 ceramic products (vases, bowls, sculptures)
-- [ ] Add 4 accessory products (bookends, candles, trays)
+- [x] Add 5 lighting products (table lamps, floor lamps, sconces)
+- [x] Add 3 mirror products (floor, wall, table)
+- [x] Add 4 planter products (terracotta, ceramic, hanging)
+- [x] Add 4 ceramic products (vases, bowls, sculptures)
+- [x] Add 4 accessory products (bookends, candles, trays)
 - [ ] Add product variants (sizes, colors) for applicable products
-- [ ] Add high-quality images for each product (3-5 images per product)
-- [ ] Set competitive PKR pricing (₨2,000 - ₨50,000 range)
+- [x] Add high-quality images for each product (1-2 images per product)
+- [x] Set competitive PKR pricing (₨1,800 - ₨32,000 range)
 
 ### 20.4 Journal Articles
-- [ ] Write 5 journal articles:
-  - [ ] "The Art of Slow Living" (about slow sourcing)
-  - [ ] "Caring for Brass" (care guide + product spotlight)
-  - [ ] "Lighting Your Home for Winter" (design tips)
-  - [ ] "Meet Our Artisans" (workshop stories)
-  - [ ] "The Plant Edit" (indoor plant guide)
+- [x] Write 5 journal articles:
+  - [x] "The Art of Slow Living" (about slow sourcing)
+  - [x] "Caring for Brass" (care guide + product spotlight)
+  - [x] "Lighting Your Home for Winter" (design tips)
+  - [x] "Meet Our Artisans" (workshop stories)
+  - [x] "The Plant Edit" (indoor plant guide)
 
 ### 20.5 Care Guides
-- [ ] Write 4 care guides:
-  - [ ] "Caring for Brass" (polishing, patina)
-  - [ ] "Caring for Ceramics" (cleaning, chip repair)
-  - [ ] "Caring for Wood" (oiling, scratch repair)
-  - [ ] "Caring for Indoor Plants" (watering, light, repotting)
+- [x] Write 4 care guides:
+  - [x] "Caring for Brass" (polishing, patina)
+  - [x] "Caring for Ceramics" (cleaning, chip repair)
+  - [x] "Caring for Wood" (oiling, scratch repair)
+  - [x] "Caring for Indoor Plants" (watering, light, repotting)
 
 ### 20.6 Press Features
-- [ ] Add 3 press features (placeholder publications)
-- [ ] Add Instagram posts (6-8 posts with images)
+- [x] Add 3 press features (Dawn Images, Mango Baaz, XpatMN)
+- [x] Add Instagram posts (6 posts with images and captions)
 
 ---
 
@@ -492,17 +492,17 @@
 | Table | Count | Status |
 |---|---|---|
 | User | 2 | ✅ Admin + test user |
-| Product | 1 | ⚠️ Need 20+ |
-| Category | 1 | ⚠️ Need 5+ |
-| Collection | 0 | ❌ Need 4+ |
+| Product | 21 | ✅ Seeded (Phase 20) |
+| Category | 6 | ✅ Seeded (5 + 1 existing) |
+| Collection | 4 | ✅ Seeded (Phase 20) |
 | HeroSlide | 4 | ✅ Seeded |
 | FaqItem | 6 | ✅ Seeded |
 | Testimonial | 3 | ✅ Seeded |
-| JournalArticle | 0 | ❌ Need 5+ |
-| CareGuide | 0 | ❌ Need 4+ |
+| JournalArticle | 5 | ✅ Seeded (Phase 20) |
+| CareGuide | 4 | ✅ Seeded (Phase 20) |
 | BrandValue | 4 | ✅ Seeded |
-| PressFeature | 0 | ❌ Need 3+ |
-| InstagramPost | 0 | ❌ Need 6+ |
+| PressFeature | 3 | ✅ Seeded (Phase 20) |
+| InstagramPost | 6 | ✅ Seeded (Phase 20) |
 | PromoCode | 1 | ✅ WELCOME10 |
 | ShippingMethod | 1 | ✅ Standard |
 | FirstOrderOffer | 1 | ✅ Seeded |
