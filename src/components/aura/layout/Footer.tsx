@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Instagram, Mail } from "lucide-react";
+import { Instagram, Mail, Facebook, Twitter } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
+import { useSettings } from "@/hooks/use-settings";
 
 export function Footer() {
   const router = useRouter();
   const { data: categories = [] } = useCategories();
   const { data: collections = [] } = useCollections();
+  const settings = useSettings();
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
@@ -188,40 +190,48 @@ export function Footer() {
           <div className="md:col-span-2">
             <p className="t-label-caps c-paper/50 mb-4">Connect</p>
             <ul className="space-y-2">
-              <li>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline inline-flex items-center gap-2"
-                >
-                  <Instagram size={16} strokeWidth={1.25} />
-                  @auraliving
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:concierge@auraliving.com"
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
-                >
-                  concierge@auraliving.com
-                </a>
-              </li>
-              <li>
-                <a
-                  href="tel:+923001234567"
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
-                >
-                  +92 300 1234567
-                </a>
-              </li>
+              {settings.socialInstagram && (
+                <li>
+                  <a href={settings.socialInstagram} target="_blank" rel="noreferrer" className="t-body c-paper/80 hover:c-gold transition-colors link-underline inline-flex items-center gap-2">
+                    <Instagram size={16} strokeWidth={1.25} /> Instagram
+                  </a>
+                </li>
+              )}
+              {settings.socialFacebook && (
+                <li>
+                  <a href={settings.socialFacebook} target="_blank" rel="noreferrer" className="t-body c-paper/80 hover:c-gold transition-colors link-underline inline-flex items-center gap-2">
+                    <Facebook size={16} strokeWidth={1.25} /> Facebook
+                  </a>
+                </li>
+              )}
+              {settings.socialTwitter && (
+                <li>
+                  <a href={settings.socialTwitter} target="_blank" rel="noreferrer" className="t-body c-paper/80 hover:c-gold transition-colors link-underline inline-flex items-center gap-2">
+                    <Twitter size={16} strokeWidth={1.25} /> Twitter / X
+                  </a>
+                </li>
+              )}
+              {settings.storeEmail && (
+                <li>
+                  <a href={`mailto:${settings.storeEmail}`} className="t-body c-paper/80 hover:c-gold transition-colors link-underline inline-flex items-center gap-2">
+                    <Mail size={16} strokeWidth={1.25} /> {settings.storeEmail}
+                  </a>
+                </li>
+              )}
+              {settings.storePhone && (
+                <li>
+                  <a href={`tel:${settings.storePhone}`} className="t-body c-paper/80 hover:c-gold transition-colors link-underline">
+                    {settings.storePhone}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
 
         <div className="mt-16 pt-8 border-t border-paper/15 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <p className="t-caption c-paper/50">
-            © {new Date().getFullYear()} Aura Living Atelier. All rights reserved.
+            © {new Date().getFullYear()} {settings.storeName} Atelier. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-6">
             <button
