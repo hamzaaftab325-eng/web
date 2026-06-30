@@ -526,6 +526,20 @@
 
   /* Safe area insets */
   .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .safe-area-top { padding-top: env(safe-area-inset-top, 0px); }
+  .safe-area-bottom-mt { margin-top: env(safe-area-inset-bottom, 0px); }
+  .safe-area-x { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+
+  /* Tap target enforcement — buttons / links on touch devices get at least 44×44 */
+  @media (pointer: coarse) {
+    .tap-target { min-height: 44px; min-width: 44px; }
+  }
+  /* Remove 300ms tap delay on touch devices */
+  @media (pointer: coarse) {
+    button, a, [role="button"], input[type="submit"], input[type="button"] {
+      touch-action: manipulation;
+    }
+  }
 
   /* Shimmer loading */
   .shimmer { background: linear-gradient(90deg, var(--cream) 0%, var(--cream-deep) 50%, var(--cream) 100%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; }

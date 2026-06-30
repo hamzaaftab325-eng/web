@@ -380,7 +380,7 @@
 - [x] Add 4 planter products (terracotta, ceramic, hanging)
 - [x] Add 4 ceramic products (vases, bowls, sculptures)
 - [x] Add 4 accessory products (bookends, candles, trays)
-- [ ] Add product variants (sizes, colors) for applicable products
+- [x] Add product variants (sizes, colors) for applicable products
 - [x] Add high-quality images for each product (1-2 images per product)
 - [x] Set competitive PKR pricing (₨1,800 - ₨32,000 range)
 
@@ -409,22 +409,22 @@
 > Progressive Web App, mobile optimizations
 
 ### 21.1 PWA
-- [ ] Verify manifest.webmanifest is correct
-- [ ] Add service worker for offline support
-- [ ] Add "Add to Home Screen" prompt
+- [x] Verify manifest.webmanifest is correct
+- [x] Add service worker for offline support
+- [x] Add "Add to Home Screen" prompt
 - [ ] Add push notification support (web push)
 
 ### 21.2 Mobile Optimizations
-- [ ] Verify all pages are responsive (test on 320px, 375px, 414px widths)
-- [ ] Add touch-friendly tap targets (min 44px)
-- [ ] Optimize mobile navigation (hamburger menu, bottom tab bar)
-- [ ] Add swipe gestures for product image gallery
-- [ ] Add pull-to-refresh on product list
+- [x] Verify all pages are responsive (test on 320px, 375px, 414px widths)
+- [x] Add touch-friendly tap targets (min 44px)
+- [x] Optimize mobile navigation (hamburger menu, bottom tab bar)
+- [x] Add swipe gestures for product image gallery
+- [x] Add pull-to-refresh on product list
 
 ### 21.3 Mobile App Shell
-- [ ] Add app-like transitions
-- [ ] Add bottom navigation bar (Home, Shop, Cart, Account)
-- [ ] Add sticky add-to-cart bar on mobile product pages
+- [x] Add app-like transitions
+- [x] Add bottom navigation bar (Home, Shop, Cart, Account)
+- [x] Add sticky add-to-cart bar on mobile product pages
 
 ---
 

@@ -11,6 +11,8 @@ import { useUIStore, type SortKey } from "@/store/use-ui-store";
 import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
 import { FilterSidebar } from "@/components/aura/commerce/FilterSidebar";
 import { PageHero } from "@/components/aura/layout/PageHero";
+import { PullToRefreshIndicator } from "@/components/aura/ui/PullToRefreshIndicator";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { cn, formatPrice } from "@/lib/utils";
 
 const PRICE_BANDS: Record<string, { min: number; max: number }> = {
@@ -29,7 +31,8 @@ const sortOptions: { key: SortKey; label: string }[] = [
 ];
 
 export function ShopView() {
-  const { data: productData } = useProducts();
+  const productsQuery = useProducts();
+  const productData = productsQuery.data;
   const products = productData?.products ?? [];
   const { data: categories = [] } = useCategories();
   const { data: collections = [] } = useCollections();
@@ -47,6 +50,13 @@ export function ShopView() {
 
   const [visibleCount, setVisibleCount] = useState(12);
   const [sortOpen, setSortOpen] = useState(false);
+
+  // Pull-to-refresh — refetch products when the user pulls down at the top.
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await productsQuery.refetch();
+    },
+  });
 
   const collection = activeCollection ? collections.find((c) => c.slug === activeCollection) : null;
   const category = activeCategory !== "all" ? categories.find((c) => c.slug === activeCategory) : null;
@@ -137,6 +147,7 @@ export function ShopView() {
 
   return (
     <div className="bg-canvas">
+      <PullToRefreshIndicator pullDistance={pullDistance} isRefreshing={isRefreshing} />
       {/* Page hero — full-bleed image under fixed header */}
       <PageHero
         image="/hero/shop.png"

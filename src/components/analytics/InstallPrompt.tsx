@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Download, X } from "lucide-react";
+import { Download, X, Sparkles } from "lucide-react";
 
 /**
  * InstallPrompt — "Add to Home Screen" prompt for PWA.
@@ -11,8 +11,8 @@ import { Download, X } from "lucide-react";
  * Uses the beforeinstallprompt event (Chrome/Edge/Android).
  * Dismissible — hides for 30 days if dismissed (localStorage).
  *
- * Does NOT show on iOS Safari (no beforeinstallprompt event — iOS users
- * must manually use Share → Add to Home Screen).
+ * iOS Safari does not fire `beforeinstallprompt` — for iOS users we show
+ * a one-time hint pointing them to Share → Add to Home Screen.
  */
 
 interface BeforeInstallPromptEvent extends Event {
@@ -22,15 +22,21 @@ interface BeforeInstallPromptEvent extends Event {
 
 const VISIT_KEY = "aura-visit-count";
 const DISMISS_KEY = "aura-install-dismissed";
+const IOS_HINT_KEY = "aura-ios-hint-seen";
 const DISMISS_DAYS = 30;
 
 export function InstallPrompt() {
   const prefersReducedMotion = useReducedMotion();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
+  const [isIosHint, setIsIosHint] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Already installed/standalone — never prompt.
+    if (window.matchMedia("(display-mode: standalone)").matches) return;
+    if ((window.navigator as { standalone?: boolean }).standalone === true) return;
 
     // Track visit count
     let visits = 0;
@@ -55,6 +61,23 @@ export function InstallPrompt() {
 
     // Only show after 2nd visit
     if (visits < 2) return;
+
+    // iOS detection — no beforeinstallprompt, show one-time hint.
+    const isIos =
+      /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (isIos) {
+      try {
+        if (window.localStorage.getItem(IOS_HINT_KEY)) return;
+      } catch {
+        /* ignore */
+      }
+      const t = setTimeout(() => {
+        setIsIosHint(true);
+        setVisible(true);
+      }, 3500);
+      return () => clearTimeout(t);
+    }
 
     const handler = (e: Event) => {
       e.preventDefault();
@@ -81,6 +104,7 @@ export function InstallPrompt() {
     setVisible(false);
     try {
       window.localStorage.setItem(DISMISS_KEY, String(Date.now()));
+      if (isIosHint) window.localStorage.setItem(IOS_HINT_KEY, "1");
     } catch {
       // localStorage unavailable
     }
@@ -94,32 +118,37 @@ export function InstallPrompt() {
           animate={{ y: 0, opacity: 1 }}
           exit={prefersReducedMotion ? { opacity: 0 } : { y: 80, opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-[56px] lg:bottom-6 inset-x-4 z-overlay lg:z-sticky"
+          className="fixed bottom-[60px] lg:bottom-6 inset-x-3 lg:inset-x-4 z-overlay lg:z-sticky"
           role="dialog"
           aria-label="Install app"
         >
           <div className="bg-ink c-paper rounded-sm shadow-premium max-w-md mx-auto overflow-hidden">
             <div className="flex items-start gap-4 p-4 md:p-5">
               <div className="w-10 h-10 rounded-full bg-gold-pale flex items-center justify-center flex-shrink-0">
-                <Download size={18} strokeWidth={1.5} className="c-gold-deep" />
+                <Sparkles size={18} strokeWidth={1.5} className="c-gold-deep" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="t-headline-sm c-paper mb-1">Install Aura Living</p>
                 <p className="t-body-sm c-paper/70 leading-relaxed">
-                  Add to your home screen for faster access and offline browsing.
+                  {isIosHint
+                    ? "Tap the Share icon in Safari, then Add to Home Screen for offline access."
+                    : "Add to your home screen for faster access and offline browsing."}
                 </p>
                 <div className="flex items-center gap-2 mt-3">
-                  <button
-                    onClick={accept}
-                    className="t-label-caps bg-gold-deep c-paper hover:bg-paper hover:c-ink transition-colors px-4 py-2 rounded-sm"
-                  >
-                    Install
-                  </button>
+                  {!isIosHint && (
+                    <button
+                      onClick={accept}
+                      className="t-label-caps bg-gold-deep c-paper hover:bg-paper hover:c-ink transition-colors px-4 py-2 rounded-sm inline-flex items-center gap-1.5"
+                    >
+                      <Download size={13} strokeWidth={2} />
+                      Install
+                    </button>
+                  )}
                   <button
                     onClick={dismiss}
                     className="t-label-caps c-paper/60 hover:c-paper transition-colors px-3 py-2 link-underline"
                   >
-                    Not now
+                    {isIosHint ? "Got it" : "Not now"}
                   </button>
                 </div>
               </div>
