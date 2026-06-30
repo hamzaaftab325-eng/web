@@ -109,7 +109,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         {!isAuthPage && <WishlistDrawer />}
         {!isAuthPage && <CompareTray />}
         {!isAuthPage && <CheckoutFlow />}
-        {!isAuthPage && <ExitIntentPopup />}
+        {/* ExitIntentPopup removed — was not working reliably */}
 
         {/* Product detail page overlay (triggered from quick view / compare) */}
         {/* Quick view modal */}
