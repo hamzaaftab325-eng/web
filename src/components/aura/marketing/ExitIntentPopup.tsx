@@ -3,15 +3,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Gift, Mail, Check, Sparkles, Copy } from "lucide-react";
-import { cn, sleep } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 const SESSION_KEY = "aura-exit-intent-shown";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MOBILE_DELAY = 30_000;
+const MOBILE_DELAY = 15_000; // 15 seconds (was 30)
 // Ignore exit signals in the first few seconds after mount so the popup
 // doesn't fire the instant the page loads.
-const ARM_DELAY = 5_000;
+const ARM_DELAY = 3_000; // 3 seconds (was 5)
 
 interface ExitIntentData {
   isActive: boolean;
@@ -78,7 +78,7 @@ export function ExitIntentPopup() {
     };
     document.addEventListener("mouseout", onMouseOut);
 
-    // Mobile / no-mouse: 30s timer (only if the session hasn't seen it).
+    // Mobile / no-mouse: 15s timer (only if the session hasn't seen it).
     let mobileTimer: number | undefined;
     try {
       if (!sessionStorage.getItem(SESSION_KEY)) {
@@ -90,9 +90,23 @@ export function ExitIntentPopup() {
       /* ignore */
     }
 
+    // Also trigger on scroll-back-up (user scrolled down then back to top)
+    const onScroll = () => {
+      if (!armedRef.current) return;
+      if (sessionStorage.getItem(SESSION_KEY)) return;
+      const scrolled = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      // If user scrolled more than 30% and then came back near the top
+      if (scrolled < 100 && maxScroll > 500) {
+        trigger();
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => {
       window.clearTimeout(armTimer);
       document.removeEventListener("mouseout", onMouseOut);
+      window.removeEventListener("scroll", onScroll);
       if (mobileTimer) window.clearTimeout(mobileTimer);
     };
   }, [trigger]);
