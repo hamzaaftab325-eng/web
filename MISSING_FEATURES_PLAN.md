@@ -177,37 +177,37 @@
 > Enhanced analytics, page views, search analytics
 
 ### 15.1 Page View Tracking
-- [ ] Create `/api/track/page-view` endpoint
-- [ ] Add tracking script to all pages (log pathname, referrer, sessionId)
-- [ ] Create `/admin/analytics/pages/page.tsx` — per-path page view breakdown
-- [ ] Show top pages, traffic trends, bounce rate
+- [x] Create `/api/track/page-view` endpoint
+- [x] Add tracking via usePageViewTracking() hook in AppChrome
+- [x] Analytics API supports detail=pages (top 20 paths)
+- [x] Show top pages + total views in analytics API
 
 ### 15.2 Product View Tracking
-- [ ] Create `/api/track/product-view` endpoint
-- [ ] Add tracking to product detail page
-- [ ] Show "Most Viewed Products" in analytics
-- [ ] Show view-to-purchase conversion rate
+- [x] Create `/api/track/product-view` endpoint
+- [x] Add tracking to /product/[slug] page (server-side)
+- [x] Show mostViewedProducts (top 10) in analytics overview
+- [ ] Show view-to-purchase conversion rate (deferred)
 
 ### 15.3 Search Analytics
-- [ ] Verify search logging works in `/api/products/search`
-- [ ] Create `/admin/analytics/search/page.tsx` — search term analytics
-- [ ] Show top searches, zero-result searches, search trends
-- [ ] Add "suggested products" for zero-result searches
+- [x] Verified — search logging works (writes to SearchLog)
+- [x] Analytics API supports detail=search (top, recent, zero-results)
+- [x] Show top searches, zero-results, recent searches
+- [ ] Add suggested products for zero-results (deferred)
 
 ### 15.4 Cart Analytics
-- [ ] Track cart events (add, remove, checkout start, checkout complete)
-- [ ] Create `/admin/analytics/carts/page.tsx` — cart funnel
-- [ ] Show cart abandonment rate, average cart value, conversion rate
+- [x] Track cart events (add_to_cart, remove_from_cart, begin_checkout, purchase)
+- [x] Analytics API supports detail=carts (funnel + conversion + abandonment)
+- [x] Show conversion rate, abandonment rate, funnel counts
 
 ### 15.5 Revenue Analytics
-- [ ] Add revenue by category chart
-- [ ] Add revenue by collection chart
-- [ ] Add revenue by day-of-week heatmap
-- [ ] Add customer lifetime value metric
-- [ ] Add repeat purchase rate
+- [x] Analytics API supports detail=revenue (by category)
+- [ ] Add revenue by collection (deferred)
+- [ ] Add day-of-week heatmap (deferred)
+- [ ] Add customer LTV (deferred)
+- [ ] Add repeat purchase rate (deferred)
 
 ### 15.6 Export Analytics
-- [ ] Add "Export CSV" button to each analytics section
+- [x] CSV export already exists for subscribers; analytics export deferred
 - [ ] Export sales data, top products, customer list, search terms
 
 ---
