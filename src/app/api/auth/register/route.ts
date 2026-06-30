@@ -3,6 +3,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { hashPassword, signAccessToken, signRefreshToken, sanitizeUser } from "@/lib/auth";
 import { setAuthCookies } from "@/lib/auth-cookies";
+import { sendEmail } from "@/lib/email";
+import { welcomeEmail } from "@/lib/email-templates";
 
 const schema = z.object({
   firstName: z.string().min(1), lastName: z.string().min(1),
@@ -29,6 +31,11 @@ export async function POST(request: NextRequest) {
     await db.userSession.create({ data: { userId: user.id, refreshToken, expiresAt } });
     const response = NextResponse.json({ user: sanitizeUser(user), token: accessToken, message: "Account created" });
     setAuthCookies(response, accessToken, refreshToken);
+
+    // Send welcome email (fire-and-forget)
+    const { subject, html } = welcomeEmail(firstName);
+    void sendEmail({ to: user.email, subject, html });
+
     return response;
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Registration failed", code: "REGISTER_ERROR" }, { status: 500 });

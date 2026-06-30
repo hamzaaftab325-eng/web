@@ -23,6 +23,7 @@ import {
   Truck,
   Mail,
   Zap,
+  Send,
 } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -39,6 +40,7 @@ const navItems: { label: string; icon: typeof LayoutDashboard; path: string; des
   { label: "Shipping", icon: Truck, path: "/admin/shipping", description: "Methods & rates" },
   { label: "Content", icon: FileText, path: "/admin/content", description: "Pages & media" },
   { label: "Subscribers", icon: Mail, path: "/admin/subscribers", description: "Email list" },
+  { label: "Newsletter", icon: Send, path: "/admin/newsletter", description: "Send emails" },
   { label: "Analytics", icon: BarChart3, path: "/admin/analytics", description: "Sales & traffic" },
   { label: "Settings", icon: Settings, path: "/admin/settings", description: "Store config" },
 ];

@@ -3,6 +3,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
 import { createNotification } from "@/lib/notifications";
+import { sendEmail } from "@/lib/email";
+import { orderStatusEmail } from "@/lib/email-templates";
 
 const OrderUpdateSchema = z.object({
   status: z.enum(["processing", "packed", "shipped", "delivered", "cancelled"]).optional(),
@@ -70,6 +72,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         ...(data.paymentStatus && { paymentStatus: data.paymentStatus }),
         ...(data.orderNotes !== undefined && { orderNotes: data.orderNotes }),
       },
+      include: { user: { select: { firstName: true } } },
     });
 
     // If order is cancelled, restock the items
@@ -103,6 +106,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           message: msg.message,
           link: "/account/orders",
         });
+
+        // Send email to the customer (fire-and-forget)
+        const customerName = order.user ? order.user.firstName : (order.shippingAddress as Record<string, string>)?.firstName ?? "Customer";
+        const { subject: emailSubject, html: emailHtml } = orderStatusEmail(
+          order.orderNumber, data.status, customerName, order.trackingNumber ?? undefined, order.carrier ?? undefined
+        );
+        void sendEmail({ to: order.email, subject: emailSubject, html: emailHtml });
       }
     }
 

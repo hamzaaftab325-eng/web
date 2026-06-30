@@ -5,6 +5,8 @@ import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
 import { createNotification, notifyAdmins } from "@/lib/notifications";
 import { formatPrice } from "@/lib/format/currency";
+import { sendEmail } from "@/lib/email";
+import { orderConfirmationEmail } from "@/lib/email-templates";
 
 /**
  * GET /api/orders — user's order history (requires auth)
@@ -160,6 +162,16 @@ export async function POST(request: NextRequest) {
       `Order ${order.orderNumber} placed by ${email} — ${formatPrice(total)}`,
       `/admin/orders/${order.id}`
     );
+
+    // 3. Send order confirmation email (fire-and-forget)
+    const customerName = shippingAddress.firstName ?? email;
+    const { subject: emailSubject, html: emailHtml } = orderConfirmationEmail(
+      order.orderNumber,
+      formatPrice(total),
+      items.map(i => ({ name: i.name, qty: i.quantity, price: formatPrice(i.price) })),
+      customerName
+    );
+    void sendEmail({ to: email, subject: emailSubject, html: emailHtml });
 
     return NextResponse.json({
       orderNumber: order.orderNumber,
