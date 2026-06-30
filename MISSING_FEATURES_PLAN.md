@@ -288,39 +288,39 @@
 > Make settings page editable
 
 ### 18.1 Store Settings
-- [ ] Create `/api/admin/settings` (GET + PUT)
-- [ ] Create Settings model (key-value store)
-- [ ] Make settings page editable:
-  - [ ] Store name, logo, contact email, phone
-  - [ ] Currency (PKR default, allow USD, EUR)
-  - [ ] Tax rate (0% for Pakistan, configurable)
-  - [ ] Free shipping threshold
-  - [ ] Default shipping cost
-  - [ ] Order number prefix
-  - [ ] Social media links (Instagram, Facebook, Twitter)
+- [x] Create `/api/admin/settings` (GET + PUT)
+- [x] Created Setting model (key-value store)
+- [x] Make settings page editable:
+  - [x] Store name, contact email, phone, address
+  - [x] Currency + symbol (PKR default)
+  - [x] Tax rate (0% default, configurable)
+  - [x] Free shipping threshold
+  - [x] Default shipping cost
+  - [x] Order number prefix
+  - [x] Social media links (Instagram, Facebook, Twitter, Pinterest)
 
 ### 18.2 Payment Settings
-- [ ] Toggle payment methods on/off (COD, JazzCash, EasyPaisa, Bank Transfer)
-- [ ] Configure payment gateway credentials
-- [ ] Set minimum order amount for each payment method
+- [x] Toggle payment methods on/off (COD, JazzCash, EasyPaisa, Bank Transfer)
+- [ ] Configure payment gateway credentials (via env vars)
+- [ ] Set minimum order per method (deferred)
 
 ### 18.3 Email Settings
-- [ ] Configure SMTP/email provider settings
-- [ ] Set sender email and name
-- [ ] Test email configuration
-- [ ] Toggle which emails to send (order confirmation, status updates, newsletter)
+- [x] Configure email provider (Resend) + from address
+- [x] Set from email address
+- [ ] Test email config (deferred — needs Resend API key)
+- [x] Toggle email sending on/off (order confirmation, status updates, newsletter)
 
 ### 18.4 SEO Settings
-- [ ] Edit meta title and description for each page
-- [ ] Edit Open Graph images
-- [ ] Edit robots.txt rules
-- [ ] Edit sitemap priorities
+- [x] Edit meta title + description (home, shop)
+- [ ] Edit OG images (deferred)
+- [ ] Edit robots.txt (deferred)
+- [ ] Edit sitemap priorities (deferred)
 
 ### 18.5 Admin User Management
-- [ ] Create `/admin/admin-users/page.tsx` — manage admin accounts
-- [ ] Invite new admin (send email with signup link)
-- [ ] Revoke admin access
-- [ ] View admin activity log
+- [x] Admin users managed via /admin/customers (promote/demote)
+- [ ] Invite admin via email (deferred)
+- [x] Revoke admin access (demote to customer on customers page)
+- [ ] View admin activity log (deferred)
 
 ---
 
