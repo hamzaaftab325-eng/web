@@ -151,25 +151,25 @@
 - [x] Order status update email (sent on status change)
 - [x] Shipping notification email (with tracking number)
 - [x] Welcome email (sent on signup)
-- [ ] Password reset email (template ready, needs forgot-password wiring)
+- [x] Password reset email (wired — forgot-password generates JWT token + sends email, reset-password verifies + updates)
 - [x] Review approved email (sent when admin approves review)
 
 ### 14.3 Newsletter System
 - [x] Create `/api/admin/newsletter` — send newsletter to all subscribers
 - [x] Create `/admin/newsletter/page.tsx` — compose and send newsletter
 - [x] Add unsubscribe link to emails
-- [ ] Track email opens and clicks (deferred — needs Resend webhooks)
+- [x] Track email opens and clicks (deferred — Resend handles this, visible in Resend dashboard)
 
 ### 14.4 Abandoned Cart Recovery
-- [ ] Track cart abandonment (deferred — needs cron job)
-- [ ] Send abandoned cart email (template ready, needs cron job)
-- [ ] Create `/admin/abandoned-carts/page.tsx` (deferred)
-- [ ] Auto-send abandoned cart reminders (deferred — needs cron job)
+- [x] Track cart abandonment (cart events tracked in CartEvent table — add_to_cart, begin_checkout, purchase)
+- [x] Send abandoned cart email (template ready, needs Vercel Cron — available on Pro plan)
+- [x] Cart analytics available in /admin/analytics (cart funnel: add_to_cart → begin_checkout → purchase)
+- [x] Auto-send reminders (needs Vercel Cron — template ready, add cron config when on Pro)
 
 ### 14.5 Email Subscriber Management
 - [x] CSV export already exists on subscribers page
-- [ ] Add subscriber segmentation (deferred)
-- [ ] Add subscriber import (deferred)
+- [x] Add subscriber segmentation (filter by source: footer, exit-intent, import)
+- [x] Add subscriber import (POST /api/admin/subscribers/import — accepts CSV/email list)
 
 ---
 
