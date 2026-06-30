@@ -15,7 +15,6 @@ const VIEW_TO_URL: Partial<Record<ViewKey, string>> = {
   about: "/about",
   journal: "/journal",
   collections: "/collections",
-  sustainability: "/sustainability",
   care: "/care",
   login: "/login",
   signup: "/signup",

@@ -97,7 +97,6 @@ export function MobileNav() {
                   { label: "Collections", action: () => goView("/collections") },
                   { label: "About", action: () => goView("/about") },
                   { label: "Journal", action: () => goView("/journal") },
-                  { label: "Sustainability", action: () => goView("/sustainability") },
                   { label: "Care Guides", action: () => goView("/care") },
                 ].map((item) => (
                   <motion.button

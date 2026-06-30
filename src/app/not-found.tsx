@@ -19,7 +19,6 @@ export default function NotFound() {
     { label: "About", href: "/about" },
     { label: "Collections", href: "/collections" },
     { label: "Journal", href: "/journal" },
-    { label: "Sustainability", href: "/sustainability" },
   ];
 
   return (

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight, Gift, MousePointerClick, Newspaper, Instagram, Zap } from "lucide-react";
+import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight } from "lucide-react";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
@@ -14,13 +14,6 @@ const contentSections = [
   { label: "Care Guides", description: "Material-specific care instructions for each product type.", icon: FileText, href: "/admin/content/care-guides" },
   { label: "Categories", description: "Product categories shown in the mega menu and shop filters.", icon: Sparkles, href: "/admin/content/categories" },
   { label: "Collections", description: "Curated product collections for seasonal and themed displays.", icon: Sparkles, href: "/admin/content/collections" },
-  { label: "First Order Offer", description: "Configure the popup offering first-time visitors a discount.", icon: Gift, href: "/admin/content/first-order-offer" },
-  { label: "Exit Intent Popup", description: "Popup shown when a visitor is about to leave without purchasing.", icon: MousePointerClick, href: "/admin/content/exit-intent" },
-  { label: "Brand Values", description: "The four values shown on the home page — what your atelier stands for.", icon: Sparkles, href: "/admin/content/brand-values" },
-  { label: "Brand Marquee", description: "Scrolling text marquee shown on the home page.", icon: Sparkles, href: "/admin/content/brand-marquee" },
-  { label: "Press Features", description: "Press mentions and publications that feature your atelier.", icon: Newspaper, href: "/admin/content/press" },
-  { label: "Instagram Posts", description: "Instagram feed shown on the home page.", icon: Instagram, href: "/admin/content/instagram" },
-  { label: "Flash Sales", description: "Time-limited discount events with start and end dates.", icon: Zap, href: "/admin/flash-sales" },
 ];
 
 export default function AdminContent() {
@@ -41,14 +34,8 @@ export default function AdminContent() {
         {contentSections.map((section) => {
           const Icon = section.icon;
           return (
-            <motion.div
-              key={section.label}
-              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-            >
-              <Link
-                href={section.href}
-                className="group relative block bg-gradient-card-warm border border-hairline-cream p-6 hover:shadow-card-hover transition-shadow overflow-hidden rounded-sm h-full"
-              >
+            <motion.div key={section.label} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+              <Link href={section.href} className="group relative block bg-gradient-card-warm border border-hairline-cream p-6 hover:shadow-card-hover transition-shadow overflow-hidden rounded-sm h-full">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-gold/10 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" aria-hidden />
                 <div className="relative flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-gold-pale flex items-center justify-center ring-1 ring-hairline-gold flex-shrink-0">

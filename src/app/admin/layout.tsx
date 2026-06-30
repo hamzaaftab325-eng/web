@@ -19,12 +19,9 @@ import {
   ArrowUpRight,
   Users,
   MessageSquare,
-  HelpCircle,
   Tag,
   Truck,
   Mail,
-  Zap,
-  Send,
 } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -36,13 +33,10 @@ const navItems: { label: string; icon: typeof LayoutDashboard; path: string; des
   { label: "Orders", icon: ShoppingBag, path: "/admin/orders", description: "Fulfillment queue" },
   { label: "Customers", icon: Users, path: "/admin/customers", description: "User accounts & roles" },
   { label: "Reviews", icon: MessageSquare, path: "/admin/reviews", description: "Moderation queue" },
-  { label: "Q&A", icon: HelpCircle, path: "/admin/questions", description: "Customer questions" },
   { label: "Promotions", icon: Tag, path: "/admin/promo-codes", description: "Discount codes" },
-  { label: "Flash Sales", icon: Zap, path: "/admin/flash-sales", description: "Time-limited sales" },
   { label: "Shipping", icon: Truck, path: "/admin/shipping", description: "Methods & rates" },
   { label: "Content", icon: FileText, path: "/admin/content", description: "Pages & media" },
-  { label: "Subscribers", icon: Mail, path: "/admin/subscribers", description: "Email list" },
-  { label: "Newsletter", icon: Send, path: "/admin/newsletter", description: "Send emails" },
+  { label: "Newsletter", icon: Mail, path: "/admin/subscribers", description: "Subscribers & emails" },
   { label: "Analytics", icon: BarChart3, path: "/admin/analytics", description: "Sales & traffic" },
   { label: "Settings", icon: Settings, path: "/admin/settings", description: "Store config" },
 ];

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Save, Store, CreditCard, Mail, Globe, Share2, Eye, EyeOff } from "lucide-react";
+import { Save, Store, CreditCard, Mail, Share2, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
@@ -54,7 +54,6 @@ export default function AdminSettings() {
     { key: "payment", label: "Payment", icon: CreditCard },
     { key: "email", label: "Email", icon: Mail },
     { key: "social", label: "Social", icon: Share2 },
-    { key: "seo", label: "SEO", icon: Globe },
   ];
 
   return (
@@ -159,17 +158,6 @@ export default function AdminSettings() {
             <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Facebook URL</span><input value={settings.socialFacebook ?? ""} onChange={e => update("socialFacebook", e.target.value)} className={inputCls} placeholder="https://facebook.com/auraliving" /></label>
             <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Twitter / X URL</span><input value={settings.socialTwitter ?? ""} onChange={e => update("socialTwitter", e.target.value)} className={inputCls} placeholder="https://twitter.com/auraliving" /></label>
             <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Pinterest URL</span><input value={settings.socialPinterest ?? ""} onChange={e => update("socialPinterest", e.target.value)} className={inputCls} placeholder="https://pinterest.com/auraliving" /></label>
-          </motion.div>
-        )}
-
-        {activeTab === "seo" && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-card-warm border border-hairline-cream rounded-sm p-6 space-y-5">
-            <h2 className="t-headline-sm c-ink flex items-center gap-3"><span className="w-6 h-px bg-gold" aria-hidden />SEO — Meta Tags</h2>
-            <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Home Page Title</span><input value={settings.metaHomeTitle ?? ""} onChange={e => update("metaHomeTitle", e.target.value)} className={inputCls} /></label>
-            <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Home Page Description</span><textarea value={settings.metaHomeDescription ?? ""} onChange={e => update("metaHomeDescription", e.target.value)} rows={2} className={inputCls} /></label>
-            <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Shop Page Title</span><input value={settings.metaShopTitle ?? ""} onChange={e => update("metaShopTitle", e.target.value)} className={inputCls} /></label>
-            <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Shop Page Description</span><textarea value={settings.metaShopDescription ?? ""} onChange={e => update("metaShopDescription", e.target.value)} rows={2} className={inputCls} /></label>
-            <p className="t-caption c-ink-faint">Meta tags help search engines understand your pages. Keep titles under 60 characters and descriptions under 160 characters.</p>
           </motion.div>
         )}
 

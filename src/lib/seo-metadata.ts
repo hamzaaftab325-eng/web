@@ -49,12 +49,6 @@ const PAGE_META: Record<ViewKey, PageMeta> = {
       "Curated selections from the Aura Living catalogue — gathered by palette, purpose, or price. Each collection is a complete point of view.",
     ogImage: "/hero/collections.png",
   },
-  sustainability: {
-    title: "Sustainability — Aura Living",
-    description:
-      "Full transparency: materials sourcing index, workshop map, certifications, environmental impact, and dated future commitments. No green-washing.",
-    ogImage: "/hero/sustainability.png",
-  },
   care: {
     title: "Care Guides — Aura Living",
     description:

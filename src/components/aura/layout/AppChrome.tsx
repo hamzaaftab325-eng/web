@@ -101,7 +101,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     <AnalyticsProvider>
       <CustomCursor />
       <div className="min-h-screen flex flex-col bg-canvas">
-        {!isAuthPage && <FirstOrderBanner />}
+        {/* FirstOrderBanner removed — keeping things simple */}
         {!isAuthPage && <Header />}
         {!isAuthPage && <MobileNav />}
         {!isAuthPage && <SearchOverlay />}

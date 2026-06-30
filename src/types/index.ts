@@ -84,7 +84,7 @@ export type ViewKey =
   | "login" | "signup" | "forgot-password" | "reset-password"
   | "account" | "account-orders" | "account-order-detail"
   | "account-addresses" | "account-wishlist" | "account-preferences"
-  | "collections" | "sustainability" | "care"
+  | "collections" | "care"
   | "product-detail";
 
 export interface ActiveFilter {
