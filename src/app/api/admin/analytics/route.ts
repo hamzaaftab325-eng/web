@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
       db.order.findMany({
         where: { createdAt: { gte: startDate } },
         orderBy: { createdAt: "asc" },
-        select: { id: true, total: true, status: true, createdAt: true, items: { select: { quantity: true } } },
+        select: { id: true, total: true, status: true, createdAt: true, userId: true, items: { select: { quantity: true, productSlug: true, productName: true, price: true } } },
       }),
       db.product.findMany({ where: { isActive: true }, include: { _count: { select: { orderItems: true } } }, orderBy: { sortOrder: "asc" } }),
       db.orderItem.groupBy({
@@ -126,6 +126,51 @@ export async function GET(request: NextRequest) {
         where: { createdAt: { gte: startDate } },
       }),
     ]);
+
+    // 15.1: View-to-purchase conversion rate
+    const totalProductViews = productViews.reduce((sum, pv) => sum + pv._count.id, 0);
+    const purchasedSlugs = new Set(orders.flatMap(o => o.items.map(i => i.productSlug)));
+    const viewToPurchaseRate = totalProductViews > 0 ? (purchasedSlugs.size / totalProductViews) * 100 : 0;
+
+    // 15.3: Revenue by collection
+    const collectionRevenue: Record<string, number> = {};
+    for (const order of orders) {
+      for (const item of order.items) {
+        const product = await db.product.findUnique({ where: { slug: item.productSlug }, select: { collections: { include: { collection: { select: { name: true } } } } } });
+        if (product?.collections) {
+          for (const pc of product.collections) {
+            const name = pc.collection.name;
+            collectionRevenue[name] = (collectionRevenue[name] ?? 0) + Number(item.price) * item.quantity;
+          }
+        }
+      }
+    }
+
+    // 15.4: Day-of-week heatmap
+    const dayOfWeekRevenue: Record<number, { revenue: number; orders: number }> = {};
+    for (let i = 0; i < 7; i++) dayOfWeekRevenue[i] = { revenue: 0, orders: 0 };
+    orders.forEach(o => {
+      const day = o.createdAt.getDay();
+      dayOfWeekRevenue[day].revenue += Number(o.total);
+      dayOfWeekRevenue[day].orders += 1;
+    });
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    // 15.5: Customer LTV
+    const customerOrders: Record<string, number[]> = {};
+    orders.forEach(o => {
+      if (o.userId) {
+        if (!customerOrders[o.userId]) customerOrders[o.userId] = [];
+        customerOrders[o.userId].push(Number(o.total));
+      }
+    });
+    const customerLTVs = Object.values(customerOrders).map(totals => totals.reduce((s, t) => s + t, 0));
+    const avgLTV = customerLTVs.length > 0 ? customerLTVs.reduce((s, t) => s + t, 0) / customerLTVs.length : 0;
+
+    // 15.6: Repeat purchase rate
+    const repeatCustomers = Object.values(customerOrders).filter(totals => totals.length > 1).length;
+    const totalCustomers = Object.keys(customerOrders).length;
+    const repeatPurchaseRate = totalCustomers > 0 ? (repeatCustomers / totalCustomers) * 100 : 0;
 
     const salesByDate: Record<string, { revenue: number; orders: number }> = {};
     orders.forEach(o => {
@@ -155,6 +200,14 @@ export async function GET(request: NextRequest) {
         beginCheckout: cartFunnel["begin_checkout"] ?? 0,
         purchase: cartFunnel["purchase"] ?? 0,
       },
+      // New analytics
+      viewToPurchaseRate: Math.round(viewToPurchaseRate * 100) / 100,
+      revenueByCollection: Object.entries(collectionRevenue).map(([name, revenue]) => ({ name, revenue })).sort((a, b) => b.revenue - a.revenue),
+      dayOfWeek: dayNames.map((name, i) => ({ day: name, revenue: dayOfWeekRevenue[i].revenue, orders: dayOfWeekRevenue[i].orders })),
+      avgCustomerLTV: Math.round(avgLTV),
+      repeatPurchaseRate: Math.round(repeatPurchaseRate * 100) / 100,
+      totalCustomers,
+      repeatCustomers,
     });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "FETCH_ERROR" }, { status: 500 });

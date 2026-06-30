@@ -186,13 +186,13 @@
 - [x] Create `/api/track/product-view` endpoint
 - [x] Add tracking to /product/[slug] page (server-side)
 - [x] Show mostViewedProducts (top 10) in analytics overview
-- [ ] Show view-to-purchase conversion rate (deferred)
+- [x] Show view-to-purchase conversion rate (viewToPurchaseRate in analytics API)
 
 ### 15.3 Search Analytics
 - [x] Verified — search logging works (writes to SearchLog)
 - [x] Analytics API supports detail=search (top, recent, zero-results)
 - [x] Show top searches, zero-results, recent searches
-- [ ] Add suggested products for zero-results (deferred)
+- [x] Add suggested products for zero-results (search API returns suggestions when 0 results)
 
 ### 15.4 Cart Analytics
 - [x] Track cart events (add_to_cart, remove_from_cart, begin_checkout, purchase)
@@ -201,14 +201,14 @@
 
 ### 15.5 Revenue Analytics
 - [x] Analytics API supports detail=revenue (by category)
-- [ ] Add revenue by collection (deferred)
-- [ ] Add day-of-week heatmap (deferred)
-- [ ] Add customer LTV (deferred)
-- [ ] Add repeat purchase rate (deferred)
+- [x] Add revenue by collection (revenueByCollection in analytics API)
+- [x] Add day-of-week heatmap (dayOfWeek array in analytics API)
+- [x] Add customer LTV (avgCustomerLTV in analytics API)
+- [x] Add repeat purchase rate (repeatPurchaseRate in analytics API)
 
 ### 15.6 Export Analytics
 - [x] CSV export already exists for subscribers; analytics export deferred
-- [ ] Export sales data, top products, customer list, search terms
+- [x] Export analytics as CSV (GET /api/admin/analytics/export?type=sales|products|customers|search)
 
 ---
 
