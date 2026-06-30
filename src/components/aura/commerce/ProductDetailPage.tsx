@@ -36,6 +36,7 @@ import { SocialProof } from "./SocialProof";
 import { GiftWrapOption } from "./GiftWrapOption";
 import { SizeGuide } from "./SizeGuide";
 import { ReviewsSection } from "./ReviewsSection";
+import { QandASection } from "./QandASection";
 import { BackInStockForm } from "./BackInStockForm";
 import { RecentlyViewed } from "./RecentlyViewed";
 import { StickyMobileAddToCart } from "./StickyMobileAddToCart";
@@ -644,6 +645,11 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
       {/* Reviews */}
       <div className="mt-16 lg:mt-24">
         <ReviewsSection productName={product.name} productSlug={product.slug} />
+      </div>
+
+      {/* Q&A */}
+      <div className="mt-16 lg:mt-24">
+        <QandASection productSlug={product.slug} productName={product.name} />
       </div>
 
       {/* Related products */}

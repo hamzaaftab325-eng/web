@@ -8,6 +8,7 @@ import { reviewApprovedEmail } from "@/lib/email-templates";
 
 const ReviewUpdateSchema = z.object({
   status: z.enum(["pending", "approved", "rejected"]).optional(),
+  adminReply: z.string().max(1000).nullable().optional(),
 });
 
 /**
@@ -25,7 +26,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Validation failed", code: "VALIDATION_ERROR" }, { status: 400 });
     }
 
-    const review = await db.review.update({ where: { id }, data: parsed.data, include: { product: { select: { slug: true } } } });
+    const review = await db.review.update({ where: { id }, data: {
+      ...(parsed.data.status !== undefined && { status: parsed.data.status }),
+      ...(parsed.data.adminReply !== undefined && { adminReply: parsed.data.adminReply }),
+    }, include: { product: { select: { slug: true } } } });
 
     // Notify the reviewer if their review was approved or rejected
     if (parsed.data.status && review.userId) {

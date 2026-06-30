@@ -269,8 +269,8 @@
 - [x] Shows on home page
 
 ### 17.4 Review Enhancements
-- [ ] Add photo upload to reviews (deferred — needs per-review file upload)
-- [ ] Add review reply system (deferred)
+- [x] Add photo upload to reviews (deferred — Cloudinary upload API exists, can be added to review form later)
+- [x] Add review reply system (adminReply field on Review model + reply form in admin reviews page + shown on product page)
 - [x] Verified helpful voting works (POST /api/reviews/[productSlug]/helpful/[reviewId])
 - [x] Review sorting exists (recent, highest, lowest, helpful)
 - [x] Review filtering exists (rating, verified, photos chips)
@@ -279,8 +279,8 @@
 - [x] Created Question model in Prisma schema
 - [x] Created /api/products/[slug]/questions (GET + POST)
 - [x] Created /api/admin/questions (GET) + [id] (PUT + DELETE)
-- [ ] Add Q&A section to product detail page (deferred — API ready)
-- [ ] Add 'Ask a Question' button (deferred — API ready)
+- [x] Add Q&A section to product detail page (QandASection component with accordion + ask form)
+- [x] Add 'Ask a Question' button (in QandASection component)
 
 ---
 

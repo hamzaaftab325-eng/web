@@ -11,9 +11,12 @@ interface Review {
   id: string; authorName: string; authorLocation: string | null;
   rating: number; title: string | null; body: string;
   status: string; verifiedBuyer: boolean; helpfulCount: number;
+  adminReply: string | null;
   createdAt: string;
   product: { name: string; slug: string } | null;
 }
+
+const inputCls = "w-full px-4 py-2.5 t-body c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors";
 
 const statusConfig: Record<string, { color: string; bg: string; label: string }> = {
   pending: { color: "c-gold-deep", bg: "bg-gold-pale", label: "Pending" },
@@ -25,6 +28,8 @@ export default function AdminReviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [replyText, setReplyText] = useState<Record<string, string>>({});
+  const [replySaving, setReplySaving] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/reviews?limit=100")
@@ -64,6 +69,24 @@ export default function AdminReviews() {
         setReviews(reviews.filter((r) => r.id !== id));
       }
     } catch { /* ignore */ }
+  };
+
+  const submitReply = async (id: string) => {
+    const reply = replyText[id];
+    if (!reply?.trim()) return;
+    setReplySaving(id);
+    try {
+      const res = await fetch(`/api/admin/reviews/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminReply: reply.trim() }),
+      });
+      if (res.ok) {
+        setReviews(reviews.map(r => r.id === id ? { ...r, adminReply: reply.trim() } : r));
+        setReplyText({ ...replyText, [id]: "" });
+      }
+    } catch { /* ignore */ }
+    finally { setReplySaving(null); }
   };
 
   return (
@@ -186,6 +209,34 @@ export default function AdminReviews() {
                   >
                     <Trash2 size={12} /> Delete
                   </button>
+                </div>
+
+                {/* Admin Reply */}
+                {review.adminReply && (
+                  <div className="mt-3 bg-cream/50 border-l-2 border-gold rounded-sm p-3">
+                    <p className="t-label-caps c-gold-deep mb-1">Admin Reply</p>
+                    <p className="t-body-sm c-ink">{review.adminReply}</p>
+                  </div>
+                )}
+
+                {/* Reply form */}
+                <div className="mt-3">
+                  <textarea
+                    value={replyText[review.id] ?? ""}
+                    onChange={e => setReplyText({ ...replyText, [review.id]: e.target.value })}
+                    placeholder={review.adminReply ? "Update your reply..." : "Write a reply..."}
+                    rows={2}
+                    className={inputCls}
+                  />
+                  {replyText[review.id]?.trim() && (
+                    <button
+                      onClick={() => submitReply(review.id)}
+                      disabled={replySaving === review.id}
+                      className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 t-label-caps bg-ink c-paper rounded-sm hover:bg-gold-deep transition-colors disabled:opacity-50"
+                    >
+                      {replySaving === review.id ? "Saving..." : "Save Reply"}
+                    </button>
+                  )}
                 </div>
               </motion.div>
             );

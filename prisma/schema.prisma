@@ -254,6 +254,7 @@ model Review {
   body           String
   verifiedBuyer  Boolean  @default(false)
   helpfulCount   Int      @default(0)
+  adminReply     String?
   status         String   @default("pending")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
