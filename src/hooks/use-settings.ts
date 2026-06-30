@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { setCurrencySymbol } from "@/lib/format/currency";
 
 /**
  * Default settings — used before the API responds or if it fails.
@@ -53,6 +54,10 @@ export function useSettings() {
         if (data?.settings) {
           cachedSettings = data.settings;
           setSettings(data.settings);
+          // Update the global currency symbol so formatPrice() uses it
+          if (data.settings.currencySymbol) {
+            setCurrencySymbol(data.settings.currencySymbol);
+          }
         }
       })
       .catch(() => {

@@ -5,23 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/**
- * Format a price for display.
- *
- * All prices in the database are stored in PKR (Pakistani Rupee).
- * The admin enters prices in PKR, the checkout uses PKR, and the
- * storefront displays PKR. No conversion is needed — just format
- * the number with the ₨ symbol and locale grouping.
- *
- * Returns e.g. "₨5,000" for 5000.
- */
-export function formatPrice(pkrValue: number): string {
-  const formatted = new Intl.NumberFormat("ur-PK", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(Math.round(pkrValue));
-  return `₨${formatted}`;
-}
+// Re-export formatPrice from currency module so it uses the dynamic symbol
+export { formatPrice, setCurrencySymbol, getCurrencySymbol } from "./format/currency";
 
 /** Convert a string to a URL-safe slug. */
 export function slugify(input: string): string {

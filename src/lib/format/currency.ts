@@ -2,16 +2,27 @@
  * Currency formatting for Aura Living.
  *
  * All prices in the database are stored in PKR (Pakistani Rupee).
- * The admin enters prices in PKR, the checkout uses PKR, and the
- * storefront displays PKR. No conversion is needed — just format
- * the number with the ₨ symbol and proper grouping.
+ * The currency symbol is configurable via the admin settings page.
  *
- * For future multi-currency support, swap formatPrice to use a
- * currency store that converts PKR → USD/EUR/GBP at the real rate.
+ * The symbol is loaded lazily — the first call to formatPrice() on the
+ * client will use the default "₨". If useSettings() has been called
+ * (which happens in AppChrome), it will update the symbol via
+ * setCurrencySymbol().
  */
 
+// Module-level currency symbol — can be updated at runtime
+let currencySymbol = "₨";
+
+export function setCurrencySymbol(symbol: string) {
+  currencySymbol = symbol;
+}
+
+export function getCurrencySymbol(): string {
+  return currencySymbol;
+}
+
 /**
- * Format a PKR price with the ₨ symbol and locale grouping.
+ * Format a PKR price with the currency symbol and locale grouping.
  * Returns e.g. "₨5,000" for 5000.
  */
 export function formatPrice(pkrPrice: number): string {
@@ -19,7 +30,7 @@ export function formatPrice(pkrPrice: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(Math.round(pkrPrice));
-  return `₨${formatted}`;
+  return `${currencySymbol}${formatted}`;
 }
 
 /**

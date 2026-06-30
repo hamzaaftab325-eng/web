@@ -17,6 +17,7 @@ import { useEffect } from "react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useProductBySlug } from "@/hooks/queries/use-product-by-slug";
 import { usePageViewTracking } from "@/hooks/use-tracking";
+import { useSettings } from "@/hooks/use-settings";
 
 // Lazy-load heavy overlay components — only loaded when needed
 // This reduces initial bundle size by ~40KB+ (CheckoutFlow, ProductDetailPage, etc.)
@@ -54,6 +55,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const prefersReducedMotion = useReducedMotion();
   useKeyboardShortcuts();
   usePageViewTracking();
+  useSettings(); // Loads store settings + updates currency symbol globally
 
   const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);
   const setQuickViewProduct = useUIStore((s) => s.setQuickViewProduct);

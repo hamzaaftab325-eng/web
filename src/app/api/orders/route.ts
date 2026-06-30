@@ -61,10 +61,18 @@ export async function POST(request: NextRequest) {
 
     const { items, shippingAddress, shippingMethod, promoCode, orderNotes, email, paymentMethod } = parsed.data;
 
+    // Fetch store settings for dynamic values
+    const settingsRecords = await db.setting.findMany();
+    const settings: Record<string, string> = {};
+    for (const s of settingsRecords) settings[s.key] = s.value;
+    const orderPrefix = settings.orderNumberPrefix ?? "AURA";
+    const defaultShipping = Number(settings.defaultShippingCost ?? "150");
+    const taxRate = Number(settings.taxRate ?? "0") / 100;
+
     // Calculate totals
     const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
     let discount = 0;
-    let shippingCost = 150; // Default PKR shipping
+    let shippingCost = defaultShipping;
 
     // Validate promo code
     if (promoCode) {
@@ -88,7 +96,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const tax = 0; // No tax for Pakistan
+    const tax = Math.round(subtotal * taxRate);
     const total = Math.max(0, subtotal - discount + shippingCost + tax);
 
     // Get user ID if authenticated
@@ -99,7 +107,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate order number
-    const orderNumber = `AURA-${Date.now().toString(36).toUpperCase().slice(-8)}`;
+    const orderNumber = `${orderPrefix}-${Date.now().toString(36).toUpperCase().slice(-8)}`;
 
     // Create order in transaction
     const order = await db.order.create({
