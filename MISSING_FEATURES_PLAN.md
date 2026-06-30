@@ -250,37 +250,37 @@
 > Wishlist sharing, comparison, recently viewed, reviews
 
 ### 17.1 Wishlist Sharing
-- [ ] Create `/api/user/wishlist/share` — generate shareable link
-- [ ] Create `/wishlist/[shareId]` — public wishlist view
-- [ ] Add "Share Wishlist" button to account wishlist page
-- [ ] Add "Copy Link" button
+- [x] Create `/api/user/wishlist/share` — generate shareable link
+- [x] Create `/wishlist/[shareId]` — public wishlist view
+- [x] Add 'Share Wishlist' button (already existed, now uses API)
+- [x] Add 'Copy Link' (copies to clipboard with toast)
 
 ### 17.2 Product Comparison
-- [ ] Verify CompareTray component works
-- [ ] Add "Compare" button to product cards
-- [ ] Create comparison table (specifications side-by-side)
-- [ ] Add "Remove from Compare" button
-- [ ] Limit to 4 products in comparison
+- [x] Verified CompareTray works (Zustand store, 4 product limit)
+- [x] Compare button exists on product cards
+- [x] Comparison table exists in CompareTray
+- [x] Remove button in CompareTray
+- [x] 4 product limit enforced
 
 ### 17.3 Recently Viewed Products
-- [ ] Verify RecentlyViewed component works
-- [ ] Track product views in localStorage
-- [ ] Show "Recently Viewed" section on product detail page
-- [ ] Show "Recently Viewed" section on home page
+- [x] Verified RecentlyViewed works (localStorage, 8 items)
+- [x] Tracks via useRecentlyViewed hook (localStorage)
+- [x] Shows on product detail page
+- [x] Shows on home page
 
 ### 17.4 Review Enhancements
-- [ ] Add photo upload to reviews (customers can share photos)
-- [ ] Add review reply system (admin can reply to reviews)
-- [ ] Add "Was this helpful?" voting (already exists, verify works)
-- [ ] Add review sorting (most helpful, most recent, highest rating, lowest rating)
-- [ ] Add review filtering (by rating, by verified buyer, with photos)
+- [ ] Add photo upload to reviews (deferred — needs per-review file upload)
+- [ ] Add review reply system (deferred)
+- [x] Verified helpful voting works (POST /api/reviews/[productSlug]/helpful/[reviewId])
+- [x] Review sorting exists (recent, highest, lowest, helpful)
+- [x] Review filtering exists (rating, verified, photos chips)
 
 ### 17.5 Product Q&A
-- [ ] Create Question model (productId, userId, question, answer, answeredAt)
-- [ ] Create `/api/products/[slug]/questions` — GET questions, POST question
-- [ ] Create `/api/admin/questions` — admin Q&A management
-- [ ] Add Q&A section to product detail page
-- [ ] Add "Ask a Question" button
+- [x] Created Question model in Prisma schema
+- [x] Created /api/products/[slug]/questions (GET + POST)
+- [x] Created /api/admin/questions (GET) + [id] (PUT + DELETE)
+- [ ] Add Q&A section to product detail page (deferred — API ready)
+- [ ] Add 'Ask a Question' button (deferred — API ready)
 
 ---
 
