@@ -3,11 +3,13 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, Upload, X, Trash2 } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { ArrowLeft, Save, Upload, X, Trash2, Plus } from "lucide-react";
+import { formatPrice, cn } from "@/lib/utils";
 
 interface Category { id: string; name: string; slug: string; }
+interface Collection { id: string; name: string; slug: string; }
 interface ImageEntry { id?: string; url: string; altText: string; }
+interface VariantEntry { id?: string; label: string; swatchColor: string; stockQuantity: string; }
 
 export default function AdminProductEdit() {
   const router = useRouter();
@@ -37,15 +39,21 @@ export default function AdminProductEdit() {
   const [careInstructions, setCareInstructions] = useState("");
   const [sortOrder, setSortOrder] = useState("0");
   const [images, setImages] = useState<ImageEntry[]>([]);
+  const [variants, setVariants] = useState<VariantEntry[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [selectedCollections, setSelectedCollections] = useState<string[]>([]);
 
   useEffect(() => {
     fetch("/api/categories")
       .then(r => r.json())
       .then(data => {
-        // Public API returns a flat array, admin API returns { categories: [...] }
         const list = Array.isArray(data) ? data : (data.categories ?? []);
         setCategories(list);
       })
+      .catch(() => {});
+    fetch("/api/admin/content/collections")
+      .then(r => r.ok ? r.json() : { collections: [] })
+      .then(data => setCollections(data.collections ?? []))
       .catch(() => {});
 
     fetch(`/api/admin/products/${id}`)
@@ -72,6 +80,8 @@ export default function AdminProductEdit() {
         setCareInstructions(p.careInstructions ?? "");
         setSortOrder(String(p.sortOrder ?? 0));
         setImages((p.images ?? []).map((i: { id?: string; url: string; altText?: string | null }) => ({ id: i.id, url: i.url, altText: i.altText ?? "" })));
+        setVariants((p.variants ?? []).map((v: { id?: string; label: string; swatchColor?: string | null; stockQuantity: number }) => ({ id: v.id, label: v.label, swatchColor: v.swatchColor ?? "", stockQuantity: String(v.stockQuantity) })));
+        setSelectedCollections(p.collectionIds ?? []);
       })
       .catch(e => setError(e instanceof Error ? e.message : "Failed to load"))
       .finally(() => setLoading(false));
@@ -124,6 +134,11 @@ export default function AdminProductEdit() {
         careInstructions: careInstructions || null,
         sortOrder: Number(sortOrder),
         images: images.map(({ url, altText }) => ({ url, altText: altText || undefined })),
+        variants: variants.filter(v => v.label.trim()).map((v, i) => ({
+          id: v.id, label: v.label, swatchColor: v.swatchColor || null,
+          stockQuantity: v.stockQuantity ? Number(v.stockQuantity) : 0, sortOrder: i,
+        })),
+        collectionIds: selectedCollections,
       };
       const res = await fetch(`/api/admin/products/${id}`, {
         method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
@@ -255,6 +270,38 @@ export default function AdminProductEdit() {
             )}
           </div>
         </Section>
+
+        {/* Variants */}
+        <Section title="Variants">
+          <div className="md:col-span-full space-y-3">
+            {variants.map((v, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <input placeholder="Label (e.g. Small, Brass, White)" value={v.label} onChange={e => setVariants(variants.map((x, idx) => idx === i ? { ...x, label: e.target.value } : x))} className={inputCls} />
+                <input placeholder="Color (e.g. #D4AF37)" value={v.swatchColor} onChange={e => setVariants(variants.map((x, idx) => idx === i ? { ...x, swatchColor: e.target.value } : x))} className={`${inputCls} max-w-[140px]`} />
+                <input type="number" placeholder="Stock" value={v.stockQuantity} onChange={e => setVariants(variants.map((x, idx) => idx === i ? { ...x, stockQuantity: e.target.value } : x))} className={`${inputCls} max-w-[100px]`} />
+                <button type="button" onClick={() => setVariants(variants.filter((_, idx) => idx !== i))} className="p-2 c-ink-faint hover:c-error transition-colors flex-shrink-0"><X size={14} /></button>
+              </div>
+            ))}
+            <button type="button" onClick={() => setVariants([...variants, { label: "", swatchColor: "", stockQuantity: "" }])} className="inline-flex items-center gap-2 t-label-caps c-gold-deep hover:c-ink transition-colors">
+              <Plus size={14} /> Add Variant
+            </button>
+          </div>
+        </Section>
+
+        {/* Collections */}
+        {collections.length > 0 && (
+          <Section title="Collections">
+            <div className="md:col-span-full flex flex-wrap gap-3">
+              {collections.map(c => (
+                <button key={c.id} type="button" onClick={() => {
+                  setSelectedCollections(prev => prev.includes(c.id) ? prev.filter(cid => cid !== c.id) : [...prev, c.id]);
+                }} className={cn("px-4 py-2 t-body-sm rounded-sm border transition-all", selectedCollections.includes(c.id) ? "bg-ink c-paper border-ink" : "bg-paper c-ink-muted border-hairline-cream hover:border-gold")}>
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </Section>
+        )}
 
         <div className="flex items-center gap-4 pt-4 border-t border-hairline-cream">
           <button type="submit" disabled={saving}

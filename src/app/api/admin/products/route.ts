@@ -22,11 +22,17 @@ const ProductCreateSchema = z.object({
   sortOrder: z.number().int().optional(),
   isActive: z.boolean().optional(),
   images: z.array(z.object({ url: z.string().url(), altText: z.string().optional() })).optional(),
+  variants: z.array(z.object({
+    label: z.string().min(1).max(100),
+    swatchColor: z.string().max(20).optional(),
+    stockQuantity: z.number().int().nonnegative().optional(),
+    sortOrder: z.number().int().optional(),
+  })).optional(),
+  collectionIds: z.array(z.string()).optional(),
 });
 
 /**
- * POST /api/admin/products
- * Create a new product (admin only).
+ * POST /api/admin/products — create a new product (admin only).
  */
 export async function POST(request: NextRequest) {
   try {
@@ -40,7 +46,6 @@ export async function POST(request: NextRequest) {
     }
     const data = parsed.data;
 
-    // Resolve category
     let categoryId: string | undefined;
     if (data.categorySlug) {
       const cat = await db.category.findUnique({ where: { slug: data.categorySlug } });
@@ -48,49 +53,42 @@ export async function POST(request: NextRequest) {
       categoryId = cat.id;
     }
 
-    // Slug uniqueness check
     const existing = await db.product.findUnique({ where: { slug: data.slug } });
     if (existing) return NextResponse.json({ error: "Slug already in use", code: "CONFLICT" }, { status: 409 });
 
     const product = await db.product.create({
       data: {
-        slug: data.slug,
-        name: data.name,
-        subtitle: data.subtitle,
-        description: data.description,
-        longDescription: data.longDescription,
-        price: data.price,
-        compareAtPrice: data.compareAtPrice,
-        categoryId,
-        badge: data.badge,
-        inStock: data.inStock ?? true,
-        stockQuantity: data.stockQuantity ?? 0,
-        materials: data.materials ?? [],
-        dimensions: data.dimensions,
-        careInstructions: data.careInstructions,
-        featured: data.featured ?? false,
-        sortOrder: data.sortOrder ?? 0,
+        slug: data.slug, name: data.name, subtitle: data.subtitle,
+        description: data.description, longDescription: data.longDescription,
+        price: data.price, compareAtPrice: data.compareAtPrice, categoryId,
+        badge: data.badge, inStock: data.inStock ?? true,
+        stockQuantity: data.stockQuantity ?? 0, materials: data.materials ?? [],
+        dimensions: data.dimensions, careInstructions: data.careInstructions,
+        featured: data.featured ?? false, sortOrder: data.sortOrder ?? 0,
         isActive: data.isActive ?? true,
         images: data.images?.length
           ? { create: data.images.map((img, i) => ({ url: img.url, altText: img.altText, sortOrder: i })) }
           : undefined,
+        variants: data.variants?.length
+          ? { create: data.variants.map((v, i) => ({ label: v.label, swatchColor: v.swatchColor, stockQuantity: v.stockQuantity ?? 0, sortOrder: v.sortOrder ?? i })) }
+          : undefined,
+        collections: data.collectionIds?.length
+          ? { create: data.collectionIds.map(cid => ({ collectionId: cid })) }
+          : undefined,
       },
-      include: { images: true, category: true },
+      include: { images: true, category: true, variants: { orderBy: { sortOrder: "asc" } }, collections: { include: { collection: true } } },
     });
 
     return NextResponse.json({ product, message: "Product created" }, { status: 201 });
   } catch (error) {
     console.error("[admin/products POST] failed:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create product", code: "CREATE_ERROR" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to create product", code: "CREATE_ERROR" }, { status: 500 });
   }
 }
 
 /**
- * GET /api/admin/products
- * List all products (admin only) — includes inactive.
+ * GET /api/admin/products — list products with filtering, pagination.
+ * Query params: page, limit, search, category, stock (all/in/low/out), sort (newest/price-asc/price-desc/name)
  */
 export async function GET(request: NextRequest) {
   try {
@@ -99,40 +97,56 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
-    const limit = Math.min(200, Math.max(1, parseInt(searchParams.get("limit") ?? "100", 10)));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20", 10)));
+    const search = searchParams.get("search") ?? "";
+    const categorySlug = searchParams.get("category") ?? "";
+    const stockFilter = searchParams.get("stock") ?? "all";
+    const sort = searchParams.get("sort") ?? "newest";
+
+    const where: Record<string, unknown> = {};
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { slug: { contains: search, mode: "insensitive" } },
+      ];
+    }
+    if (categorySlug && categorySlug !== "all") {
+      where.category = { slug: categorySlug };
+    }
+    if (stockFilter === "in") { where.inStock = true; where.stockQuantity = { gt: 5 }; }
+    else if (stockFilter === "low") { where.stockQuantity = { lte: 5, gt: 0 }; }
+    else if (stockFilter === "out") { where.OR = [{ stockQuantity: 0 }, { inStock: false }]; }
+
+    let orderBy: Record<string, string> = {};
+    switch (sort) {
+      case "price-asc": orderBy = { price: "asc" }; break;
+      case "price-desc": orderBy = { price: "desc" }; break;
+      case "name": orderBy = { name: "asc" }; break;
+      default: orderBy = { createdAt: "desc" };
+    }
 
     const [products, total] = await Promise.all([
       db.product.findMany({
-        orderBy: { createdAt: "desc" },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: { category: true, images: { orderBy: { sortOrder: "asc" } } },
+        where, orderBy, skip: (page - 1) * limit, take: limit,
+        include: { category: true, images: { orderBy: { sortOrder: "asc" } }, variants: { orderBy: { sortOrder: "asc" } } },
       }),
-      db.product.count(),
+      db.product.count({ where }),
     ]);
 
     return NextResponse.json({
       products: products.map(p => ({
-        id: p.id,
-        slug: p.slug,
-        name: p.name,
-        price: Number(p.price),
-        stockQuantity: p.stockQuantity,
-        inStock: p.inStock,
-        isActive: p.isActive,
+        id: p.id, slug: p.slug, name: p.name, price: Number(p.price),
+        stockQuantity: p.stockQuantity, inStock: p.inStock, isActive: p.isActive,
         featured: p.featured,
         category: p.category ? { name: p.category.name, slug: p.category.slug } : null,
         images: p.images.map(i => i.url),
+        variantCount: p.variants.length,
       })),
-      total,
-      page,
-      limit,
+      total, page, limit,
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     console.error("[admin/products GET] failed:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed", code: "FETCH_ERROR" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "FETCH_ERROR" }, { status: 500 });
   }
 }

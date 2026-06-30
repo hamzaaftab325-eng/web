@@ -23,6 +23,14 @@ const ProductUpdateSchema = z.object({
   sortOrder: z.number().int().optional(),
   isActive: z.boolean().optional(),
   images: z.array(z.object({ url: z.string().url(), altText: z.string().optional() })).optional(),
+  variants: z.array(z.object({
+    id: z.string().optional(),
+    label: z.string().min(1).max(100),
+    swatchColor: z.string().max(20).nullable().optional(),
+    stockQuantity: z.number().int().nonnegative().optional(),
+    sortOrder: z.number().int().optional(),
+  })).optional(),
+  collectionIds: z.array(z.string()).optional(),
 });
 
 /**
@@ -36,7 +44,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const product = await db.product.findUnique({
       where: { id },
-      include: { category: true, images: { orderBy: { sortOrder: "asc" } }, variants: true },
+      include: {
+        category: true,
+        images: { orderBy: { sortOrder: "asc" } },
+        variants: { orderBy: { sortOrder: "asc" } },
+        collections: { include: { collection: true } },
+      },
     });
     if (!product) return NextResponse.json({ error: "Not found", code: "NOT_FOUND" }, { status: 404 });
 
@@ -46,6 +59,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
       categorySlug: product.category?.slug ?? null,
       images: product.images.map(i => ({ id: i.id, url: i.url, altText: i.altText, sortOrder: i.sortOrder })),
+      variants: product.variants.map(v => ({ id: v.id, label: v.label, swatchColor: v.swatchColor, stockQuantity: v.stockQuantity, sortOrder: v.sortOrder })),
+      collectionIds: product.collections.map(pc => pc.collectionId),
     });
   } catch (error) {
     console.error("[admin/products/[id] GET] failed:", error);
@@ -100,6 +115,31 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       }
     }
 
+    // Replace variants if provided
+    if (data.variants) {
+      await db.productVariant.deleteMany({ where: { productId: id } });
+      if (data.variants.length > 0) {
+        await db.productVariant.createMany({
+          data: data.variants.map((v, i) => ({
+            productId: id, label: v.label,
+            swatchColor: v.swatchColor ?? null,
+            stockQuantity: v.stockQuantity ?? 0,
+            sortOrder: v.sortOrder ?? i,
+          })),
+        });
+      }
+    }
+
+    // Replace collection assignments if provided
+    if (data.collectionIds) {
+      await db.productCollection.deleteMany({ where: { productId: id } });
+      if (data.collectionIds.length > 0) {
+        await db.productCollection.createMany({
+          data: data.collectionIds.map(cid => ({ productId: id, collectionId: cid })),
+        });
+      }
+    }
+
     const product = await db.product.update({
       where: { id },
       data: {
@@ -121,7 +161,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
       },
-      include: { category: true, images: { orderBy: { sortOrder: "asc" } } },
+      include: {
+        category: true,
+        images: { orderBy: { sortOrder: "asc" } },
+        variants: { orderBy: { sortOrder: "asc" } },
+        collections: { include: { collection: true } },
+      },
     });
 
     return NextResponse.json({ product, message: "Product updated" });
