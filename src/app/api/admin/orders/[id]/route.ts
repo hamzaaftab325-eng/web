@@ -21,15 +21,24 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (auth instanceof NextResponse) return auth;
 
     const { id } = await params;
-    const order = await db.order.findUnique({ where: { id }, include: { items: true } });
+    const order = await db.order.findUnique({
+      where: { id },
+      include: {
+        items: true,
+        user: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } },
+      },
+    });
     if (!order) return NextResponse.json({ error: "Not found", code: "NOT_FOUND" }, { status: 404 });
 
     return NextResponse.json({
       ...order,
       date: order.createdAt.toISOString().split("T")[0],
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
       subtotal: Number(order.subtotal), shippingCost: Number(order.shippingCost),
       discount: Number(order.discount), tax: Number(order.tax), total: Number(order.total),
       items: order.items.map(i => ({ ...i, price: Number(i.price) })),
+      customer: order.user ? { id: order.user.id, name: `${order.user.firstName} ${order.user.lastName}`, email: order.user.email, phone: order.user.phone } : null,
     });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "FETCH_ERROR" }, { status: 500 });
@@ -62,6 +71,19 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         ...(data.orderNotes !== undefined && { orderNotes: data.orderNotes }),
       },
     });
+
+    // If order is cancelled, restock the items
+    if (data.status === "cancelled") {
+      const items = await db.orderItem.findMany({ where: { orderId: id } });
+      for (const item of items) {
+        if (item.productId) {
+          await db.product.update({
+            where: { id: item.productId },
+            data: { stockQuantity: { increment: item.quantity } },
+          }).catch(() => {});
+        }
+      }
+    }
 
     // Notify the customer if their order status changed
     if (data.status && order.userId) {
