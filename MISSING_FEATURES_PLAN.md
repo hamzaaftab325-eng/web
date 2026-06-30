@@ -12,50 +12,50 @@
 > Missing admin editors for content models that have APIs but no admin UI
 
 ### 11.1 First Order Offer Editor
-- [ ] Create `/api/admin/content/first-order-offer/route.ts` (GET + PUT)
-- [ ] Create `/admin/content/first-order-offer/page.tsx` — edit form (isActive, discountPercent, promoCode, popupTitle, popupDescription, bannerText, dismissDurationDays, showDelayMs)
-- [ ] Add to admin nav under "Content" section
+- [x] Create `/api/admin/content/first-order-offer/route.ts` (GET + PUT)
+- [x] Create `/admin/content/first-order-offer/page.tsx` — edit form (isActive, discountPercent, promoCode, popupTitle, popupDescription, bannerText, dismissDurationDays, showDelayMs)
+- [x] Add to admin nav under "Content" section
 
 ### 11.2 Exit Intent Popup Editor
-- [ ] Create `/api/admin/content/exit-intent/route.ts` (GET + PUT)
-- [ ] Create `/admin/content/exit-intent/page.tsx` — edit form (isActive, title, description, discountPercent, promoCode, imageUrl, triggerDelaySeconds)
-- [ ] Fix `ExitIntentPopup.tsx` component to fetch from API (currently hardcoded)
+- [x] Create `/api/admin/content/exit-intent/route.ts` (GET + PUT)
+- [x] Create `/admin/content/exit-intent/page.tsx` — edit form (isActive, title, description, discountPercent, promoCode, imageUrl, triggerDelaySeconds)
+- [x] Fix `ExitIntentPopup.tsx` component to fetch from API (currently hardcoded)
 - [ ] Add to admin nav under "Content" section
 
 ### 11.3 Brand Values Editor
-- [ ] Create `/api/admin/content/brand-values/route.ts` (GET + POST)
+- [x] Create `/api/admin/content/brand-values/route.ts` (GET + POST)
 - [ ] Create `/api/admin/content/brand-values/[id]/route.ts` (PUT + DELETE)
-- [ ] Create `/admin/content/brand-values/page.tsx` — CRUD list
+- [x] Create `/admin/content/brand-values/page.tsx` — CRUD list
 
 ### 11.4 Press Features Editor
-- [ ] Create `/api/admin/content/press/route.ts` (GET + POST)
+- [x] Create `/api/admin/content/press/route.ts` (GET + POST)
 - [ ] Create `/api/admin/content/press/[id]/route.ts` (PUT + DELETE)
-- [ ] Create `/admin/content/press/page.tsx` — CRUD list
+- [x] Create `/admin/content/press/page.tsx` — CRUD list
 
 ### 11.5 Instagram Posts Editor
-- [ ] Create `/api/admin/content/instagram/route.ts` (GET + POST)
+- [x] Create `/api/admin/content/instagram/route.ts` (GET + POST)
 - [ ] Create `/api/admin/content/instagram/[id]/route.ts` (PUT + DELETE)
-- [ ] Create `/admin/content/instagram/page.tsx` — CRUD list
+- [x] Create `/admin/content/instagram/page.tsx` — CRUD list
 
 ### 11.6 Brand Marquee Items Editor
-- [ ] Create `/api/admin/content/brand-marquee/route.ts` (GET + POST)
+- [x] Create `/api/admin/content/brand-marquee/route.ts` (GET + POST)
 - [ ] Create `/api/admin/content/brand-marquee/[id]/route.ts` (PUT + DELETE)
-- [ ] Create `/admin/content/brand-marquee/page.tsx` — CRUD list
+- [x] Create `/admin/content/brand-marquee/page.tsx` — CRUD list
 
 ### 11.7 Sustainability Content Editor
-- [ ] Create `/api/admin/content/sustainability/route.ts` (GET + PUT)
-- [ ] Create `/admin/content/sustainability/page.tsx` — edit form
+- [x] Create `/api/admin/content/sustainability/route.ts` (GET + PUT)
+- [x] Create `/admin/content/sustainability/page.tsx` — edit form
 
 ### 11.8 Flash Sale Management
-- [ ] Create `/api/admin/flash-sales/route.ts` (GET + POST)
+- [x] Create `/api/admin/flash-sales/route.ts` (GET + POST)
 - [ ] Create `/api/admin/flash-sales/[id]/route.ts` (PUT + DELETE)
-- [ ] Create `/admin/flash-sales/page.tsx` — CRUD with date windows
+- [x] Create `/admin/flash-sales/page.tsx` — CRUD with date windows
 - [ ] Create `/api/content/flash-sales/route.ts` — public active flash sale
-- [ ] Add flash sale banner to storefront
+- [x] Add flash sale banner to storefront
 
 ### 11.9 Update Content Hub Page
-- [ ] Update `/admin/content/page.tsx` — add links to all new content editors
-- [ ] Remove "Full visual editors coming soon" notice
+- [x] Update `/admin/content/page.tsx` — add links to all new content editors
+- [x] Remove "Full visual editors coming soon" notice
 
 ---
 
