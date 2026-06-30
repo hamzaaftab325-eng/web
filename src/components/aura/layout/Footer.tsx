@@ -33,13 +33,32 @@ export function Footer() {
     router.push("/shop");
   };
   const [submitted, setSubmitted] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
-    setSubmitted(true);
-    setEmail("");
-    setTimeout(() => setSubmitted(false), 4000);
+    setSubscribeError(null);
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "footer" }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSubscribeError(data.error ?? "Something went wrong");
+        return;
+      }
+
+      setSubmitted(true);
+      setEmail("");
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch {
+      setSubscribeError("Network error. Please try again.");
+    }
   };
 
   return (
@@ -85,6 +104,11 @@ export function Footer() {
               {submitted && (
                 <p className="t-caption c-gold mt-2">
                   Welcome to the family. Check your inbox.
+                </p>
+              )}
+              {subscribeError && (
+                <p className="t-caption c-error mt-2">
+                  {subscribeError}
                 </p>
               )}
             </form>

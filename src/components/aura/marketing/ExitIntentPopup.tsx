@@ -116,7 +116,22 @@ export function ExitIntentPopup() {
     e.preventDefault();
     if (!EMAIL_RE.test(email.trim())) return;
     setStatus("submitting");
-    await sleep(700);
+
+    try {
+      // Save the email to the subscriber list
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          source: "exit-intent",
+          promoCode: config?.promoCode ?? undefined,
+        }),
+      });
+    } catch {
+      // Non-blocking — still show the promo code even if subscribe fails
+    }
+
     setStatus("success");
     toast({
       title: "You're on the list",
