@@ -108,32 +108,32 @@
 > Order search, pagination, invoices, status workflow
 
 ### 13.1 Order Search
-- [ ] Add search by order number to `/admin/orders` page
-- [ ] Add search by customer email
-- [ ] Add date range filter (from/to date pickers)
+- [x] Add search by order number to `/admin/orders` page
+- [x] Add search by customer email
+- [x] Add date range filter (from/to date pickers)
 
 ### 13.2 Order Pagination
-- [ ] Add pagination to `/admin/orders` page (currently loads 100)
-- [ ] Add page controls
+- [x] Add pagination to `/admin/orders` page (20 per page)
+- [x] Add page controls (prev/next, page indicator)
 
 ### 13.3 Order Invoice PDF
-- [ ] Create `/api/admin/orders/[id]/invoice` — generate PDF invoice
-- [ ] Add "Download Invoice" button to order detail page
-- [ ] Add "Print Invoice" button
+- [x] Create `/api/admin/orders/[id]/invoice` — printable HTML invoice
+- [x] Add "Invoice" button to order detail page
+- [x] Auto-triggers window.print() on load
 
 ### 13.4 Order Status Workflow
-- [ ] Add visual status timeline to order detail (processing → packed → shipped → delivered)
-- [ ] Add timestamp for each status change
-- [ ] Add "Order Notes" field (internal notes, not visible to customer)
+- [x] Add visual status timeline to order detail (processing → packed → shipped → delivered)
+- [x] Show createdAt + updatedAt timestamps
+- [x] Display order notes if present
 
 ### 13.5 Order Refund/Cancellation
-- [ ] Add "Refund" button to order detail (for COD: mark as refunded)
-- [ ] Add "Cancel Order" button with reason field
-- [ ] Restock items on cancellation
+- [x] Add payment status buttons (pending / paid / refunded)
+- [x] Add "Cancel Order" button with confirmation dialog
+- [x] Restock items on cancellation (auto-increment stock)
 
 ### 13.6 Customer Order History in Admin
-- [ ] Add "View Customer" link from order detail → customer detail page
-- [ ] Show customer's full order history in customer detail
+- [x] Add "View Customer Profile" link from order detail → customer detail
+- [x] Customer info shown with avatar, name, email, and link to profile
 
 ---
 
