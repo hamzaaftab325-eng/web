@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Menu, X, ShoppingBag, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Menu, X, ShoppingBag, ChevronRight, Shield } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
@@ -16,6 +16,7 @@ const navItems: { label: string; icon: typeof LayoutDashboard; path: string }[] 
   { label: "Addresses", icon: MapPin, path: "/account/addresses" },
   { label: "Wishlist", icon: Heart, path: "/account/wishlist" },
   { label: "Preferences", icon: Settings, path: "/account/preferences" },
+  { label: "Data & Privacy", icon: Shield, path: "/account/privacy" },
 ];
 
 export function AccountLayout({ children }: { children: ReactNode }) {

@@ -432,23 +432,23 @@
 > Multi-language, legal pages, GDPR
 
 ### 22.1 Localization
-- [ ] Add Urdu language support (i18n)
-- [ ] Add language toggle in header
-- [ ] Translate key pages (home, shop, product, checkout)
+- [~] Add Urdu language support (i18n) — *skipped per user request*
+- [~] Add language toggle in header — *skipped per user request*
+- [~] Translate key pages (home, shop, product, checkout) — *skipped per user request*
 
 ### 22.2 Legal Pages
-- [ ] Create `/terms` — Terms of Service
-- [ ] Create `/privacy` — Privacy Policy
-- [ ] Create `/returns` — Return Policy
-- [ ] Create `/shipping-info` — Shipping Information
-- [ ] Create `/contact` — Contact Page
-- [ ] Add links to legal pages in Footer
+- [x] Create `/terms` — Terms of Service
+- [x] Create `/privacy` — Privacy Policy
+- [x] Create `/returns` — Return Policy
+- [x] Create `/shipping-info` — Shipping Information
+- [x] Create `/contact` — Contact Page
+- [x] Add links to legal pages in Footer
 
 ### 22.3 Compliance
-- [ ] Add cookie consent banner (already exists, verify)
-- [ ] Add GDPR compliance (data export, data deletion)
-- [ ] Add PCI compliance note (for payment gateways)
-- [ ] Add age verification if needed
+- [x] Add cookie consent banner (already exists, verify)
+- [x] Add GDPR compliance (data export, data deletion)
+- [x] Add PCI compliance note (for payment gateways)
+- [x] Add age verification if needed
 
 ---
 

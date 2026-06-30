@@ -177,12 +177,12 @@ export function Footer() {
                 </button>
               </li>
               <li>
-                <a
-                  href="mailto:concierge@auraliving.com"
-                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline"
+                <button
+                  onClick={() => go("/contact")}
+                  className="t-body c-paper/80 hover:c-gold transition-colors link-underline text-left"
                 >
                   Contact
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -251,23 +251,35 @@ export function Footer() {
           </p>
           <div className="flex flex-wrap items-center gap-6">
             <button
-              onClick={() => go("/care")}
+              onClick={() => go("/shipping-info")}
               className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
             >
               Shipping
             </button>
             <button
-              onClick={() => go("/care")}
+              onClick={() => go("/returns")}
               className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
             >
               Returns
             </button>
-            <a href="#" className="t-caption c-paper/50 hover:c-gold transition-colors">
+            <button
+              onClick={() => go("/privacy")}
+              className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
+            >
               Privacy
-            </a>
-            <a href="#" className="t-caption c-paper/50 hover:c-gold transition-colors">
+            </button>
+            <button
+              onClick={() => go("/terms")}
+              className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
+            >
               Terms
-            </a>
+            </button>
+            <button
+              onClick={() => go("/contact")}
+              className="t-caption c-paper/50 hover:c-gold transition-colors text-left"
+            >
+              Contact
+            </button>
           </div>
         </div>
       </div>

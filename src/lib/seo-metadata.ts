@@ -95,6 +95,10 @@ const PAGE_META: Record<ViewKey, PageMeta> = {
     title: "Preferences — Aura Living",
     description: "Manage email subscriptions, style preferences, and display settings.",
   },
+  "account-privacy": {
+    title: "Data & Privacy — Aura Living",
+    description: "Download your personal data or permanently delete your Aura Living account.",
+  },
   "product-detail": {
     title: "Product — Aura Living",
     description: "Handcrafted home décor from Aura Living.",

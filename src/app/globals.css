@@ -545,6 +545,15 @@
   .shimmer { background: linear-gradient(90deg, var(--cream) 0%, var(--cream-deep) 50%, var(--cream) 100%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+  /* Prose — for legal / long-form content pages */
+  .prose-aura { color: var(--ink-muted); font-size: 16px; line-height: 1.75; }
+  .prose-aura section { margin-bottom: 2.5rem; }
+  .prose-aura h2 { font-family: var(--font-playfair-display), Georgia, serif; font-size: 1.5rem; font-weight: 500; color: var(--ink); margin-bottom: 1rem; line-height: 1.3; }
+  .prose-aura p { margin-bottom: 1rem; }
+  .prose-aura ul { margin: 1rem 0; padding-left: 1.5rem; }
+  .prose-aura li { margin-bottom: 0.5rem; }
+  .prose-aura strong { color: var(--ink); font-weight: 600; }
+
   /* Spinner rotation (60fps GPU-accelerated) */
   .aura-spinner-rotate { animation: aura-spinner-rotate 0.8s linear infinite; will-change: transform; }
   @keyframes aura-spinner-rotate { to { transform: rotate(360deg); } }

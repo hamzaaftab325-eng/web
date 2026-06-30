@@ -131,3 +131,17 @@ export function abandonedCartEmail(items: Array<{ name: string; image: string; p
     `),
   };
 }
+
+export function sendContactNotificationEmail(params: { name: string; email: string; subject: string; message: string }): { subject: string; html: string } {
+  return {
+    subject: `[Contact] ${params.subject}`,
+    html: wrapper(`
+      <h1>New contact form submission</h1>
+      <p><strong>From:</strong> ${params.name} &lt;${params.email}&gt;</p>
+      <p><strong>Subject:</strong> ${params.subject}</p>
+      <p><strong>Message:</strong></p>
+      <p style="white-space:pre-wrap;background:#F8F4EC;padding:16px;border-radius:4px;font-family:Georgia,serif;">${params.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+      <p><a href="mailto:${params.email}" class="button">Reply by Email</a></p>
+    `),
+  };
+}
