@@ -20,26 +20,26 @@
 - [x] Create `/api/admin/content/exit-intent/route.ts` (GET + PUT)
 - [x] Create `/admin/content/exit-intent/page.tsx` — edit form (isActive, title, description, discountPercent, promoCode, imageUrl, triggerDelaySeconds)
 - [x] Fix `ExitIntentPopup.tsx` component to fetch from API (currently hardcoded)
-- [ ] Add to admin nav under "Content" section
+- [x] Add to admin nav under "Content" section
 
 ### 11.3 Brand Values Editor
 - [x] Create `/api/admin/content/brand-values/route.ts` (GET + POST)
-- [ ] Create `/api/admin/content/brand-values/[id]/route.ts` (PUT + DELETE)
+- [x] Create `/api/admin/content/brand-values/[id]/route.ts` (PUT + DELETE)
 - [x] Create `/admin/content/brand-values/page.tsx` — CRUD list
 
 ### 11.4 Press Features Editor
 - [x] Create `/api/admin/content/press/route.ts` (GET + POST)
-- [ ] Create `/api/admin/content/press/[id]/route.ts` (PUT + DELETE)
+- [x] Create `/api/admin/content/press/[id]/route.ts` (PUT + DELETE)
 - [x] Create `/admin/content/press/page.tsx` — CRUD list
 
 ### 11.5 Instagram Posts Editor
 - [x] Create `/api/admin/content/instagram/route.ts` (GET + POST)
-- [ ] Create `/api/admin/content/instagram/[id]/route.ts` (PUT + DELETE)
+- [x] Create `/api/admin/content/instagram/[id]/route.ts` (PUT + DELETE)
 - [x] Create `/admin/content/instagram/page.tsx` — CRUD list
 
 ### 11.6 Brand Marquee Items Editor
 - [x] Create `/api/admin/content/brand-marquee/route.ts` (GET + POST)
-- [ ] Create `/api/admin/content/brand-marquee/[id]/route.ts` (PUT + DELETE)
+- [x] Create `/api/admin/content/brand-marquee/[id]/route.ts` (PUT + DELETE)
 - [x] Create `/admin/content/brand-marquee/page.tsx` — CRUD list
 
 ### 11.7 Sustainability Content Editor
@@ -48,9 +48,9 @@
 
 ### 11.8 Flash Sale Management
 - [x] Create `/api/admin/flash-sales/route.ts` (GET + POST)
-- [ ] Create `/api/admin/flash-sales/[id]/route.ts` (PUT + DELETE)
+- [x] Create `/api/admin/flash-sales/[id]/route.ts` (PUT + DELETE)
 - [x] Create `/admin/flash-sales/page.tsx` — CRUD with date windows
-- [ ] Create `/api/content/flash-sales/route.ts` — public active flash sale
+- [x] Create `/api/content/flash-sales/route.ts` — public active flash sale
 - [x] Add flash sale banner to storefront
 
 ### 11.9 Update Content Hub Page
