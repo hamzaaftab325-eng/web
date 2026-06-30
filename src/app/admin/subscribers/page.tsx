@@ -114,9 +114,6 @@ export default function AdminSubscribers() {
                   {sub.source ?? "newsletter"} · {sub.createdAt}
                 </p>
               </div>
-              {!sub.promoCode && (
-                <span className={cn("chip bg-cream-deep c-ink-faint t-label-caps")}>No code</span>
-              )}
               {sub.promoCode && (
                 <span className={cn("chip bg-gold-pale c-gold-deep t-label-caps t-num")}>{sub.promoCode}</span>
               )}
