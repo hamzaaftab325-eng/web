@@ -109,15 +109,17 @@ export function AccountWishlist() {
   };
 
   const handleShare = async () => {
-    const shareUrl =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/?wishlist=${slugs.join(",")}`
-        : "";
     try {
+      // Generate a shareable link via the API
+      const res = await fetch("/api/user/wishlist/share", { method: "POST" });
+      const data = await res.json();
+      const shareUrl = typeof window !== "undefined" && data.shareUrl
+        ? `${window.location.origin}${data.shareUrl}`
+        : `${window.location.origin}/?wishlist=${slugs.join(",")}`;
+
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(shareUrl);
       } else {
-        // Fallback for older browsers / insecure contexts.
         const ta = document.createElement("textarea");
         ta.value = shareUrl;
         ta.style.position = "fixed";

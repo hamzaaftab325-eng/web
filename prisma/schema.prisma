@@ -61,6 +61,7 @@ model Product {
   variants      ProductVariant[]
   reviews       Review[]
   orderItems    OrderItem[]
+  questions     Question[]
   @@index([categoryId])
   @@index([slug])
   @@index([featured])
@@ -478,4 +479,23 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId, read])
   @@index([createdAt])
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  productId   String
+  productSlug String
+  userId      String?
+  authorName  String
+  authorEmail String?
+  question    String
+  answer      String?
+  answeredAt  DateTime?
+  isAnswered  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  product     Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@index([productId])
+  @@index([isAnswered])
 }
