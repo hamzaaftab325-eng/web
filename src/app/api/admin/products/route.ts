@@ -102,6 +102,8 @@ export async function GET(request: NextRequest) {
     const categorySlug = searchParams.get("category") ?? "";
     const stockFilter = searchParams.get("stock") ?? "all";
     const sort = searchParams.get("sort") ?? "newest";
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
 
     const where: Record<string, unknown> = {};
     if (search) {
@@ -116,6 +118,14 @@ export async function GET(request: NextRequest) {
     if (stockFilter === "in") { where.inStock = true; where.stockQuantity = { gt: 5 }; }
     else if (stockFilter === "low") { where.stockQuantity = { lte: 5, gt: 0 }; }
     else if (stockFilter === "out") { where.OR = [{ stockQuantity: 0 }, { inStock: false }]; }
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      const priceFilter: Record<string, number> = {};
+      if (minPrice) priceFilter.gte = Number(minPrice);
+      if (maxPrice) priceFilter.lte = Number(maxPrice);
+      where.price = priceFilter;
+    }
 
     let orderBy: Record<string, string> = {};
     switch (sort) {

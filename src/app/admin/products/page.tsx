@@ -31,6 +31,8 @@ export default function AdminProducts() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   const fetchProducts = (p: number = 1) => {
     setLoading(true);
@@ -39,6 +41,8 @@ export default function AdminProducts() {
       ...(search && { search }),
       ...(categoryFilter !== "all" && { category: categoryFilter }),
       ...(stockFilter !== "all" && { stock: stockFilter }),
+      ...(minPrice && { minPrice }),
+      ...(maxPrice && { maxPrice }),
     });
     fetch(`/api/admin/products?${params}`)
       .then(r => r.ok ? r.json() : { products: [], total: 0, totalPages: 0 })
@@ -66,7 +70,7 @@ export default function AdminProducts() {
   useEffect(() => {
     const timer = setTimeout(() => fetchProducts(1), 300);
     return () => clearTimeout(timer);
-  }, [search, categoryFilter, stockFilter, sort]);
+  }, [search, categoryFilter, stockFilter, sort, minPrice, maxPrice]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Deactivate this product? It will be hidden from the shop but kept in the database.")) return;
@@ -94,6 +98,17 @@ export default function AdminProducts() {
       await fetch("/api/admin/products/bulk", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: Array.from(selected), action }),
+      });
+      fetchProducts(page);
+    } catch { /* ignore */ }
+  };
+
+  const bulkSetCategory = async (categoryId: string) => {
+    if (selected.size === 0) return;
+    try {
+      await fetch("/api/admin/products/bulk", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: Array.from(selected), action: "setCategory", categoryId }),
       });
       fetchProducts(page);
     } catch { /* ignore */ }
@@ -154,6 +169,11 @@ export default function AdminProducts() {
             <option value="price-desc">Price: High to Low</option>
             <option value="name">Name: A to Z</option>
           </select>
+          <div className="flex items-center gap-2">
+            <input type="number" placeholder="Min ₨" value={minPrice} onChange={e => setMinPrice(e.target.value)} className="w-24 px-3 py-2 t-body-sm c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold" />
+            <span className="t-caption c-ink-faint">to</span>
+            <input type="number" placeholder="Max ₨" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="w-24 px-3 py-2 t-body-sm c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold" />
+          </div>
         </div>
       </div>
 
@@ -165,6 +185,11 @@ export default function AdminProducts() {
           <button onClick={() => bulkAction("deactivate")} className="t-label-caps c-paper/70 hover:c-gold transition-colors">Deactivate</button>
           <button onClick={() => bulkAction("feature")} className="t-label-caps c-paper/70 hover:c-gold transition-colors">Feature</button>
           <button onClick={() => bulkAction("unfeature")} className="t-label-caps c-paper/70 hover:c-gold transition-colors">Unfeature</button>
+          <select onChange={(e) => { if (e.target.value) { bulkSetCategory(e.target.value); e.target.value = ""; } }} className="px-3 py-1.5 t-label-caps c-ink bg-paper rounded-sm border border-hairline" defaultValue="">
+            <option value="" disabled>Set Category</option>
+            <option value="none">None</option>
+            {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
           <button onClick={() => bulkAction("delete")} className="t-label-caps c-error hover:c-paper transition-colors ml-auto">Delete</button>
           <button onClick={() => setSelected(new Set())} className="t-label-caps c-paper/50 hover:c-paper">Cancel</button>
         </div>

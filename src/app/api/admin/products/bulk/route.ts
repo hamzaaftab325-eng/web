@@ -5,7 +5,8 @@ import { requireAdmin } from "@/lib/auth-guard";
 
 const BulkSchema = z.object({
   ids: z.array(z.string()).min(1),
-  action: z.enum(["activate", "deactivate", "feature", "unfeature", "delete"]),
+  action: z.enum(["activate", "deactivate", "feature", "unfeature", "delete", "setCategory"]),
+  categoryId: z.string().optional(),
 });
 
 /** POST /api/admin/products/bulk — bulk actions on multiple products */
@@ -17,7 +18,7 @@ export async function POST(request: NextRequest) {
   const parsed = BulkSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Validation failed", code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const { ids, action } = parsed.data;
+  const { ids, action, categoryId } = parsed.data;
 
   switch (action) {
     case "activate":
@@ -33,9 +34,12 @@ export async function POST(request: NextRequest) {
       await db.product.updateMany({ where: { id: { in: ids } }, data: { featured: false } });
       return NextResponse.json({ message: `${ids.length} products unfeatured` });
     case "delete":
-      // Soft delete per BACKEND_RULES rule 14
       await db.product.updateMany({ where: { id: { in: ids } }, data: { isActive: false, inStock: false } });
       return NextResponse.json({ message: `${ids.length} products deactivated (soft delete)` });
+    case "setCategory":
+      if (!categoryId) return NextResponse.json({ error: "Category ID required for setCategory", code: "VALIDATION_ERROR" }, { status: 400 });
+      await db.product.updateMany({ where: { id: { in: ids } }, data: { categoryId: categoryId === "none" ? null : categoryId } });
+      return NextResponse.json({ message: `${ids.length} products category updated` });
     default:
       return NextResponse.json({ error: "Unknown action", code: "VALIDATION_ERROR" }, { status: 400 });
   }
