@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" width="600" height="240">
+  <!-- Variant 2: Monogram — "A" in thin gold ring -->
+  <rect width="600" height="240" fill="#FAF6EE"/>
+
+  <!-- Outer ring -->
+  <circle cx="180" cy="120" r="62" fill="none" stroke="#8C7340" stroke-width="1"/>
+
+  <!-- Inner ring (subtle) -->
+  <circle cx="180" cy="120" r="56" fill="none" stroke="#B8923E" stroke-width="0.5" opacity="0.6"/>
+
+  <!-- "A" serif -->
+  <text x="180" y="142"
+        font-family="Playfair Display, Georgia, serif"
+        font-size="64" font-weight="400"
+        fill="#1A1714"
+        text-anchor="middle">A</text>
+
+  <!-- Wordmark beside -->
+  <text x="285" y="115"
+        font-family="Playfair Display, Georgia, serif"
+        font-size="52" font-weight="500"
+        fill="#1A1714"
+        letter-spacing="-0.5">Aura</text>
+
+  <!-- "LIVING" letterspaced caps -->
+  <text x="285" y="148"
+        font-family="Inter, Helvetica, sans-serif"
+        font-size="12" font-weight="500"
+        fill="#8C7340"
+        letter-spacing="7">LIVING</text>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="600" height="200">
+  <!-- Variant 1: Pure wordmark — Playfair-style serif + thin gold rule + letterspaced caps -->
+  <rect width="600" height="200" fill="#FAF6EE"/>
+
+  <!-- "Aura" — elegant serif -->
+  <text x="300" y="105"
+        font-family="Playfair Display, Georgia, serif"
+        font-size="72" font-weight="500"
+        fill="#1A1714"
+        text-anchor="middle"
+        letter-spacing="-1">Aura</text>
+
+  <!-- Thin gold rule -->
+  <line x1="220" y1="130" x2="380" y2="130"
+        stroke="#B8923E" stroke-width="0.75"/>
+
+  <!-- "LIVING" — letterspaced caps in gold -->
+  <text x="300" y="158"
+        font-family="Inter, Helvetica, sans-serif"
+        font-size="13" font-weight="500"
+        fill="#8C7340"
+        text-anchor="middle"
+        letter-spacing="8">LIVING</text>
+</svg>
