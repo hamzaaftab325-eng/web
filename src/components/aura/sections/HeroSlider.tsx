@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
 import { cn } from "@/lib/utils";
+import { useHeroSlides } from "@/hooks/queries/use-content";
 
-const SLIDES = [
+const FALLBACK_SLIDES = [
   {
     image: "/hero/slide-1.png",
     eyebrow: "New — The Plant Edit",
@@ -48,14 +49,18 @@ const SLIDES = [
 const AUTOPLAY_MS = 7000;
 
 export function HeroSlider() {
-  const setView = useUIStore((s) => s.setView);
+  const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
+
+  // Fetch real slides from the API; fall back to hardcoded if empty
+  const { data: apiSlides = [] } = useHeroSlides();
+  const slides = apiSlides.length > 0 ? apiSlides : FALLBACK_SLIDES;
 
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const next = useCallback(() => setIndex((i) => (i + 1) % SLIDES.length), []);
-  const prev = useCallback(() => setIndex((i) => (i - 1 + SLIDES.length) % SLIDES.length), []);
+  const next = useCallback(() => setIndex((i) => (i + 1) % slides.length), [slides.length]);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + slides.length) % slides.length), [slides.length]);
 
   useEffect(() => {
     if (paused || prefersReducedMotion) return;
@@ -72,7 +77,7 @@ export function HeroSlider() {
     return () => window.removeEventListener("keydown", onKey);
   }, [next, prev]);
 
-  const slide = SLIDES[index];
+  const slide = slides[index];
   const words = slide.headline.split(" ");
 
   return (
@@ -137,11 +142,11 @@ export function HeroSlider() {
               </motion.p>
 
               <motion.div initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 1.5, ease: [0.16, 1, 0.3, 1] }} className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <button onClick={() => setView(slide.ctaAction)} className="hero-cta-primary group inline-flex items-center gap-3 t-label-caps px-8 py-4 hover:bg-gold-deep transition-colors rounded-sm">
+                <button onClick={() => router.push(slide.ctaAction || "/shop")} className="hero-cta-primary group inline-flex items-center gap-3 t-label-caps px-8 py-4 hover:bg-gold-deep transition-colors rounded-sm">
                   {slide.ctaLabel}
                   <ArrowRight size={16} strokeWidth={1.5} className="transition-transform group-hover:translate-x-1" />
                 </button>
-                <button onClick={() => setView("about")} className="inline-flex items-center gap-2 t-label-caps hero-text hover:c-gold-deep transition-colors link-underline">
+                <button onClick={() => router.push("/about")} className="inline-flex items-center gap-2 t-label-caps hero-text hover:c-gold-deep transition-colors link-underline">
                   Read Our Story
                 </button>
               </motion.div>
@@ -162,7 +167,7 @@ export function HeroSlider() {
         </div>
 
         <div className="flex items-center gap-2">
-          {SLIDES.map((s, i) => {
+          {slides.map((s, i) => {
             const isActive = i === index;
             return (
               <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}: ${s.headline}`} aria-current={isActive} className="hero-slide-indicator group relative h-[3px] w-8 md:w-12 overflow-hidden">
@@ -176,7 +181,7 @@ export function HeroSlider() {
         </div>
 
         <span className="hidden md:inline-block t-caption hero-text-muted t-num tabular-nums">
-          {String(index + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
+          {String(index + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
         </span>
       </div>
 
