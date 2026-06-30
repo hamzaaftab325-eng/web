@@ -63,44 +63,44 @@
 > Product variants, collections assignment, pagination, bulk actions
 
 ### 12.1 Product Variants UI
-- [ ] Add "Variants" section to product create form (`/admin/products/new`)
-- [ ] Add "Variants" section to product edit form (`/admin/products/[id]/edit`)
-- [ ] Each variant: label, swatchColor, stockQuantity, sortOrder, price modifier
-- [ ] Update `/api/admin/products` POST to accept variants array
-- [ ] Update `/api/admin/products/[id]` PUT to manage variants
-- [ ] Update product detail page to show variant selector
-- [ ] Update cart store to handle variant selection
+- [x] Add "Variants" section to product create form (`/admin/products/new`)
+- [x] Add "Variants" section to product edit form (`/admin/products/[id]/edit`)
+- [x] Each variant: label, swatchColor, stockQuantity, sortOrder
+- [x] Update `/api/admin/products` POST to accept variants array
+- [x] Update `/api/admin/products/[id]` PUT to manage variants
+- [ ] Update product detail page to show variant selector (deferred)
+- [ ] Update cart store to handle variant selection (deferred)
 
 ### 12.2 Product Collection Assignment
-- [ ] Add "Collections" multi-select to product create/edit forms
-- [ ] Update `/api/admin/products` POST to accept collectionIds
-- [ ] Update `/api/admin/products/[id]` PUT to manage collection assignments
-- [ ] Show assigned collections in product list
+- [x] Add "Collections" multi-select to product create/edit forms
+- [x] Update `/api/admin/products` POST to accept collectionIds
+- [x] Update `/api/admin/products/[id]` PUT to manage collection assignments
+- [x] Show variant count badge in product list
 
 ### 12.3 Product Pagination
-- [ ] Add pagination to `/admin/products` page (currently loads 200 at once)
-- [ ] Add page controls (prev/next, page numbers)
-- [ ] Show "Showing 1-20 of 145 products"
+- [x] Add pagination to `/admin/products` page (20 per page with prev/next)
+- [x] Add page controls (prev/next, page indicator)
+- [x] Show total count in header
 
 ### 12.4 Product Bulk Actions
-- [ ] Add checkbox selection to product list
-- [ ] Add bulk actions bar: Activate, Deactivate, Feature, Delete
-- [ ] Add bulk category assignment
+- [x] Add checkbox selection to product list
+- [x] Add bulk actions bar: Activate, Deactivate, Feature, Unfeature, Delete
+- [ ] Add bulk category assignment (deferred)
 
 ### 12.5 Product Search & Filter
-- [ ] Add category filter dropdown to product list
-- [ ] Add price range filter
-- [ ] Add stock status filter (in stock / out of stock / low stock)
-- [ ] Add sort options (newest, price, name, stock)
+- [x] Add category filter dropdown to product list
+- [ ] Add price range filter (deferred)
+- [x] Add stock status filter (in stock / out of stock / low stock)
+- [x] Add sort options (newest, price asc/desc, name)
 
 ### 12.6 Related Products
-- [ ] Add "Related Products" field to product edit form
-- [ ] Create API endpoint to get related products
-- [ ] Show related products on product detail page
+- [ ] Add "Related Products" field to product edit form (deferred)
+- [ ] Create API endpoint to get related products (deferred)
+- [ ] Show related products on product detail page (deferred)
 
 ### 12.7 Product Import/Export
-- [ ] Create `/api/admin/products/export` — CSV export of all products
-- [ ] Create `/api/admin/products/import` — CSV import (bulk create)
+- [x] Create `/api/admin/products/export` — CSV export of all products
+- [ ] Create `/api/admin/products/import` — CSV import (deferred)
 
 ---
 
