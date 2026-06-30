@@ -141,35 +141,35 @@
 > Email sending, abandoned cart, newsletters
 
 ### 14.1 Email Service Setup
-- [ ] Choose email provider (Resend / SendGrid / Postmark)
-- [ ] Create `src/lib/email.ts` — email sending helper
-- [ ] Add email environment variables to `.env` and Vercel
-- [ ] Create email template system (HTML templates)
+- [x] Choose email provider (Resend)
+- [x] Create `src/lib/email.ts` — email sending helper
+- [x] Add email environment variables (RESEND_API_KEY, EMAIL_FROM)
+- [x] Create email template system (7 branded HTML templates)
 
 ### 14.2 Transactional Emails
-- [ ] Order confirmation email (sent on order creation)
-- [ ] Order status update email (sent on status change)
-- [ ] Shipping notification email (with tracking number)
-- [ ] Welcome email (sent on signup)
-- [ ] Password reset email (sent on forgot-password)
-- [ ] Review approved email (sent when admin approves review)
+- [x] Order confirmation email (sent on order creation)
+- [x] Order status update email (sent on status change)
+- [x] Shipping notification email (with tracking number)
+- [x] Welcome email (sent on signup)
+- [ ] Password reset email (template ready, needs forgot-password wiring)
+- [x] Review approved email (sent when admin approves review)
 
 ### 14.3 Newsletter System
-- [ ] Create `/api/admin/newsletter/send` — send newsletter to all subscribers
-- [ ] Create `/admin/newsletter/page.tsx` — compose and send newsletter
-- [ ] Add unsubscribe link to emails
-- [ ] Track email opens and clicks
+- [x] Create `/api/admin/newsletter` — send newsletter to all subscribers
+- [x] Create `/admin/newsletter/page.tsx` — compose and send newsletter
+- [x] Add unsubscribe link to emails
+- [ ] Track email opens and clicks (deferred — needs Resend webhooks)
 
 ### 14.4 Abandoned Cart Recovery
-- [ ] Track cart abandonment (cart created but no order placed within 2 hours)
-- [ ] Send abandoned cart email with link to recover cart
-- [ ] Create `/admin/abandoned-carts/page.tsx` — view abandoned carts
-- [ ] Auto-send reminder after 1 hour, 24 hours
+- [ ] Track cart abandonment (deferred — needs cron job)
+- [ ] Send abandoned cart email (template ready, needs cron job)
+- [ ] Create `/admin/abandoned-carts/page.tsx` (deferred)
+- [ ] Auto-send abandoned cart reminders (deferred — needs cron job)
 
 ### 14.5 Email Subscriber Management
-- [ ] Add "Export to Mailchimp/CSV" button on subscribers page
-- [ ] Add subscriber segmentation (by source, date, activity)
-- [ ] Add subscriber import (CSV upload)
+- [x] CSV export already exists on subscribers page
+- [ ] Add subscriber segmentation (deferred)
+- [ ] Add subscriber import (deferred)
 
 ---
 
