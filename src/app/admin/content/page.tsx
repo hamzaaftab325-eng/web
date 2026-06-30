@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight } from "lucide-react";
+import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight, Zap } from "lucide-react";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
@@ -14,6 +14,9 @@ const contentSections = [
   { label: "Care Guides", description: "Material-specific care instructions for each product type.", icon: FileText, href: "/admin/content/care-guides" },
   { label: "Categories", description: "Product categories shown in the mega menu and shop filters.", icon: Sparkles, href: "/admin/content/categories" },
   { label: "Collections", description: "Curated product collections for seasonal and themed displays.", icon: Sparkles, href: "/admin/content/collections" },
+  { label: "Brand Values", description: "The four values shown on the home page — what your atelier stands for.", icon: Sparkles, href: "/admin/content/brand-values" },
+  { label: "Brand Marquee", description: "Scrolling text marquee shown on the home page.", icon: Sparkles, href: "/admin/content/brand-marquee" },
+  { label: "Flash Sales", description: "Time-limited discount events with start and end dates.", icon: Zap, href: "/admin/flash-sales" },
 ];
 
 export default function AdminContent() {
