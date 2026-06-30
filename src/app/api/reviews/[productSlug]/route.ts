@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
 import { notifyAdmins } from "@/lib/notifications";
+import { sanitizeHtml } from "@/lib/security";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ productSlug: string }> }) {
   try {
@@ -56,13 +57,13 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       data: {
         productId: product.id,
         ...(userId && { userId }),
-        authorName: body.authorName ?? "Anonymous",
-        authorLocation: body.authorLocation ?? null,
+        authorName: sanitizeHtml(body.authorName ?? "Anonymous"),
+        authorLocation: body.authorLocation ? sanitizeHtml(body.authorLocation) : null,
         rating: Math.min(5, Math.max(1, Number(body.rating) || 5)),
-        title: body.title ?? null,
-        body: body.body ?? "",
+        title: body.title ? sanitizeHtml(body.title) : null,
+        body: sanitizeHtml(body.body ?? ""),
         verifiedBuyer,
-        status: "approved", // Auto-approve for now (no email verification yet)
+        status: "approved",
       },
     });
 

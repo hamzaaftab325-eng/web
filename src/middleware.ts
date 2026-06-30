@@ -1,22 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, cleanupRateLimitStore } from "@/lib/rate-limit";
 
 /**
  * Middleware — runs on Edge Runtime before every matched request.
  *
- * Does coarse auth (cookie existence) only. Fine-grained auth (JWT verify +
- * database role check) happens in API route handlers via requireAdmin().
+ * Features:
+ * 1. Rate limiting (auth routes: 5/15min, reviews: 10/15min, upload: 20/5min, default: 100/min)
+ * 2. Auth check (cookie existence for protected routes)
+ * 3. Guest checkout allowed (POST /api/orders)
  *
  * Behavior:
- *   - /admin, /account pages → redirect to /login?redirect=<path> if no cookie
- *   - /api/user/*, /api/admin/* → 401 JSON if no auth cookie
- *   - GET /api/orders → 401 JSON if no auth cookie (order history requires auth)
- *   - POST /api/orders → ALLOWED for guests (COD checkout doesn't require account)
+ *   - Rate-limited routes → 429 JSON if exceeded
+ *   - /admin, /account pages → redirect to /login if no cookie
+ *   - /api/user/*, /api/admin/*, /api/notifications/* → 401 if no cookie
+ *   - GET /api/orders → 401 if no cookie (order history requires auth)
+ *   - POST /api/orders → allowed for guests (COD checkout)
  *   - All other requests → pass through
  */
 const PAGE_PREFIXES = ["/account", "/admin"];
 const API_PREFIXES = ["/api/user", "/api/admin", "/api/notifications"];
 
 export function middleware(request: NextRequest) {
+  // Clean up rate limit store periodically
+  cleanupRateLimitStore();
+
+  // Rate limiting — applies to ALL API routes
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    const rateLimited = checkRateLimit(request);
+    if (rateLimited) return rateLimited;
+  }
+
   const { pathname } = request.nextUrl;
 
   const isPage = PAGE_PREFIXES.some(p => pathname === p || pathname.startsWith(p + "/"));
@@ -37,14 +50,12 @@ export function middleware(request: NextRequest) {
   const hasRefreshCookie = Boolean(cookies["aura_refresh"]);
 
   if (!hasAccessCookie && !hasRefreshCookie) {
-    // API routes → JSON 401
     if (isApi || isOrdersGet) {
       return NextResponse.json(
         { error: "Authentication required", code: "UNAUTHORIZED" },
         { status: 401 }
       );
     }
-    // Page routes → redirect to login
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
@@ -61,5 +72,8 @@ export const config = {
     "/api/orders/:path*",
     "/api/admin/:path*",
     "/api/notifications/:path*",
+    "/api/auth/:path*",
+    "/api/reviews/:path*",
+    "/api/upload/:path*",
   ],
 };

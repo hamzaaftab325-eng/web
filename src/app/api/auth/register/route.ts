@@ -5,9 +5,10 @@ import { hashPassword, signAccessToken, signRefreshToken, sanitizeUser } from "@
 import { setAuthCookies } from "@/lib/auth-cookies";
 import { sendEmail } from "@/lib/email";
 import { welcomeEmail } from "@/lib/email-templates";
+import { sanitizeObject, validatePasswordStrength } from "@/lib/security";
 
 const schema = z.object({
-  firstName: z.string().min(1), lastName: z.string().min(1),
+  firstName: z.string().min(1).max(60), lastName: z.string().min(1).max(60),
   email: z.string().email(), password: z.string().min(8), joinNewsletter: z.boolean().default(true),
 });
 
@@ -16,7 +17,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input", code: "VALIDATION_ERROR" }, { status: 400 });
-    const { firstName, lastName, email, password, joinNewsletter } = parsed.data;
+
+    // Enforce password strength server-side
+    const passwordError = validatePasswordStrength(parsed.data.password);
+    if (passwordError) return NextResponse.json({ error: passwordError, code: "WEAK_PASSWORD" }, { status: 400 });
+
+    // Sanitize input to prevent XSS
+    const { firstName, lastName, email, password, joinNewsletter } = sanitizeObject(parsed.data);
     const existing = await db.user.findUnique({ where: { email: email.toLowerCase() } });
     if (existing) return NextResponse.json({ error: "Account already exists", code: "EMAIL_EXISTS" }, { status: 409 });
     const passwordHash = await hashPassword(password);
