@@ -31,6 +31,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   });
   if (!product) notFound();
 
+  // Track product view (fire-and-forget, don't block rendering)
+  void db.productView.create({ data: { productSlug: product.slug, productId: product.id } }).catch(() => {});
+
   const transformedProduct = {
     id: product.id, slug: product.slug, name: product.name, subtitle: product.subtitle ?? undefined, description: product.description,
     longDescription: product.longDescription ?? undefined, price: Number(product.price), compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : undefined,

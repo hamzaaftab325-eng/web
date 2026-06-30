@@ -6,6 +6,16 @@ import type { CartLine, Product, ProductVariant } from "@/types";
 import { uid } from "@/lib/utils";
 import { addToCart, removeFromCart, beginCheckout, purchase } from "@/lib/analytics/ecommerce";
 
+// Server-side tracking (fire-and-forget)
+function trackCartEventServer(eventType: string, productSlug?: string, productId?: string, quantity?: number) {
+  if (typeof window === "undefined") return;
+  fetch("/api/track/cart-event", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ eventType, productSlug, productId, quantity }),
+  }).catch(() => {});
+}
+
 interface CartState {
   lines: CartLine[];
   savedForLater: CartLine[];
@@ -59,6 +69,9 @@ export const useCartStore = create<CartState>()(
           }],
         });
 
+        // Server-side cart event tracking
+        trackCartEventServer("add_to_cart", product.slug, product.id, quantity);
+
         set((state) => {
           const existing = state.lines.find((l) => l.key === key);
           if (existing) {
@@ -97,6 +110,8 @@ export const useCartStore = create<CartState>()(
               item_variant: line.variantLabel,
             }],
           });
+          // Server-side cart event tracking
+          trackCartEventServer("remove_from_cart", line.slug, line.productId, line.quantity);
         }
         set((s) => ({ lines: s.lines.filter((l) => l.key !== key) }));
       },
