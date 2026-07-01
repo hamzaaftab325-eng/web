@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <!-- Concept 4: Botanical Branch
+       A single thin line-drawn botanical branch (stem + 3 leaves) above the
+       wordmark. Reflects the "plants" category and the slow-living / artisanal
+       aesthetic. Organic, warm, premium. -->
+
+  <rect width="600" height="400" fill="#FAF7F0"/>
+
+  <g transform="translate(300, 145)" stroke="#1A1714" stroke-width="1.25" fill="none" stroke-linecap="round">
+    <!-- Central stem -->
+    <line x1="0" y1="-30" x2="0" y2="40"/>
+    <!-- Left leaf 1 (top) -->
+    <path d="M 0 -20 Q -20 -22 -28 -10 Q -22 -2 0 -8" fill="#FAF7F0"/>
+    <!-- Right leaf 2 (middle) -->
+    <path d="M 0 0 Q 22 -2 30 12 Q 22 18 0 12" fill="#FAF7F0"/>
+    <!-- Left leaf 3 (bottom) -->
+    <path d="M 0 20 Q -18 18 -26 30 Q -18 36 0 30" fill="#FAF7F0"/>
+    <!-- Small gold accent dot at top of stem -->
+    <circle cx="0" cy="-32" r="2" fill="#B8901F" stroke="none"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="300" y="245"
+        font-family="Playfair Display, Georgia, serif"
+        font-size="62" font-weight="500"
+        fill="#1A1714"
+        text-anchor="middle"
+        letter-spacing="-1">Aura Living</text>
+
+  <!-- Thin gold rule -->
+  <line x1="240" y1="275" x2="360" y2="275"
+        stroke="#B8901F" stroke-width="0.75"/>
+
+  <!-- Tagline -->
+  <text x="300" y="300"
+        font-family="Inter, Helvetica, Arial, sans-serif"
+        font-size="11" font-weight="400"
+        fill="#9B8D7A"
+        text-anchor="middle"
+        letter-spacing="4">SOURCED SLOWLY · MADE TO BE LIVED WITH</text>
+</svg>
