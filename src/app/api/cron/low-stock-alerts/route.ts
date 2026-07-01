@@ -125,8 +125,8 @@ export async function GET(request: NextRequest) {
 
 function buildLowStockEmail(params: {
   dateLabel: string;
-  outOfStock: Array<{ name: string; slug: string; price: any; category: { name: string } | null }>;
-  lowStock: Array<{ name: string; slug: string; stockQuantity: number; price: any; category: { name: string } | null }>;
+  outOfStock: Array<{ name: string; slug: string; price: { toLocaleString: () => string } | number; category: { name: string } | null }>;
+  lowStock: Array<{ name: string; slug: string; stockQuantity: number; price: { toLocaleString: () => string } | number; category: { name: string } | null }>;
   lowStockVariants: Array<{ productName: string; productSlug: string; variantLabel: string; stock: number }>;
   threshold: number;
 }): string {

@@ -118,7 +118,7 @@ function buildDigestEmail(params: {
   avgOrderValue: number;
   statusBreakdown: Record<string, number>;
   topProducts: Array<{ name: string; qty: number; revenue: number }>;
-  orders: Array<{ orderNumber: string; status: string; total: any; email: string; createdAt: Date; items: any[] }>;
+  orders: Array<{ orderNumber: string; status: string; total: { toLocaleString: () => string } | number; email: string; createdAt: Date; items: Array<{ quantity: number; price: { toLocaleString: () => string } | number; productSlug: string; productName: string }> }>;
 }): string {
   const { dateLabel, totalOrders, totalRevenue, avgOrderValue, statusBreakdown, topProducts, orders } = params;
 

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { ProductDetailPage } from "@/components/aura/commerce/ProductDetailPage";
 import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
+import type { BadgeKind } from "@/types";
+import type { CategorySlug } from "@/types";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 // Force dynamic rendering — don't try to query DB at build time
@@ -37,7 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const transformedProduct = {
     id: product.id, slug: product.slug, name: product.name, subtitle: product.subtitle ?? undefined, description: product.description,
     longDescription: product.longDescription ?? undefined, price: Number(product.price), compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : undefined,
-    category: (product.category?.slug ?? "lamps-lighting") as any, images: product.images.map((img) => img.url), badge: product.badge as any, inStock: product.inStock,
+    category: (product.category?.slug ?? "lamps-lighting") as CategorySlug, images: product.images.map((img) => img.url), badge: (product.badge ?? undefined) as BadgeKind | undefined, inStock: product.inStock,
     variants: product.variants.map((v) => ({ id: v.id, label: v.label, swatch: v.swatchColor ?? undefined })),
     materials: product.materials, dimensions: product.dimensions ?? undefined, careInstructions: product.careInstructions ?? undefined, featured: product.featured,
   };
