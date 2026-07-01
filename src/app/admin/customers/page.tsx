@@ -138,7 +138,8 @@ export default function AdminCustomers() {
             <motion.div
               key={customer.id}
               variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-              className="group bg-gradient-card-warm border border-hairline-cream rounded-sm p-5 hover:shadow-card-hover transition-shadow"
+              onClick={() => router.push(`/admin/customers/${customer.id}`)}
+              className="group bg-gradient-card-warm border border-hairline-cream rounded-sm p-5 hover:shadow-card-hover hover:border-gold/30 transition-all cursor-pointer"
             >
               <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-ink to-ink/80 flex items-center justify-center flex-shrink-0 ring-1 ring-hairline-gold">

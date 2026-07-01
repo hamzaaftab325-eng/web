@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ShoppingBag, Search, ArrowRight, ChevronRight, Calendar } from "lucide-react";
+import { ShoppingBag, Search, ArrowRight, ChevronRight, Calendar, Download } from "lucide-react";
 import { formatPrice, cn } from "@/lib/utils";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
@@ -151,6 +151,17 @@ export default function AdminOrders() {
                       <p className="t-body c-ink t-num font-medium">{formatPrice(order.total)}</p>
                       <p className="t-caption c-ink-faint capitalize">{order.paymentMethod} · {order.paymentStatus}</p>
                     </div>
+                    <a
+                      href={`/api/admin/orders/${order.id}/invoice`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 t-label-caps c-ink-faint border border-hairline-cream rounded-sm hover:c-gold-deep hover:border-gold transition-colors flex-shrink-0"
+                      aria-label="Download invoice"
+                    >
+                      <Download size={13} strokeWidth={1.5} />
+                      <span className="hidden md:inline">Invoice</span>
+                    </a>
                     <ChevronRight size={20} strokeWidth={1.25} className="c-ink-faint group-hover:c-gold-deep group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </div>
                 </motion.button>
