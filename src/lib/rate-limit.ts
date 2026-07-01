@@ -27,8 +27,12 @@ interface RateLimitConfig {
 
 const ROUTE_LIMITS: Array<{ pattern: RegExp; config: RateLimitConfig }> = [
   { pattern: /\/api\/auth\/(login|register|forgot-password)/, config: { windowMs: 15 * 60 * 1000, maxRequests: 5 } },
+  { pattern: /\/api\/auth\/reset-password/, config: { windowMs: 15 * 60 * 1000, maxRequests: 3 } },
   { pattern: /\/api\/reviews\/.*$/, config: { windowMs: 15 * 60 * 1000, maxRequests: 10 } },
   { pattern: /\/api\/upload/, config: { windowMs: 5 * 60 * 1000, maxRequests: 20 } },
+  { pattern: /\/api\/contact/, config: { windowMs: 60 * 60 * 1000, maxRequests: 5 } },
+  { pattern: /\/api\/subscribe/, config: { windowMs: 60 * 60 * 1000, maxRequests: 3 } },
+  { pattern: /\/api\/user\/data\/delete/, config: { windowMs: 60 * 60 * 1000, maxRequests: 3 } },
 ];
 
 const DEFAULT_LIMIT: RateLimitConfig = { windowMs: 60 * 1000, maxRequests: 100 };
