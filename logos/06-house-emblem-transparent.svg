@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500">
+  <!-- AURA LIVING — Transparent version (no background, for dark backgrounds) -->
+
+  <g transform="translate(300, 210)" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M -100 100 L -100 -15 L 5 -90 L 5 100 Z" fill="#F6D58A" stroke="#3A3A3A" stroke-width="2"/>
+    <path d="M 5 -90 L 95 -20 L 95 100 L 5 100 Z" fill="#DCC9BC" stroke="#3A3A3A" stroke-width="2"/>
+    <line x1="5" y1="-90" x2="5" y2="100" stroke="#3A3A3A" stroke-width="1.5"/>
+
+    <rect x="-50" y="85" width="100" height="6" rx="3" fill="#B8A89B" stroke="#3A3A3A" stroke-width="1.5"/>
+    <rect x="-75" y="-5" width="28" height="28" rx="2" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="1.5"/>
+    <line x1="-71" y1="10" x2="-51" y2="10" stroke="#3A3A3A" stroke-width="1"/>
+
+    <path d="M 70 88 Q 75 0 30 -8" fill="none" stroke="#3A3A3A" stroke-width="2"/>
+    <path d="M 22 -8 Q 22 -16 30 -16 Q 38 -16 38 -8 Z" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="1.5"/>
+    <ellipse cx="70" cy="88" rx="8" ry="2" fill="#3A3A3A" stroke="none"/>
+
+    <rect x="-35" y="25" width="70" height="22" rx="8" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2"/>
+    <line x1="-12" y1="25" x2="-12" y2="47" stroke="#3A3A3A" stroke-width="1.2"/>
+    <line x1="12" y1="25" x2="12" y2="47" stroke="#3A3A3A" stroke-width="1.2"/>
+    <rect x="-38" y="47" width="76" height="22" rx="8" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2"/>
+    <line x1="0" y1="47" x2="0" y2="69" stroke="#3A3A3A" stroke-width="1.2"/>
+    <rect x="-46" y="33" width="11" height="36" rx="5" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2"/>
+    <rect x="35" y="33" width="11" height="36" rx="5" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2"/>
+
+    <rect x="-82" y="60" width="20" height="28" rx="2" fill="#B8A89B" stroke="#3A3A3A" stroke-width="1.5"/>
+    <line x1="-77" y1="63" x2="-77" y2="85" stroke="#3A3A3A" stroke-width="0.8"/>
+    <line x1="-72" y1="63" x2="-72" y2="85" stroke="#3A3A3A" stroke-width="0.8"/>
+    <line x1="-67" y1="63" x2="-67" y2="85" stroke="#3A3A3A" stroke-width="0.8"/>
+    <rect x="-84" y="58" width="24" height="4" rx="1" fill="#B8A89B" stroke="#3A3A3A" stroke-width="1.5"/>
+    <ellipse cx="-78" cy="50" rx="6" ry="10" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2"/>
+    <ellipse cx="-70" cy="46" rx="6" ry="12" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2"/>
+    <ellipse cx="-85" cy="46" rx="5" ry="9" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2"/>
+    <ellipse cx="-74" cy="40" rx="5" ry="10" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2"/>
+  </g>
+
+  <text x="300" y="395" font-family="Montserrat, Poppins, Gilroy, Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="800" fill="#3A3A3A"
+        text-anchor="middle" letter-spacing="3">AURA LIVING</text>
+</svg>
