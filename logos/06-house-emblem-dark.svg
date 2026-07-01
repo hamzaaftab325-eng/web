@@ -1,47 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500">
-  <!-- House emblem v2 — DARK version (for ink footer) -->
+  <!-- House emblem v3 — DARK version -->
   <rect width="600" height="500" fill="#0B0B0B"/>
 
-  <g transform="translate(300, 195)" stroke="#FAF6EE" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" fill="none">
-    <!-- Roof triangle -->
-    <path d="M -90 -10 L 0 -85 L 90 -10 Z" fill="#0B0B0B"/>
+  <g transform="translate(300, 200)" stroke="#FAF6EE" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
 
-    <!-- Left wall (darker yellow for dark bg) -->
-    <rect x="-90" y="-10" width="90" height="100" fill="#B89548" stroke="#FAF6EE" stroke-width="1.5"/>
-    <!-- Right wall (darker tan for dark bg) -->
-    <rect x="0" y="-10" width="90" height="100" fill="#8C6F4E" stroke="#FAF6EE" stroke-width="1.5"/>
+    <!-- Left half (warm gold for dark bg) -->
+    <path d="M -85 85 L -85 -10 L 0 -85 L 0 85 Z" fill="#B89548" stroke="#FAF6EE" stroke-width="1.5"/>
+    <!-- Right half (warm tan for dark bg) -->
+    <path d="M 0 -85 L 85 -10 L 85 85 L 0 85 Z" fill="#8C6F4E" stroke="#FAF6EE" stroke-width="1.5"/>
+    <line x1="0" y1="-85" x2="0" y2="85" stroke="#FAF6EE" stroke-width="1.2"/>
 
-    <!-- Roof outline on top -->
-    <path d="M -90 -10 L 0 -85 L 90 -10" fill="none" stroke="#FAF6EE" stroke-width="1.5"/>
-    <line x1="-90" y1="-10" x2="90" y2="-10" stroke="#FAF6EE" stroke-width="1.5"/>
+    <!-- Picture frame -->
+    <rect x="-65" y="-5" width="22" height="22" fill="#8C6F4E" stroke="#FAF6EE" stroke-width="1.2"/>
+    <line x1="-61" y1="8" x2="-47" y2="8" stroke="#FAF6EE" stroke-width="0.8"/>
 
-    <!-- Wall art -->
-    <rect x="-72" y="5" width="26" height="26" fill="#8C6F4E" stroke="#FAF6EE" stroke-width="1.2"/>
-    <line x1="-68" y1="22" x2="-50" y2="22" stroke="#FAF6EE" stroke-width="0.8"/>
-
-    <!-- Plant pot -->
-    <path d="M -78 80 L -75 65 L -60 65 L -57 80 Z" fill="#707070" stroke="#FAF6EE" stroke-width="1.2"/>
+    <!-- Plant pot (square) -->
+    <rect x="-72" y="60" width="18" height="22" fill="#706050" stroke="#FAF6EE" stroke-width="1.2"/>
     <!-- Leaves -->
-    <ellipse cx="-72" cy="58" rx="5" ry="9" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
-    <ellipse cx="-65" cy="55" rx="5" ry="10" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
-    <ellipse cx="-78" cy="56" rx="4" ry="8" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
+    <ellipse cx="-72" cy="55" rx="5" ry="7" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
+    <ellipse cx="-64" cy="52" rx="5" ry="8" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
+    <ellipse cx="-77" cy="50" rx="4" ry="6" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
+    <ellipse cx="-68" cy="46" rx="4" ry="7" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
+    <ellipse cx="-75" cy="44" rx="3.5" ry="6" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1"/>
 
     <!-- Sofa -->
-    <rect x="-30" y="35" width="60" height="22" rx="4" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
-    <line x1="0" y1="35" x2="0" y2="57" stroke="#FAF6EE" stroke-width="1"/>
-    <rect x="-32" y="55" width="64" height="22" rx="4" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
-    <rect x="-38" y="45" width="8" height="32" rx="3" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
-    <rect x="30" y="45" width="8" height="32" rx="3" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
+    <rect x="-28" y="30" width="56" height="20" rx="4" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
+    <line x1="0" y1="30" x2="0" y2="50" stroke="#FAF6EE" stroke-width="1"/>
+    <rect x="-30" y="50" width="60" height="20" rx="4" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
+    <rect x="-36" y="40" width="8" height="30" rx="3" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
+    <rect x="28" y="40" width="8" height="30" rx="3" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.2"/>
 
-    <!-- Floor lamp -->
-    <path d="M 60 80 Q 65 50 72 45" fill="none" stroke="#FAF6EE" stroke-width="1.2"/>
-    <path d="M 65 45 L 80 45 L 82 35 L 63 35 Z" fill="#0B0B0B" stroke="#FAF6EE" stroke-width="1.2"/>
-    <ellipse cx="60" cy="80" rx="6" ry="1.5" fill="#FAF6EE" stroke="none"/>
+    <!-- Floor lamp with round shade -->
+    <path d="M 55 80 Q 60 50 65 40" fill="none" stroke="#FAF6EE" stroke-width="1.2"/>
+    <circle cx="65" cy="35" r="9" fill="#0B0B0B" stroke="#FAF6EE" stroke-width="1.2"/>
+    <ellipse cx="55" cy="80" rx="6" ry="1.5" fill="#FAF6EE" stroke="none"/>
   </g>
 
   <text x="300" y="375" font-family="Montserrat, Poppins, Helvetica, Arial, sans-serif"
         font-size="44" font-weight="700" fill="#FAF6EE"
-        text-anchor="middle" letter-spacing="4">AURA LIVING</text>
+        text-anchor="middle" letter-spacing="0.5">AURA LIVING</text>
   <text x="300" y="408" font-family="Montserrat, Poppins, Helvetica, Arial, sans-serif"
         font-size="14" font-weight="400" fill="#D4AF37"
         text-anchor="middle" letter-spacing="6">SINCE 2026</text>
