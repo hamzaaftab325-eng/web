@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Instagram, Mail, Facebook, Twitter } from "lucide-react";
+import { Instagram, Mail, Facebook, Twitter, Loader2 } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { useSettings } from "@/hooks/use-settings";
@@ -49,11 +49,13 @@ export function Footer() {
     router.push("/shop");
   };
   const [submitted, setSubmitted] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || subscribing) return;
+    setSubscribing(true);
     setSubscribeError(null);
 
     try {
@@ -74,6 +76,8 @@ export function Footer() {
       setTimeout(() => setSubmitted(false), 5000);
     } catch {
       setSubscribeError("Network error. Please try again.");
+    } finally {
+      setSubscribing(false);
     }
   };
 
@@ -116,9 +120,10 @@ export function Footer() {
                 <button
                   type="submit"
                   aria-label="Subscribe"
-                  className="text-paper hover:text-gold transition-colors p-1"
+                  disabled={subscribing}
+                  className="text-paper hover:text-gold transition-colors p-1 disabled:opacity-50"
                 >
-                  <Mail size={18} strokeWidth={1.25} />
+                  {subscribing ? <Loader2 size={18} strokeWidth={1.25} className="animate-spin" /> : <Mail size={18} strokeWidth={1.25} />}
                 </button>
               </div>
               {submitted && (

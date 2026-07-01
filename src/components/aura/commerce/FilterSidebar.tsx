@@ -10,10 +10,10 @@ import { cn, formatPrice } from "@/lib/utils";
 import type { ActiveFilter, CategorySlug } from "@/types";
 
 const PRICE_BANDS = [
-  { id: "under-50", label: "Under $50", min: 0, max: 50 },
-  { id: "50-150", label: "$50 – $150", min: 50, max: 150 },
-  { id: "150-300", label: "$150 – $300", min: 150, max: 300 },
-  { id: "over-300", label: "Over $300", min: 300, max: Infinity },
+  { id: "under-5000", label: "Under ₨5,000", min: 0, max: 5000 },
+  { id: "5000-15000", label: "₨5,000 – ₨15,000", min: 5000, max: 15000 },
+  { id: "15000-30000", label: "₨15,000 – ₨30,000", min: 15000, max: 30000 },
+  { id: "over-30000", label: "Over ₨30,000", min: 30000, max: Infinity },
 ];
 
 export function FilterSidebar() {

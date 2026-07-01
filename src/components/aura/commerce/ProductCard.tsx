@@ -8,6 +8,7 @@ import Link from "next/link";
 import type { Product } from "@/types";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
+import { useToast } from "@/hooks/use-toast";
 import { formatPrice, cn } from "@/lib/utils";
 import { getCardUrl } from "@/lib/cloudinary-client";
 
@@ -22,6 +23,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const isWished = useWishlistStore((s) => s.slugs.includes(product.slug));
   const addToCart = useCartStore((s) => s.addLine);
   const prefersReducedMotion = useReducedMotion();
+  const { toast } = useToast();
 
   const [imgLoaded, setImgLoaded] = useState(false);
 
@@ -31,6 +33,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     e.stopPropagation();
     if (!product.inStock) return;
     addToCart(product, { quantity: 1 });
+    toast({
+      title: "Added to cart",
+      description: product.name,
+    });
   };
 
   const onWish = (e: React.MouseEvent) => {

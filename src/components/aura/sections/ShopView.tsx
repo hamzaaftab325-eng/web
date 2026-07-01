@@ -16,10 +16,10 @@ import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { cn, formatPrice } from "@/lib/utils";
 
 const PRICE_BANDS: Record<string, { min: number; max: number }> = {
-  "under-50": { min: 0, max: 50 },
-  "50-150": { min: 50, max: 150 },
-  "150-300": { min: 150, max: 300 },
-  "over-300": { min: 300, max: Infinity },
+  "under-5000": { min: 0, max: 5000 },
+  "5000-15000": { min: 5000, max: 15000 },
+  "15000-30000": { min: 15000, max: 30000 },
+  "over-30000": { min: 30000, max: Infinity },
 };
 
 const sortOptions: { key: SortKey; label: string }[] = [

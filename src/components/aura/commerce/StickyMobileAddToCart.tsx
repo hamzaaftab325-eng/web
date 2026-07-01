@@ -7,6 +7,7 @@ import type { Product } from "@/types";
 import { cn, formatPrice, sleep } from "@/lib/utils";
 import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
+import { useToast } from "@/hooks/use-toast";
 
 interface StickyMobileAddToCartProps {
   product: Product;
@@ -24,6 +25,7 @@ export function StickyMobileAddToCart({
   const [state, setState] = useState<"idle" | "loading" | "success">("idle");
   const addToCart = useCartStore((s) => s.addLine);
   const setCheckoutOpen = useUIStore((s) => s.setCheckoutOpen);
+  const { toast } = useToast();
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 500);
@@ -37,6 +39,7 @@ export function StickyMobileAddToCart({
     await sleep(350);
     addToCart(product, { quantity });
     setState("success");
+    toast({ title: "Added to cart", description: product.name });
     await sleep(1200);
     setState("idle");
   };
