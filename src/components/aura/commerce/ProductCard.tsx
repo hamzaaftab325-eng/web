@@ -54,12 +54,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       viewport={{ once: true, margin: "-10% 0px" }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       whileHover={prefersReducedMotion ? undefined : { y: -4 }}
-      className="group cursor-pointer"
+      className="group cursor-pointer product-card-compact"
       onClick={open}
       aria-label={`${product.name} — view details`}
     >
       {/* Image */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-cream">
+      <div className="relative aspect-[4/5] overflow-hidden bg-cream product-card-image">
         {!imgLoaded && (
           <div className="absolute inset-0 bg-gradient-to-br from-cream to-cream-deep animate-pulse" />
         )}

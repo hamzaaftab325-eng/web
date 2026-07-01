@@ -554,6 +554,24 @@
   .shadow-card-modern { box-shadow: var(--shadow-card-modern); }
   .shadow-card-hover { box-shadow: var(--shadow-card-hover); }
 
+  /* ─── Container Queries (2026 standard) ──────────────────────────
+     Enables components to adapt based on their CONTAINER width, not
+     the viewport. Used by ProductGrid → ProductCard to adjust layout.
+     ───────────────────────────────────────────────────────────────── */
+  .@container { container-type: inline-size; }
+
+  /* Product card adapts to container width */
+  @container (max-width: 400px) {
+    .product-card-compact { font-size: 0.8125rem; }
+    .product-card-compact .product-card-image { aspect-ratio: 1 / 1; }
+  }
+  @container (min-width: 401px) and (max-width: 600px) {
+    .product-card-compact .product-card-image { aspect-ratio: 4 / 5; }
+  }
+  @container (min-width: 601px) {
+    .product-card-compact .product-card-image { aspect-ratio: 3 / 4; }
+  }
+
   /* Animated gradient orbs */
   .orb-bg { position: relative; overflow: hidden; }
   .orb-bg::before, .orb-bg::after { content: ''; position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; pointer-events: none; will-change: transform; }

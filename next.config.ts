@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   // Use `build:standalone` + `start:standalone` scripts for self-hosted deploys.
   reactStrictMode: true,
 
+  // 2026 Standard: View Transitions API for native page transitions
+  experimental: {
+    viewTransition: true,
+  },
+
   // Security headers + API cache headers
   async headers() {
     return [

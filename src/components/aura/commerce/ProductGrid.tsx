@@ -22,7 +22,7 @@ export function ProductGrid({ products, priorityCount = 0 }: ProductGridProps) {
   return (
     <motion.div
       layout
-      className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12"
+      className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12 @container"
     >
       {products.map((p, i) => (
         <ProductCard key={p.id} product={p} priority={i < priorityCount} />
