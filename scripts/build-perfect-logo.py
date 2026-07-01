@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """
-Perfect Aura Living logo — SOLID COLORS, no gradients.
+Strip ALL gradients. Keep ONLY 2 logo versions: white + black.
+No gold, no gradient aliases, no inline styles.
 
-User feedback: 'gradient is not looking good'
-Solution: use solid colors only. Premium brands use solid colors
-(Aesop=brown, Chanel=black, Hermès=orange). Gradients look dated.
+Final clean state:
+- public/logo-white.svg  — solid white text + white-outlined icon (dark backgrounds)
+- public/logo-black.svg  — solid black text + dark-outlined icon (light backgrounds)
 
-Build:
-1. logo-light.svg  — solid WHITE text + white-outlined icon (for dark backgrounds)
-2. logo-dark.svg   — solid CHARCOAL text + dark-outlined icon (for light backgrounds)
-3. logo-gold.svg   — solid GOLD text + dark-outlined icon (for accents/special)
-
-No gradients. No rendering issues. No halo. 100% consistent.
+Plus backward-compatible aliases so existing code doesn't break:
+- public/logo.svg        → copy of logo-black.svg
+- public/logo-light.svg  → copy of logo-white.svg
+- public/logo-dark.svg   → copy of logo-black.svg
+- public/logo-white.svg  → stays as-is
+- public/logo-gradient.svg → REMOVED (no longer needed)
+- public/logo-gold.svg   → REMOVED (no longer needed)
 """
 import base64
 import os
@@ -21,21 +23,21 @@ import numpy as np
 ICON_SOURCE = "/home/z/my-project/public/icons/aura-icon.png"
 
 # ============================================================
-# Step 1: Generate clean icon variants (no over-processing)
+# Step 1: Generate the 2 icon variants (white outlines + black outlines)
 # ============================================================
-print("Step 1: Generating clean icon variants...")
+print("Step 1: Generating icon variants...")
 
 img = Image.open(ICON_SOURCE).convert("RGBA")
 arr = np.array(img)
 
-# Remove ONLY pure white background (preserve all icon colors)
+# Remove pure white background
 r, g, b = arr[:,:,0], arr[:,:,1], arr[:,:,2]
 pure_white = (r > 240) & (g > 240) & (b > 240)
 arr[pure_white, 3] = 0
 
-# Dark-outlined icon (for light backgrounds) — just save as-is
+# Black-outlined icon (for light backgrounds) — save as-is
 Image.fromarray(arr).save("/home/z/my-project/public/icons/aura-icon-dark.png", "PNG", optimize=True)
-print("  ✓ aura-icon-dark.png (dark outlines, for light backgrounds)")
+print("  ✓ aura-icon-dark.png (black outlines, for light backgrounds)")
 
 # White-outlined icon (for dark backgrounds) — convert dark pixels to white
 arr_light = arr.copy()
@@ -54,12 +56,12 @@ with open("/home/z/my-project/public/icons/aura-icon-light.png", "rb") as f:
 
 
 # ============================================================
-# Step 2: Build 3 SOLID-COLOR logo versions
+# Step 2: Build ONLY 2 logo versions (white + black)
 # ============================================================
-print("\nStep 2: Building solid-color logo SVGs...")
+print("\nStep 2: Building 2 logo versions (white + black only)...")
 
 def build_logo(icon_b64, text_color):
-    """Build a simple, solid-color logo. No gradients."""
+    """Build a clean, solid-color logo. No gradients. No inline styles."""
     return f'''<svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
      viewBox="0 0 480 100" width="480" height="100">
@@ -74,30 +76,40 @@ def build_logo(icon_b64, text_color):
 </svg>'''
 
 
-# 1. LOGO-LIGHT: solid white text + white-outlined icon (for dark backgrounds)
-with open("/home/z/my-project/public/logo-light.svg", "w") as f:
+# 1. WHITE logo (for dark backgrounds)
+with open("/home/z/my-project/public/logo-white.svg", "w") as f:
     f.write(build_logo(icon_light_b64, "#FFFFFF"))
-print("  ✓ logo-light.svg (solid white, for dark backgrounds)")
+print("  ✓ logo-white.svg (solid white, for dark backgrounds)")
 
-# 2. LOGO-DARK: solid charcoal text + dark-outlined icon (for light backgrounds)
-with open("/home/z/my-project/public/logo-dark.svg", "w") as f:
-    f.write(build_logo(icon_dark_b64, "#1A1714"))
-print("  ✓ logo-dark.svg (solid charcoal, for light backgrounds)")
+# 2. BLACK logo (for light backgrounds)
+with open("/home/z/my-project/public/logo-black.svg", "w") as f:
+    f.write(build_logo(icon_dark_b64, "#000000"))
+print("  ✓ logo-black.svg (solid black, for light backgrounds)")
 
-# 3. LOGO-GOLD: solid gold text + dark-outlined icon (for accents)
-with open("/home/z/my-project/public/logo-gold.svg", "w") as f:
-    f.write(build_logo(icon_dark_b64, "#B8901F"))
-print("  ✓ logo-gold.svg (solid gold, for accents)")
 
-# Also keep logo.svg and logo-white.svg as aliases for backward compat
+# ============================================================
+# Step 3: Remove gold + gradient files, set up aliases
+# ============================================================
+print("\nStep 3: Cleaning up redundant files...")
+
 import shutil
-shutil.copy("/home/z/my-project/public/logo-dark.svg", "/home/z/my-project/public/logo.svg")
-shutil.copy("/home/z/my-project/public/logo-light.svg", "/home/z/my-project/public/logo-white.svg")
-shutil.copy("/home/z/my-project/public/logo-light.svg", "/home/z/my-project/public/logo-gradient.svg")
-print("\n  ✓ Aliases: logo.svg, logo-white.svg, logo-gradient.svg (backward compat)")
 
-print("\n✓ Perfect logo set complete!")
-print("  - NO gradients (solid colors only)")
-print("  - 3 distinct versions: white (dark bg), charcoal (light bg), gold (accents)")
-print("  - Icon outlines swap: white on dark, dark on light")
-print("  - 100% consistent, no rendering issues")
+# Remove gold and gradient files (no longer needed)
+for f in ["logo-gold.svg", "logo-gradient.svg"]:
+    path = f"/home/z/my-project/public/{f}"
+    if os.path.exists(path):
+        os.remove(path)
+        print(f"  ✗ Removed {f}")
+
+# Backward-compatible aliases (so existing code doesn't break)
+shutil.copy("/home/z/my-project/public/logo-black.svg", "/home/z/my-project/public/logo.svg")
+shutil.copy("/home/z/my-project/public/logo-white.svg", "/home/z/my-project/public/logo-light.svg")
+shutil.copy("/home/z/my-project/public/logo-black.svg", "/home/z/my-project/public/logo-dark.svg")
+print("  ✓ Aliases: logo.svg, logo-light.svg, logo-dark.svg (backward compat)")
+
+print("\n✓ Done! Final state:")
+print("  ONLY 2 real logos: logo-white.svg + logo-black.svg")
+print("  3 backward-compat aliases: logo.svg, logo-light.svg, logo-dark.svg")
+print("  NO gradients, NO gold, NO inline styles")
+print("  White logo: white text + white-outlined icon (dark backgrounds)")
+print("  Black logo: black text + black-outlined icon (light backgrounds)")

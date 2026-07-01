@@ -89,7 +89,7 @@ export function Footer() {
               aria-label="Aura Living home"
             >
               <img
-                src={isDark ? "/logo-dark.svg" : "/logo-gradient.svg"}
+                src={isDark ? "/logo-black.svg" : "/logo-white.svg"}
                 alt="Aura Living"
                 className="h-12 md:h-14 lg:h-16 w-auto"
                 fetchPriority="low"

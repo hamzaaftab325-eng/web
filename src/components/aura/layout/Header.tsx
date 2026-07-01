@@ -150,7 +150,7 @@ export function Header() {
             aria-label="Aura Living home"
           >
             <img
-              src={useLightLogo ? "/logo-gradient.svg" : "/logo.svg"}
+              src={useLightLogo ? "/logo-white.svg" : "/logo-black.svg"}
               alt="Aura Living"
               className="h-9 sm:h-11 md:h-12 lg:h-14 w-auto transition-all duration-300 group-hover:opacity-85"
               fetchPriority="high"
