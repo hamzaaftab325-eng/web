@@ -1,34 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
-  <!-- House mark only (favicon / app icon / social avatar) -->
+  <!-- House mark only v5 (favicon / app icon / social avatar) -->
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
+      <feOffset dx="1" dy="1.5"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
   <g transform="translate(120, 115)" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M -80 80 L -80 -12 L 4 -72 L 4 80 Z" fill="#F6D58A" stroke="#3A3A3A" stroke-width="2.5"/>
-    <path d="M 4 -72 L 76 -16 L 76 80 L 4 80 Z" fill="#DCC9BC" stroke="#3A3A3A" stroke-width="2.5"/>
-    <line x1="4" y1="-72" x2="4" y2="80" stroke="#3A3A3A" stroke-width="2"/>
+    <!-- House: peak offset LEFT, right side roof dips LOWER -->
+    <path d="M -80 80 L -80 -14 L -12 -72 L -12 80 Z" fill="#F6D58A" stroke="#3A3A3A" stroke-width="3" paint-order="stroke fill"/>
+    <path d="M -12 -72 L 80 -4 L 80 80 L -12 80 Z" fill="#DCC9BC" stroke="#3A3A3A" stroke-width="3" paint-order="stroke fill"/>
+    <line x1="-12" y1="-72" x2="-12" y2="80" stroke="#3A3A3A" stroke-width="2"/>
+    <line x1="-80" y1="80" x2="80" y2="80" stroke="#3A3A3A" stroke-width="2.5"/>
 
-    <rect x="-40" y="68" width="80" height="5" rx="2.5" fill="#B8A89B" stroke="#3A3A3A" stroke-width="2"/>
-    <rect x="-60" y="-4" width="22" height="22" rx="2" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2"/>
-    <line x1="-57" y1="8" x2="-41" y2="8" stroke="#3A3A3A" stroke-width="1.5"/>
+    <!-- Framed art (polished: frame + mat + art + sun) -->
+    <g filter="url(#softShadow)">
+      <rect x="-62" y="-6" width="26" height="26" rx="2" fill="#3A3A3A" stroke="#3A3A3A" stroke-width="2" paint-order="stroke fill"/>
+      <rect x="-59" y="-3" width="20" height="20" rx="1" fill="#F7F5F2"/>
+      <rect x="-56" y="0" width="14" height="14" fill="#DCC9BC"/>
+      <line x1="-56" y1="8" x2="-42" y2="8" stroke="#3A3A3A" stroke-width="1"/>
+      <circle cx="-46" cy="4" r="1.5" fill="#F6D58A" stroke="#3A3A3A" stroke-width="0.6"/>
+    </g>
 
-    <path d="M 56 70 Q 60 0 24 -6" fill="none" stroke="#3A3A3A" stroke-width="2.5"/>
-    <path d="M 18 -6 Q 18 -13 24 -13 Q 30 -13 30 -6 Z" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2"/>
-    <ellipse cx="56" cy="70" rx="6" ry="1.5" fill="#3A3A3A" stroke="none"/>
+    <!-- Arched floor lamp (curves from base up and over) -->
+    <g filter="url(#softShadow)">
+      <path d="M 52 80 Q 64 40 56 0 Q 48 -20 24 -14" fill="none" stroke="#3A3A3A" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M 18 -14 Q 18 -22 24 -22 Q 30 -22 30 -14 Z" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2" paint-order="stroke fill"/>
+      <circle cx="24" cy="-16" r="1.5" fill="#F6D58A"/>
+      <ellipse cx="52" cy="80" rx="8" ry="2.5" fill="#3A3A3A"/>
+    </g>
 
-    <rect x="-28" y="20" width="56" height="18" rx="6" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5"/>
-    <line x1="-10" y1="20" x2="-10" y2="38" stroke="#3A3A3A" stroke-width="1.5"/>
-    <line x1="10" y1="20" x2="10" y2="38" stroke="#3A3A3A" stroke-width="1.5"/>
-    <rect x="-30" y="38" width="60" height="18" rx="6" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5"/>
-    <line x1="0" y1="38" x2="0" y2="56" stroke="#3A3A3A" stroke-width="1.5"/>
-    <rect x="-37" y="26" width="9" height="30" rx="4" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5"/>
-    <rect x="28" y="26" width="9" height="30" rx="4" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5"/>
+    <!-- Rug -->
+    <rect x="-44" y="70" width="88" height="6" rx="2" fill="#B8A89B" stroke="#3A3A3A" stroke-width="1.5" paint-order="stroke fill"/>
+    <line x1="-40" y1="73" x2="40" y2="73" stroke="#3A3A3A" stroke-width="0.6"/>
 
-    <rect x="-66" y="48" width="16" height="22" rx="2" fill="#B8A89B" stroke="#3A3A3A" stroke-width="2"/>
-    <line x1="-62" y1="50" x2="-62" y2="68" stroke="#3A3A3A" stroke-width="1"/>
-    <line x1="-58" y1="50" x2="-58" y2="68" stroke="#3A3A3A" stroke-width="1"/>
-    <line x1="-54" y1="50" x2="-54" y2="68" stroke="#3A3A3A" stroke-width="1"/>
-    <rect x="-68" y="46" width="20" height="3" rx="1" fill="#B8A89B" stroke="#3A3A3A" stroke-width="2"/>
-    <ellipse cx="-62" cy="40" rx="5" ry="8" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.5"/>
-    <ellipse cx="-56" cy="37" rx="5" ry="10" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.5"/>
-    <ellipse cx="-68" cy="37" rx="4" ry="7" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.5"/>
-    <ellipse cx="-59" cy="32" rx="4" ry="8" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.5"/>
+    <!-- Sofa (polished: back + seat + 2 armrests + seams + legs) -->
+    <g filter="url(#softShadow)">
+      <rect x="-30" y="18" width="60" height="20" rx="8" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5" paint-order="stroke fill"/>
+      <line x1="-18" y1="18" x2="-18" y2="26" stroke="#3A3A3A" stroke-width="1.2"/>
+      <line x1="18" y1="18" x2="18" y2="26" stroke="#3A3A3A" stroke-width="1.2"/>
+      <line x1="0" y1="18" x2="0" y2="38" stroke="#3A3A3A" stroke-width="1.2"/>
+      <line x1="-24" y1="38" x2="24" y2="38" stroke="#3A3A3A" stroke-width="1"/>
+      <rect x="-34" y="38" width="68" height="20" rx="8" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5" paint-order="stroke fill"/>
+      <line x1="0" y1="38" x2="0" y2="58" stroke="#3A3A3A" stroke-width="1.2"/>
+      <rect x="-42" y="24" width="12" height="34" rx="5" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5" paint-order="stroke fill"/>
+      <rect x="30" y="24" width="12" height="34" rx="5" fill="#F7F5F2" stroke="#3A3A3A" stroke-width="2.5" paint-order="stroke fill"/>
+      <rect x="-30" y="58" width="5" height="5" rx="1" fill="#3A3A3A"/>
+      <rect x="25" y="58" width="5" height="5" rx="1" fill="#3A3A3A"/>
+    </g>
+
+    <!-- Plant in ribbed planter -->
+    <g filter="url(#softShadow)">
+      <path d="M -68 48 L -68 70 L -50 70 L -50 48 Z" fill="#B8A89B" stroke="#3A3A3A" stroke-width="2.5" paint-order="stroke fill"/>
+      <rect x="-70" y="45" width="24" height="5" rx="1" fill="#B8A89B" stroke="#3A3A3A" stroke-width="2.5" paint-order="stroke fill"/>
+      <line x1="-64" y1="50" x2="-64" y2="68" stroke="#3A3A3A" stroke-width="1"/>
+      <line x1="-60" y1="50" x2="-60" y2="68" stroke="#3A3A3A" stroke-width="1"/>
+      <line x1="-56" y1="50" x2="-56" y2="68" stroke="#3A3A3A" stroke-width="1"/>
+      <line x1="-52" y1="50" x2="-52" y2="68" stroke="#3A3A3A" stroke-width="1"/>
+      <ellipse cx="-62" cy="38" rx="5" ry="9" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2" transform="rotate(-10 -62 38)"/>
+      <ellipse cx="-56" cy="34" rx="5" ry="11" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2" transform="rotate(5 -56 34)"/>
+      <ellipse cx="-68" cy="36" rx="4" ry="8" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2" transform="rotate(-25 -68 36)"/>
+      <ellipse cx="-58" cy="28" rx="4" ry="9" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2" transform="rotate(15 -58 28)"/>
+      <ellipse cx="-65" cy="26" rx="3" ry="7" fill="#8FBC8F" stroke="#3A3A3A" stroke-width="1.2" transform="rotate(-15 -65 26)"/>
+      <ellipse cx="-61" cy="24" rx="2" ry="4" fill="#A8D0A8" stroke="#3A3A3A" stroke-width="0.8"/>
+    </g>
   </g>
 </svg>
