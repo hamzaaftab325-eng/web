@@ -7,10 +7,11 @@ const nextConfig: NextConfig = {
   // Use `build:standalone` + `start:standalone` scripts for self-hosted deploys.
   reactStrictMode: true,
 
-  // Security headers
+  // Security headers + API cache headers
   async headers() {
     return [
       {
+        // Security headers for all routes
         source: "/(.*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
@@ -19,6 +20,39 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+        ],
+      },
+      {
+        // Cache public content APIs (60s browser + 300s stale-while-revalidate)
+        source: "/api/content/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=60, stale-while-revalidate=300" },
+        ],
+      },
+      {
+        // Cache public catalog APIs (products, categories, collections)
+        source: "/api/products",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=60, stale-while-revalidate=300" },
+        ],
+      },
+      {
+        source: "/api/categories",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=60, stale-while-revalidate=300" },
+        ],
+      },
+      {
+        source: "/api/collections",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=60, stale-while-revalidate=300" },
+        ],
+      },
+      {
+        // Cache public settings (60s — settings change rarely)
+        source: "/api/settings",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=60, stale-while-revalidate=300" },
         ],
       },
     ];

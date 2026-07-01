@@ -2,6 +2,7 @@
      xmlns:xlink="http://www.w3.org/1999/xlink"
      viewBox="0 0 480 100" width="480" height="100">
   <image x="10" y="14" width="72" height="72"
+         xlink:href="/icons/aura-icon-dark.png"
          href="/icons/aura-icon-dark.png"
          preserveAspectRatio="xMidYMid meet"/>
   <text x="92" y="64"
