@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Aura Living — 4 Brand-Color Icons</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #ECE6D9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1A1714;
+    padding: 50px 20px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    color: #6B5D4F;
+    font-size: 13px;
+    margin-bottom: 30px;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+  .palette {
+    display: flex; justify-content: center; gap: 12px;
+    margin-bottom: 40px; flex-wrap: wrap;
+  }
+  .swatch {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: #FAF6EE;
+    border: 1px solid #D8CFC4;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .swatch-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .card {
+    background: #FAF6EE;
+    border: 1px solid #D8CFC4;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(26,23,20,0.08);
+  }
+  .card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #E8E0D5;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: #FDFBF7;
+  }
+  .card-title { font-family: Georgia, serif; font-size: 18px; font-weight: 500; }
+  .card-rating { font-size: 12px; color: #B8901F; font-weight: 600; }
+  .card-body {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 280px;
+  }
+  .card-body img { max-width: 100%; height: auto; border-radius: 4px; }
+  .card-footer {
+    padding: 14px 24px;
+    background: #FDFBF7;
+    border-top: 1px solid #E8E0D5;
+    font-size: 12px;
+    color: #6B5D4F;
+    line-height: 1.6;
+  }
+  .card-footer strong { color: #1A1714; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Aura Living — 4 Brand-Color Icons</h1>
+  <p class="subtitle">All using official brand palette · 1024×1024 · Pick one</p>
+
+  <div class="palette">
+    <div class="swatch"><span class="swatch-dot" style="background:#1A1714"></span>Ink #1A1714</div>
+    <div class="swatch"><span class="swatch-dot" style="background:#D4AF37"></span>Gold #D4AF37</div>
+    <div class="swatch"><span class="swatch-dot" style="background:#B8901F"></span>Gold Deep #B8901F</div>
+    <div class="swatch"><span class="swatch-dot" style="background:#F5EFE1"></span>Cream #F5EFE1</div>
+    <div class="swatch"><span class="swatch-dot" style="background:#FDFBF7"></span>Off-white #FDFBF7</div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Icon 1 — Gold Left / Cream Right</p>
+        <span class="card-rating">7/10</span>
+      </div>
+      <div class="card-body">
+        <img src="../../logos/icons-v3/icon-1-gold-cream.png" alt="Icon 1">
+      </div>
+      <div class="card-footer">
+        <strong>Split:</strong> Gold #D4AF37 left wall + cream #F5EFE1 right wall. Charcoal outlines. Classic vertical split with brand colors.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Icon 2 — Solid Gold House ⭐</p>
+        <span class="card-rating">8/10</span>
+      </div>
+      <div class="card-body">
+        <img src="../../logos/icons-v3/icon-2-solid-gold.png" alt="Icon 2">
+      </div>
+      <div class="card-footer">
+        <strong>Solid:</strong> Entire house filled deep gold #B8901F. Off-white furniture with charcoal outlines. Bold, premium, memorable.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Icon 3 — Cream Left / Gold Right ⭐</p>
+        <span class="card-rating">8/10</span>
+      </div>
+      <div class="card-body">
+        <img src="../../logos/icons-v3/icon-3-cream-gold.png" alt="Icon 3">
+      </div>
+      <div class="card-footer">
+        <strong>Reversed split:</strong> Cream #F5EFE1 left + gold #D4AF37 right. Norm Architects feel. Cleanest geometry.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Icon 4 — Horizontal Split</p>
+        <span class="card-rating">7/10</span>
+      </div>
+      <div class="card-body">
+        <img src="../../logos/icons-v3/icon-4-horizontal-split.png" alt="Icon 4">
+      </div>
+      <div class="card-footer">
+        <strong>Horizontal:</strong> Gold #D4AF37 bottom + cream #F5EFE1 top. Different layout — modern, distinctive.
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
