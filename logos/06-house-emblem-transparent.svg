@@ -1,23 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520">
-  <!-- AURA LIVING v7 — Transparent -->
+  <!-- AURA LIVING v8.1 — Transparent -->
   <g transform="translate(300, 220)" stroke="#000000" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M -65 100 L -65 -12 L -10 -70 L -10 100 Z" fill="#F5E6A3" stroke="#000000" stroke-width="2"/>
-    <path d="M -10 -70 L 65 -12 L 65 100 L -10 100 Z" fill="#D4B896" stroke="#000000" stroke-width="2"/>
-    <line x1="-10" y1="-70" x2="-10" y2="100" stroke="#000000" stroke-width="1.5"/>
+    <!-- Two separate houses -->
+    <rect x="-72" y="-12" width="72" height="112" fill="#F5E6A3" stroke="#000000" stroke-width="2"/>
+    <path d="M -72 -12 L -36 -68 L 0 -12 Z" fill="#F5E6A3" stroke="#000000" stroke-width="2"/>
+    <rect x="0" y="-12" width="72" height="112" fill="#C9A87C" stroke="#000000" stroke-width="2"/>
+    <path d="M 0 -12 L 36 -45 L 72 -12 Z" fill="#C9A87C" stroke="#000000" stroke-width="2"/>
 
-    <rect x="-50" y="0" width="20" height="20" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
+    <!-- Picture frame (rectangular) -->
+    <rect x="-58" y="2" width="26" height="18" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
 
+    <!-- Floor lamp with curved arm + dome shade -->
     <path d="M 40 100 Q 50 50 42 5 Q 38 -10 22 -8" fill="none" stroke="#000000" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M 16 -8 Q 16 -16 22 -16 Q 28 -16 28 -8 Z" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
+    <path d="M 14 -8 Q 14 -18 22 -18 Q 30 -18 30 -8 Z" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
     <ellipse cx="40" cy="100" rx="6" ry="2" fill="#000000" stroke="none"/>
 
+    <!-- Sofa -->
     <rect x="-28" y="40" width="56" height="18" rx="7" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
     <rect x="-30" y="56" width="60" height="20" rx="6" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
     <rect x="-36" y="48" width="9" height="28" rx="4" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
     <rect x="27" y="48" width="9" height="28" rx="4" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
 
-    <rect x="-58" y="72" width="12" height="28" fill="#666666" stroke="#000000" stroke-width="1.5"/>
-    <rect x="-60" y="70" width="16" height="3" fill="#666666" stroke="#000000" stroke-width="1.5"/>
+    <!-- Plant in striped pot -->
+    <rect x="-58" y="72" width="12" height="28" fill="#A0826D" stroke="#000000" stroke-width="1.5"/>
+    <line x1="-54" y1="74" x2="-54" y2="98" stroke="#000000" stroke-width="0.8"/>
+    <line x1="-50" y1="74" x2="-50" y2="98" stroke="#000000" stroke-width="0.8"/>
+    <rect x="-60" y="70" width="16" height="3" fill="#A0826D" stroke="#000000" stroke-width="1.5"/>
     <ellipse cx="-54" cy="62" rx="3" ry="8" fill="#8FBC8F" stroke="#000000" stroke-width="1.2" transform="rotate(-15 -54 62)"/>
     <ellipse cx="-50" cy="60" rx="3" ry="9" fill="#8FBC8F" stroke="#000000" stroke-width="1.2" transform="rotate(10 -50 60)"/>
     <ellipse cx="-56" cy="58" rx="2.5" ry="7" fill="#8FBC8F" stroke="#000000" stroke-width="1.2" transform="rotate(-25 -56 58)"/>

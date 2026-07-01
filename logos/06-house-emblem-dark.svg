@@ -1,15 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520">
-  <!-- AURA LIVING v7 — DARK -->
+  <!-- AURA LIVING v8.1 — DARK -->
   <rect width="600" height="520" fill="#0B0B0B"/>
   <g transform="translate(300, 220)" stroke="#FAF6EE" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M -65 100 L -65 -12 L -10 -70 L -10 100 Z" fill="#B89548" stroke="#FAF6EE" stroke-width="2"/>
-    <path d="M -10 -70 L 65 -12 L 65 100 L -10 100 Z" fill="#8C6F4E" stroke="#FAF6EE" stroke-width="2"/>
-    <line x1="-10" y1="-70" x2="-10" y2="100" stroke="#FAF6EE" stroke-width="1.5"/>
+    <rect x="-72" y="-12" width="72" height="112" fill="#B89548" stroke="#FAF6EE" stroke-width="2"/>
+    <path d="M -72 -12 L -36 -68 L 0 -12 Z" fill="#B89548" stroke="#FAF6EE" stroke-width="2"/>
+    <rect x="0" y="-12" width="72" height="112" fill="#8C6F4E" stroke="#FAF6EE" stroke-width="2"/>
+    <path d="M 0 -12 L 36 -45 L 72 -12 Z" fill="#8C6F4E" stroke="#FAF6EE" stroke-width="2"/>
 
-    <rect x="-50" y="0" width="20" height="20" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.5"/>
+    <rect x="-58" y="2" width="26" height="18" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.5"/>
 
     <path d="M 40 100 Q 50 50 42 5 Q 38 -10 22 -8" fill="none" stroke="#FAF6EE" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M 16 -8 Q 16 -16 22 -16 Q 28 -16 28 -8 Z" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.5"/>
+    <path d="M 14 -8 Q 14 -18 22 -18 Q 30 -18 30 -8 Z" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.5"/>
     <ellipse cx="40" cy="100" rx="6" ry="2" fill="#FAF6EE" stroke="none"/>
 
     <rect x="-28" y="40" width="56" height="18" rx="7" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.8"/>
@@ -17,8 +18,10 @@
     <rect x="-36" y="48" width="9" height="28" rx="4" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.8"/>
     <rect x="27" y="48" width="9" height="28" rx="4" fill="#1A1A1A" stroke="#FAF6EE" stroke-width="1.8"/>
 
-    <rect x="-58" y="72" width="12" height="28" fill="#5C5C5C" stroke="#FAF6EE" stroke-width="1.5"/>
-    <rect x="-60" y="70" width="16" height="3" fill="#5C5C5C" stroke="#FAF6EE" stroke-width="1.5"/>
+    <rect x="-58" y="72" width="12" height="28" fill="#7A6555" stroke="#FAF6EE" stroke-width="1.5"/>
+    <line x1="-54" y1="74" x2="-54" y2="98" stroke="#FAF6EE" stroke-width="0.8"/>
+    <line x1="-50" y1="74" x2="-50" y2="98" stroke="#FAF6EE" stroke-width="0.8"/>
+    <rect x="-60" y="70" width="16" height="3" fill="#7A6555" stroke="#FAF6EE" stroke-width="1.5"/>
     <ellipse cx="-54" cy="62" rx="3" ry="8" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1.2" transform="rotate(-15 -54 62)"/>
     <ellipse cx="-50" cy="60" rx="3" ry="9" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1.2" transform="rotate(10 -50 60)"/>
     <ellipse cx="-56" cy="58" rx="2.5" ry="7" fill="#5C8A5C" stroke="#FAF6EE" stroke-width="1.2" transform="rotate(-25 -56 58)"/>
