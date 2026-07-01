@@ -1,81 +1,74 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500">
-  <!-- Aura Living — House Emblem Logo (inspired by reference) -->
+  <!-- Aura Living — House Emblem Logo v2 (matching reference precisely) -->
 
-  <!-- Background (transparent in production; cream for preview only) -->
+  <!-- Cream preview background -->
   <rect width="600" height="500" fill="#FAF6EE"/>
 
-  <!-- House emblem — centered horizontally -->
-  <g transform="translate(300, 200)" stroke="#1A1714" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none">
+  <g transform="translate(300, 195)" stroke="#1A1714" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" fill="none">
 
-    <!-- ===== HOUSE STRUCTURE ===== -->
-    <!-- Roof — two gabled peaks joined at center ridge -->
-    <!-- Left roof slope -->
-    <path d="M -110 -10 L -55 -75 L 0 -10" fill="none"/>
-    <!-- Right roof slope -->
-    <path d="M 0 -10 L 55 -75 L 110 -10" fill="none"/>
-    <!-- Horizontal ridge line connecting both peaks -->
-    <line x1="-55" y1="-75" x2="55" y2="-75"/>
+    <!-- ===== HOUSE: Single triangular roof + rectangular body ===== -->
+    <!-- Roof triangle (peaked at top center) -->
+    <path d="M -90 -10 L 0 -85 L 90 -10 Z" fill="#FAF6EE"/>
 
-    <!-- Left facade fill (warm yellow) -->
-    <path d="M -110 -10 L -110 80 L 0 80 L 0 -10 L -55 -75 Z" fill="#F2D58E" stroke="#1A1714" stroke-width="2"/>
-    <!-- Right facade fill (warm tan) -->
-    <path d="M 0 -10 L 0 80 L 110 80 L 110 -10 L 55 -75 Z" fill="#D4B896" stroke="#1A1714" stroke-width="2"/>
+    <!-- Left wall (light yellow) -->
+    <rect x="-90" y="-10" width="90" height="100" fill="#F5E6A3" stroke="#1A1714" stroke-width="1.5"/>
 
-    <!-- ===== INTERIOR: WALL ART (on left facade) ===== -->
-    <rect x="-90" y="5" width="22" height="28" fill="#D4B896" stroke="#1A1714" stroke-width="1.5"/>
-    <!-- Tiny frame inside -->
-    <line x1="-86" y1="9" x2="-72" y2="9" stroke="#1A1714" stroke-width="0.75"/>
-    <line x1="-86" y1="19" x2="-72" y2="19" stroke="#1A1714" stroke-width="0.75"/>
+    <!-- Right wall (light tan/beige) -->
+    <rect x="0" y="-10" width="90" height="100" fill="#E8D5B7" stroke="#1A1714" stroke-width="1.5"/>
 
-    <!-- ===== INTERIOR: FLOOR LAMP (right side) ===== -->
-    <!-- Curved neck -->
-    <path d="M 80 80 Q 80 30 95 30" fill="none" stroke="#1A1714" stroke-width="1.5"/>
-    <!-- Lamp shade (trapezoid) -->
-    <path d="M 88 30 L 102 30 L 105 20 L 85 20 Z" fill="#FAF6EE" stroke="#1A1714" stroke-width="1.5"/>
-    <!-- Lamp base on floor -->
-    <ellipse cx="80" cy="80" rx="8" ry="2" fill="#1A1714" stroke="none"/>
+    <!-- Roof outline on top (drawn after walls so it sits on top cleanly) -->
+    <path d="M -90 -10 L 0 -85 L 90 -10" fill="none" stroke="#1A1714" stroke-width="1.5"/>
+    <!-- Roof base line (horizontal where roof meets walls) -->
+    <line x1="-90" y1="-10" x2="90" y2="-10" stroke="#1A1714" stroke-width="1.5"/>
 
-    <!-- ===== INTERIOR: POTTED PLANT (left side, on floor) ===== -->
-    <!-- Pot -->
-    <path d="M -95 80 L -90 65 L -75 65 L -70 80 Z" fill="#C9A87C" stroke="#1A1714" stroke-width="1.5"/>
-    <!-- Leaves (3 simple curves) -->
-    <path d="M -82 65 Q -88 50 -85 40" fill="none" stroke="#1A1714" stroke-width="1.5"/>
-    <path d="M -82 65 Q -78 48 -72 42" fill="none" stroke="#1A1714" stroke-width="1.5"/>
-    <path d="M -82 65 Q -82 50 -82 38" fill="none" stroke="#1A1714" stroke-width="1.5"/>
+    <!-- ===== WALL ART (upper-left, square frame) ===== -->
+    <rect x="-72" y="5" width="26" height="26" fill="#C4A886" stroke="#1A1714" stroke-width="1.2"/>
+    <!-- Tiny inner detail (suggests a picture) -->
+    <line x1="-68" y1="22" x2="-50" y2="22" stroke="#1A1714" stroke-width="0.8"/>
 
-    <!-- ===== INTERIOR: SOFA (centered) ===== -->
-    <!-- Sofa back -->
-    <rect x="-30" y="35" width="60" height="20" rx="3" fill="#FAF6EE" stroke="#1A1714" stroke-width="1.5"/>
-    <!-- Two back cushions (divider) -->
-    <line x1="0" y1="35" x2="0" y2="55" stroke="#1A1714" stroke-width="1"/>
-    <!-- Sofa seat -->
-    <rect x="-35" y="55" width="70" height="20" rx="3" fill="#FAF6EE" stroke="#1A1714" stroke-width="1.5"/>
+    <!-- ===== PLANT (lower-left, next to sofa) ===== -->
+    <!-- Pot (trapezoid — wider at top) -->
+    <path d="M -78 80 L -75 65 L -60 65 L -57 80 Z" fill="#D0D0D0" stroke="#1A1714" stroke-width="1.2"/>
+    <!-- Leaves (3 ovals pointing up) -->
+    <ellipse cx="-72" cy="58" rx="5" ry="9" fill="#8FBC8F" stroke="#1A1714" stroke-width="1"/>
+    <ellipse cx="-65" cy="55" rx="5" ry="10" fill="#8FBC8F" stroke="#1A1714" stroke-width="1"/>
+    <ellipse cx="-78" cy="56" rx="4" ry="8" fill="#8FBC8F" stroke="#1A1714" stroke-width="1"/>
+
+    <!-- ===== SOFA (centered) ===== -->
+    <!-- Back rest (rounded rect) -->
+    <rect x="-30" y="35" width="60" height="22" rx="4" fill="#F0F0F0" stroke="#1A1714" stroke-width="1.2"/>
+    <!-- Center divider on back (two cushions) -->
+    <line x1="0" y1="35" x2="0" y2="57" stroke="#1A1714" stroke-width="1"/>
+    <!-- Seat (rounded rect below back) -->
+    <rect x="-32" y="55" width="64" height="22" rx="4" fill="#F0F0F0" stroke="#1A1714" stroke-width="1.2"/>
     <!-- Left armrest -->
-    <rect x="-40" y="45" width="10" height="30" rx="2" fill="#FAF6EE" stroke="#1A1714" stroke-width="1.5"/>
+    <rect x="-38" y="45" width="8" height="32" rx="3" fill="#F0F0F0" stroke="#1A1714" stroke-width="1.2"/>
     <!-- Right armrest -->
-    <rect x="30" y="45" width="10" height="30" rx="2" fill="#FAF6EE" stroke="#1A1714" stroke-width="1.5"/>
-    <!-- Sofa legs -->
-    <line x1="-32" y1="75" x2="-32" y2="80" stroke="#1A1714" stroke-width="1.5"/>
-    <line x1="32" y1="75" x2="32" y2="80" stroke="#1A1714" stroke-width="1.5"/>
+    <rect x="30" y="45" width="8" height="32" rx="3" fill="#F0F0F0" stroke="#1A1714" stroke-width="1.2"/>
 
-    <!-- ===== FLOOR LINE (grounds the scene) ===== -->
-    <line x1="-115" y1="80" x2="115" y2="80" stroke="#1A1714" stroke-width="2"/>
+    <!-- ===== FLOOR LAMP (right side) ===== -->
+    <!-- Curved pole (slight arc from base up to shade) -->
+    <path d="M 60 80 Q 65 50 72 45" fill="none" stroke="#1A1714" stroke-width="1.2"/>
+    <!-- Shade (trapezoid — wider at bottom) -->
+    <path d="M 65 45 L 80 45 L 82 35 L 63 35 Z" fill="#FFFFFF" stroke="#1A1714" stroke-width="1.2"/>
+    <!-- Base (small ellipse on floor) -->
+    <ellipse cx="60" cy="80" rx="6" ry="1.5" fill="#1A1714" stroke="none"/>
 
   </g>
 
-  <!-- ===== TEXT: AURA LIVING ===== -->
-  <text x="300" y="370"
+  <!-- ===== TEXT: AURA LIVING (bold sans-serif, wide letter spacing) ===== -->
+  <text x="300" y="375"
         font-family="Montserrat, Poppins, Helvetica, Arial, sans-serif"
-        font-size="46" font-weight="700"
+        font-size="44" font-weight="700"
         fill="#1A1714"
         text-anchor="middle"
-        letter-spacing="2">AURA LIVING</text>
+        letter-spacing="4">AURA LIVING</text>
 
-  <!-- ===== TEXT: SINCE 2026 ===== -->
+  <!-- ===== TEXT: SINCE 2026 (regular weight, smaller, wider spacing) ===== -->
   <text x="300" y="408"
         font-family="Montserrat, Poppins, Helvetica, Arial, sans-serif"
-        font-size="16" font-weight="400"
+        font-size="14" font-weight="400"
         fill="#1A1714"
         text-anchor="middle"
-        letter-spacing="7">SINCE 2026</text>
+        letter-spacing="6">SINCE 2026</text>
 </svg>
