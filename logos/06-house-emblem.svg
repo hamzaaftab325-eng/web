@@ -1,83 +1,78 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520">
-  <!-- AURA LIVING — v8: TWO SEPARATE HOUSES side by side
-       Left house (yellow) with taller triangular roof peak
-       Right house (brown) with shorter triangular roof peak
-       They touch at the center, each is its own complete house -->
+  <!-- AURA LIVING — v9: M-shaped roof, two peaks sharing a valley
+       Left peak TALLER, right peak SHORTER, shared base, center vertical wall
+       One continuous roofline like an asymmetric "M" -->
 
   <rect width="600" height="520" fill="#FFFFFF"/>
 
   <g transform="translate(300, 220)" stroke="#000000" stroke-linejoin="round" stroke-linecap="round">
 
     <!-- ============================================================
-         LEFT HOUSE (yellow) — TALLER peak
-         - Body: rectangle from x=-72 to x=0
-         - Roof: triangle on top, peak at x=-36 (center of left house)
+         HOUSE — single building with M-shaped roof
+         Left half (yellow): wall + left slope up to LEFT PEAK (taller) + right slope down to VALLEY
+         Right half (brown): left slope up from VALLEY to RIGHT PEAK (shorter) + right slope down
+         Shared base, center vertical wall from floor to valley
          ============================================================ -->
-    <!-- Left house body -->
-    <rect x="-72" y="-12" width="72" height="112" fill="#F5E6A3" stroke="#000000" stroke-width="2"/>
-    <!-- Left house roof (taller peak) -->
-    <path d="M -72 -12 L -36 -68 L 0 -12 Z" fill="#F5E6A3" stroke="#000000" stroke-width="2"/>
+
+    <!-- LEFT HALF (yellow) — wall + roof as ONE continuous shape
+         Path: bottom-left → up left wall → diagonal UP to left peak (tall) → diagonal DOWN to valley (center) → down to floor -->
+    <path d="M -70 100 L -70 -12 L -35 -58 L 0 -20 L 0 100 Z"
+          fill="#F5E6A3" stroke="#000000" stroke-width="2"/>
+
+    <!-- RIGHT HALF (brown) — wall + roof as ONE continuous shape
+         Path: valley (center, top) → diagonal UP to right peak (shorter) → diagonal DOWN to right wall top → down right wall → bottom-right → back to center bottom -->
+    <path d="M 0 -20 L 35 -42 L 70 -12 L 70 100 L 0 100 Z"
+          fill="#E8D5C4" stroke="#000000" stroke-width="2"/>
+
+    <!-- Center vertical wall (from floor up to the valley between the two peaks) -->
+    <line x1="0" y1="-20" x2="0" y2="100" stroke="#000000" stroke-width="1.5"/>
+
+    <!-- Floor line (shared base) -->
+    <line x1="-70" y1="100" x2="70" y2="100" stroke="#000000" stroke-width="1.5"/>
 
     <!-- ============================================================
-         RIGHT HOUSE (brown) — SHORTER peak (less height than left)
-         - Body: rectangle from x=0 to x=72
-         - Roof: triangle on top, peak at x=36 (center of right house)
-         - Peak is LOWER than the left house's peak
+         PICTURE FRAME (small rectangular, upper-left wall)
          ============================================================ -->
-    <!-- Right house body -->
-    <rect x="0" y="-12" width="72" height="112" fill="#C9A87C" stroke="#000000" stroke-width="2"/>
-    <!-- Right house roof (shorter peak — only goes up to -45, not -68) -->
-    <path d="M 0 -12 L 36 -45 L 72 -12 Z" fill="#C9A87C" stroke="#000000" stroke-width="2"/>
+    <rect x="-55" y="2" width="24" height="18" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
 
     <!-- ============================================================
-         PICTURE FRAME (small RECTANGULAR frame, wider than tall, upper-left wall)
+         FLOOR LAMP — curved arm + dome shade (right side, behind sofa)
          ============================================================ -->
-    <rect x="-58" y="2" width="26" height="18" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
-
-    <!-- ============================================================
-         FLOOR LAMP — curved arm + small dome shade (right side, behind sofa)
-         ============================================================ -->
-    <path d="M 40 100 Q 50 50 42 5 Q 38 -10 22 -8"
+    <path d="M 38 100 Q 48 50 40 5 Q 36 -10 20 -8"
           fill="none" stroke="#000000" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M 14 -8 Q 14 -18 22 -18 Q 30 -18 30 -8 Z"
+    <path d="M 11 -8 Q 11 -19 20 -19 Q 29 -19 29 -8 Z"
           fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
-    <ellipse cx="40" cy="100" rx="6" ry="2" fill="#000000" stroke="none"/>
+    <ellipse cx="38" cy="100" rx="6" ry="2" fill="#000000" stroke="none"/>
 
     <!-- ============================================================
-         SOFA — simple rounded rectangles, NO cushion dividers, NO legs
-         Centered, sitting on the floor
+         SOFA — simple rounded rectangles, no cushion dividers
          ============================================================ -->
-    <rect x="-28" y="40" width="56" height="18" rx="7" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
-    <rect x="-30" y="56" width="60" height="20" rx="6" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
-    <rect x="-36" y="48" width="9" height="28" rx="4" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
-    <rect x="27" y="48" width="9" height="28" rx="4" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+    <rect x="-26" y="40" width="52" height="18" rx="7" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+    <rect x="-28" y="56" width="56" height="20" rx="6" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+    <rect x="-34" y="48" width="9" height="28" rx="4" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
+    <rect x="25" y="48" width="9" height="28" rx="4" fill="#FFFFFF" stroke="#000000" stroke-width="1.8"/>
 
     <!-- ============================================================
-         PLANT — tall thin STRIPED pot with sparse leaves (left of sofa)
+         PLANT — tall thin striped pot with sparse leaves
          ============================================================ -->
-    <!-- Pot body -->
-    <rect x="-58" y="72" width="12" height="28" fill="#A0826D" stroke="#000000" stroke-width="1.5"/>
-    <!-- Vertical stripes (3 rib lines) -->
-    <line x1="-54" y1="74" x2="-54" y2="98" stroke="#000000" stroke-width="0.8"/>
-    <line x1="-50" y1="74" x2="-50" y2="98" stroke="#000000" stroke-width="0.8"/>
-    <!-- Pot rim -->
-    <rect x="-60" y="70" width="16" height="3" fill="#A0826D" stroke="#000000" stroke-width="1.5"/>
-    <!-- 3 sparse simple leaves -->
-    <ellipse cx="-54" cy="62" rx="3" ry="8" fill="#8FBC8F" stroke="#000000" stroke-width="1.2" transform="rotate(-15 -54 62)"/>
-    <ellipse cx="-50" cy="60" rx="3" ry="9" fill="#8FBC8F" stroke="#000000" stroke-width="1.2" transform="rotate(10 -50 60)"/>
-    <ellipse cx="-56" cy="58" rx="2.5" ry="7" fill="#8FBC8F" stroke="#000000" stroke-width="1.2" transform="rotate(-25 -56 58)"/>
+    <rect x="-54" y="66" width="9" height="34" fill="#C0C0C0" stroke="#000000" stroke-width="1.5"/>
+    <line x1="-51.5" y1="68" x2="-51.5" y2="98" stroke="#000000" stroke-width="0.8"/>
+    <line x1="-48" y1="68" x2="-48" y2="98" stroke="#000000" stroke-width="0.8"/>
+    <rect x="-56" y="64" width="13" height="3" fill="#C0C0C0" stroke="#000000" stroke-width="1.5"/>
+    <ellipse cx="-50" cy="56" rx="3" ry="8" fill="#8FBC8F" stroke="#000000" stroke-width="1.2"/>
+    <ellipse cx="-46" cy="54" rx="3" ry="9" fill="#8FBC8F" stroke="#000000" stroke-width="1.2"/>
 
   </g>
 
-  <!-- TEXT: AURA LIVING — bold, tight letter spacing, black -->
+  <!-- TEXT: AURA LIVING -->
   <text x="300" y="410"
         font-family="Montserrat, Poppins, Helvetica, Arial, sans-serif"
         font-size="46" font-weight="700"
         fill="#000000"
         text-anchor="middle"
-        letter-spacing="0">AURA LIVING</text>
+        letter-spacing="-1">AURA LIVING</text>
 
-  <!-- TEXT: SINCE 2026 — smaller, wider letter spacing -->
+  <!-- TEXT: SINCE 2026 -->
   <text x="300" y="445"
         font-family="Montserrat, Poppins, Helvetica, Arial, sans-serif"
         font-size="14" font-weight="400"
