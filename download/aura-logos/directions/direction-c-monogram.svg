@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="600" height="200">
+  <!-- DIRECTION C: Monogram Lettermark
+       Inspired by: YSL, Gucci, Louis Vuitton, Hermès
+       Philosophy: Interlocking "AL" monogram in a refined serif.
+       The mark IS the abbreviation — works alone (favicon, social)
+       or with the full wordmark beside it.
+
+       Why this works:
+       - Heritage feel (monograms have been used by luxury brands for 200+ years)
+       - Extremely versatile (monogram alone or with text)
+       - Scalable (letterforms render crisp at any size)
+       - Distinctive (custom monogram, not a font)
+       - Works in monochrome (gold on dark, ink on light)
+  -->
+
+  <!-- Monogram: interlocking A + L in a circle, left side -->
+  <g transform="translate(100, 100)">
+    <!-- Outer circle (thin) -->
+    <circle cx="0" cy="0" r="48" fill="none" stroke="#1A1714" stroke-width="1"/>
+    <!-- Inner circle (gold, thinner) -->
+    <circle cx="0" cy="0" r="43" fill="none" stroke="#B8901F" stroke-width="0.5"/>
+
+    <!-- "A" letter (Playfair Display style, large) -->
+    <text x="0" y="12"
+          font-family="Playfair Display, Georgia, serif"
+          font-size="52" font-weight="500"
+          fill="#1A1714"
+          text-anchor="middle">A</text>
+
+    <!-- "L" small, overlapping bottom-right of A (monogram style) -->
+    <text x="15" y="22"
+          font-family="Playfair Display, Georgia, serif"
+          font-size="20" font-weight="500"
+          fill="#B8901F"
+          text-anchor="middle">L</text>
+  </g>
+
+  <!-- Full wordmark, right of monogram -->
+  <text x="180" y="90"
+        font-family="Playfair Display, Georgia, serif"
+        font-size="40" font-weight="500"
+        fill="#1A1714"
+        letter-spacing="1">Aura Living</text>
+
+  <!-- Thin gold rule -->
+  <line x1="182" y1="108" x2="420" y2="108"
+        stroke="#B8901F" stroke-width="0.75"/>
+
+  <!-- Tagline -->
+  <text x="180" y="130"
+        font-family="Inter, Helvetica, Arial, sans-serif"
+        font-size="10" font-weight="500"
+        fill="#6B5D4F"
+        letter-spacing="4">EST. 2026 · LAHORE</text>
+</svg>
