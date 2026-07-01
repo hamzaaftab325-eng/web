@@ -114,16 +114,17 @@ export function Header() {
             <Menu size={22} strokeWidth={1.25} />
           </button>
 
-          {/* Logo — swaps between dark and white version based on scroll/hero state */}
+          {/* Logo — swaps between gradient (dark hero) and charcoal (light/scrolled)
+              Responsive sizes: small (mobile) / medium (tablet) / large (desktop) */}
           <button
             onClick={goHome}
-            className="flex-shrink-0 flex items-center gap-2 group"
+            className="flex-shrink-0 flex items-center group"
             aria-label="Aura Living home"
           >
             <img
-              src={(scrolled || isLightPage) ? "/logo.svg" : "/logo-white.svg"}
+              src={(scrolled || isLightPage) ? "/logo.svg" : "/logo-gradient.svg"}
               alt="Aura Living"
-              className="h-7 md:h-9 w-auto transition-opacity group-hover:opacity-80"
+              className="h-9 sm:h-11 md:h-12 lg:h-14 w-auto transition-all duration-300 group-hover:opacity-85"
               fetchPriority="high"
             />
           </button>

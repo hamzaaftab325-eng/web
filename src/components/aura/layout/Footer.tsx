@@ -73,9 +73,9 @@ export function Footer() {
               aria-label="Aura Living home"
             >
               <img
-                src="/logo-white.svg"
+                src="/logo-gradient.svg"
                 alt="Aura Living"
-                className="h-10 w-auto"
+                className="h-12 md:h-14 lg:h-16 w-auto"
                 fetchPriority="low"
               />
             </button>

@@ -19,6 +19,6 @@
   <text x="100" y="62"
         font-family="Avenir Next Heavy, Montserrat ExtraBold, Gilroy ExtraBold, Helvetica, Arial, sans-serif"
         font-size="34" font-weight="800"
-        fill="#FFFFFF"
+        fill="url(#goldGradient)"
         letter-spacing="4">AURA LIVING</text>
 </svg>
