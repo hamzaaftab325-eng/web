@@ -19,6 +19,7 @@ model Category {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   products    Product[]
+  @@index([isActive, sortOrder])
 }
 
 model Collection {
@@ -32,6 +33,7 @@ model Collection {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   products    ProductCollection[]
+  @@index([isActive, sortOrder])
 }
 
 model Product {
@@ -97,6 +99,7 @@ model ProductCollection {
   product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
   collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   @@id([productId, collectionId])
+  @@index([collectionId])
 }
 
 model User {
@@ -117,6 +120,8 @@ model User {
   sessions     UserSession[]
   preferences  UserPreferences?
   notifications Notification[]
+  @@index([role])
+  @@index([isActive])
 }
 
 model Address {
@@ -158,6 +163,7 @@ model Wishlist {
   createdAt   DateTime @default(now())
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@id([userId, productSlug])
+  @@index([userId])
 }
 
 model UserSession {
@@ -229,6 +235,8 @@ model PromoCode {
   expiresAt  DateTime?
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
+  @@index([isActive, expiresAt])
+  @@index([code])
 }
 
 model ShippingMethod {
@@ -241,6 +249,7 @@ model ShippingMethod {
   estimatedDays String?
   isActive      Boolean  @default(true)
   sortOrder     Int      @default(0)
+  @@index([isActive, sortOrder])
 }
 
 model Review {
@@ -277,6 +286,7 @@ model HeroSlide {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@index([isActive, sortOrder])
 }
 
 model BrandMarqueeItem {
@@ -284,6 +294,7 @@ model BrandMarqueeItem {
   text String
   sortOrder Int @default(0)
   isActive Boolean @default(true)
+  @@index([isActive, sortOrder])
 }
 model BrandValue {
   id String @id @default(cuid())
@@ -292,6 +303,7 @@ model BrandValue {
   description String
   sortOrder Int @default(0)
   isActive Boolean @default(true)
+  @@index([isActive, sortOrder])
 }
 model PressFeature {
   id String @id @default(cuid())
@@ -305,6 +317,7 @@ model PressFeature {
   sortOrder Int @default(0)
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  @@index([isActive, sortOrder])
 }
 model Testimonial {
   id String @id @default(cuid())
@@ -316,6 +329,7 @@ model Testimonial {
   sortOrder Int @default(0)
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  @@index([isActive, sortOrder])
 }
 model FaqItem {
   id String @id @default(cuid())
@@ -325,6 +339,7 @@ model FaqItem {
   sortOrder Int @default(0)
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  @@index([isActive, sortOrder])
 }
 
 model Artisan {
@@ -342,6 +357,7 @@ model Artisan {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  @@index([isActive, sortOrder])
 }
 
 model CareGuide {
@@ -355,6 +371,7 @@ model CareGuide {
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@index([isActive, sortOrder])
 }
 model JournalArticle {
   id String @id @default(cuid())
@@ -371,6 +388,7 @@ model JournalArticle {
   sortOrder Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@index([isActive, publishedAt])
 }
 model InstagramPost {
   id String @id @default(cuid())
@@ -381,6 +399,7 @@ model InstagramPost {
   sortOrder Int @default(0)
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  @@index([isActive, sortOrder])
 }
 model SustainabilityContent {
   id String @id @default(cuid())
@@ -388,6 +407,7 @@ model SustainabilityContent {
   data Json
   isActive Boolean @default(true)
   updatedAt DateTime @updatedAt
+  @@index([isActive, section])
 }
 
 model FirstOrderOffer {
@@ -401,6 +421,7 @@ model FirstOrderOffer {
   dismissDurationDays Int @default(30)
   showDelayMs Int @default(3000)
   updatedAt DateTime @updatedAt
+  @@index([isActive])
 }
 model ExitIntentPopup {
   id String @id @default(cuid())
@@ -412,6 +433,7 @@ model ExitIntentPopup {
   imageUrl String?
   triggerDelaySeconds Int @default(30)
   updatedAt DateTime @updatedAt
+  @@index([isActive])
 }
 model FlashSale {
   id String @id @default(cuid())
@@ -423,6 +445,7 @@ model FlashSale {
   promoCode String?
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  @@index([isActive, startDate, endDate])
 }
 
 model PageView {
@@ -433,6 +456,9 @@ model PageView {
   referrer String?
   userAgent String?
   createdAt DateTime @default(now())
+  @@index([createdAt])
+  @@index([path])
+  @@index([sessionId])
 }
 model ProductView {
   id String @id @default(cuid())
@@ -441,6 +467,9 @@ model ProductView {
   userId String?
   sessionId String?
   createdAt DateTime @default(now())
+  @@index([productSlug])
+  @@index([createdAt])
+  @@index([sessionId])
 }
 model SearchLog {
   id String @id @default(cuid())
@@ -449,6 +478,8 @@ model SearchLog {
   userId String?
   sessionId String?
   createdAt DateTime @default(now())
+  @@index([createdAt])
+  @@index([query])
 }
 model CartEvent {
   id String @id @default(cuid())
@@ -459,6 +490,9 @@ model CartEvent {
   userId String?
   sessionId String?
   createdAt DateTime @default(now())
+  @@index([eventType])
+  @@index([createdAt])
+  @@index([sessionId])
 }
 model EmailSubscriber {
   id String @id @default(cuid())
@@ -466,6 +500,9 @@ model EmailSubscriber {
   source String
   promoCode String?
   createdAt DateTime @default(now())
+  @@index([email])
+  @@index([source])
+  @@index([createdAt])
 }
 
 model Notification {
