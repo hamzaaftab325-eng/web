@@ -17,11 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = await db.product.findUnique({ where: { slug }, include: { images: { orderBy: { sortOrder: "asc" } } } });
   if (!product) return {};
   return {
-    title: `${product.name} — Aura Living`,
+    title: `${product.name} | Aura Living`,
     description: product.description,
     alternates: { canonical: `/product/${product.slug}`, languages: { "en-US": `${BASE_URL}/product/${product.slug}` } },
-    openGraph: { title: `${product.name} — Aura Living`, description: product.description, url: `${BASE_URL}/product/${product.slug}`, siteName: "Aura Living", type: "website", images: product.images.map((img) => ({ url: img.url, width: 900, height: 1125, alt: product.name })) },
-    twitter: { card: "summary_large_image", title: `${product.name} — Aura Living`, description: product.description, images: [product.images[0]?.url ?? ""] },
+    openGraph: { title: `${product.name} | Aura Living`, description: product.description, url: `${BASE_URL}/product/${product.slug}`, siteName: "Aura Living", type: "website", images: product.images.map((img) => ({ url: img.url, width: 900, height: 1125, alt: product.name })) },
+    twitter: { card: "summary_large_image", title: `${product.name} | Aura Living`, description: product.description, images: [product.images[0]?.url ?? ""] },
   };
 }
 

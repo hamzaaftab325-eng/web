@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/aura/layout/PageHero";
 
 export const metadata: Metadata = {
-  title: "Returns & Exchanges — Aura Living",
+  title: "Returns & Exchanges | Aura Living",
   description:
     "Our returns and exchanges policy for Aura Living. Handmade pieces, considered returns — request a return within 7 days of delivery.",
   robots: { index: true, follow: true },

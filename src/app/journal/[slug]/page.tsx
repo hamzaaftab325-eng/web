@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   if (!article) {
-    return { title: "Article Not Found — Aura Living" };
+    return { title: "Article Not Found | Aura Living" };
   }
 
-  const title = `${article.title} — Aura Living Journal`;
+  const title = `${article.title} | Aura Living`;
   const description = article.excerpt || "Notes on rooms, materials, and slow making from the Aura Living atelier.";
 
   return {

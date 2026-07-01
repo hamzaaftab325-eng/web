@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/aura/layout/PageHero";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Aura Living",
+  title: "Privacy Policy | Aura Living",
   description:
     "How Aura Living collects, uses, and protects your personal information when you browse our site, place an order, or subscribe to our newsletter.",
   robots: { index: true, follow: true },

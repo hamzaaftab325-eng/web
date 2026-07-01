@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/aura/layout/PageHero";
 
 export const metadata: Metadata = {
-  title: "Shipping Information — Aura Living",
+  title: "Shipping Information | Aura Living",
   description:
     "How Aura Living ships your orders — delivery times, costs, and coverage across Pakistan. Cash on Delivery available nationwide.",
   robots: { index: true, follow: true },

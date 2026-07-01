@@ -25,19 +25,21 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://aura-living-1.vercel.app"),
   title: {
-    default: "Aura Living — Considered Objects for the Considered Home",
-    template: "%s",
+    default: "Aura Living | Considered Objects for the Considered Home",
+    template: "%s | Aura Living",
   },
   description:
-    "Aura Living is a premium home décor atelier offering lamps, mirrors, indoor plants, planters, vases, candles, and sculptural objects. Warm minimalism, artisanal craft, lived-in elegance.",
+    "Premium home décor atelier. Handcrafted lamps, mirrors, planters, and sculptural objects. Warm minimalism, artisanal craft, made to be lived with.",
   keywords: [
     "Aura Living",
-    "home décor",
+    "home décor Pakistan",
     "premium lighting",
     "ceramic planters",
-    "decorative objects",
-    "wall art",
+    "handcrafted mirrors",
     "indoor plants",
+    "decorative objects",
+    "lamps Lahore",
+    "artisan home décor",
   ],
   authors: [{ name: "Aura Living" }],
   creator: "Aura Living",
@@ -65,17 +67,17 @@ export const metadata: Metadata = {
     address: false,
   },
   openGraph: {
-    title: "Aura Living — Considered Objects for the Considered Home",
+    title: "Aura Living | Considered Objects for the Considered Home",
     description:
-      "Warm minimalism for the considered interior. Lamps, mirrors, plants, planters, and sculptural objects.",
+      "Premium home décor atelier. Handcrafted lamps, mirrors, planters, and sculptural objects. Warm minimalism, artisanal craft, made to be lived with.",
     siteName: "Aura Living",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aura Living",
-    description: "Considered objects for the considered home.",
+    title: "Aura Living | Considered Objects for the Considered Home",
+    description: "Premium home décor atelier. Handcrafted, artisanal, made to be lived with.",
   },
   robots: {
     index: true,

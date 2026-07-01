@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/aura/layout/PageHero";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — Aura Living",
+  title: "Terms of Service | Aura Living",
   description:
     "The terms that govern your use of Aura Living's website and your purchase of considered objects for the considered home.",
   robots: { index: true, follow: true },
