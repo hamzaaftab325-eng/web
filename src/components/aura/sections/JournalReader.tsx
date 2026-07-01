@@ -357,7 +357,7 @@ function ClosingCTA({
             <p className="t-caption c-ink-faint mb-1 line-clamp-1">
               {product.subtitle}
             </p>
-            <h4 className="t-body c-ink line-clamp-1 mb-1">{product.name}</h4>
+            <h4 className="t-headline-sm c-ink line-clamp-1 mb-1">{product.name}</h4>
             <p className="t-body-sm c-ink-muted t-num">
               {formatPrice(product.price)}
             </p>

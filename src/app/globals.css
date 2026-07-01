@@ -55,6 +55,8 @@
   --color-error: var(--error);
   --color-warning: var(--warning);
   --color-info: var(--info);
+  --color-overlay-warm: var(--overlay-warm);
+  --color-overlay-dark: var(--overlay-dark);
 
   --radius-sm: 2px;
   --radius-md: 4px;
@@ -316,6 +318,19 @@
     font-weight: 400;
     letter-spacing: var(--ls-headline);
     line-height: var(--lh-headline);
+    text-wrap: balance;
+  }
+
+  p, li {
+    text-wrap: pretty;
+  }
+
+  /* Placeholder text — uses ink-faint for consistency */
+  ::placeholder,
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ink-faint);
+    opacity: 1;
   }
 
   /* Default focus ring */
@@ -324,6 +339,9 @@
     outline-offset: 3px;
     border-radius: 2px;
   }
+
+  /* Word break utility for long URLs, product names, etc. */
+  .break-word { overflow-wrap: break-word; word-break: break-word; }
 }
 
 /* ==========================================================================
@@ -691,6 +709,17 @@
     background: var(--hairline-strong);
     border-radius: 9999px;
   }
+
+  /* Global scrollbar — subtle, matches design system */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--hairline-strong);
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--cream);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+  * { scrollbar-width: thin; scrollbar-color: var(--hairline-strong) var(--cream); }
 
   /* Hide scrollbar entirely */
   .scrollbar-hide {
