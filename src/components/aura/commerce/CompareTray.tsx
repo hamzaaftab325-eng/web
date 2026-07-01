@@ -271,7 +271,8 @@ export function CompareTray() {
 
               {/* Table */}
               <div className="container-aura py-8 lg:py-10">
-                <div className="overflow-x-auto scrollbar-thin">
+                <p className="t-caption c-ink-faint lg:hidden mb-3 text-center">← Swipe to compare →</p>
+                <div className="overflow-x-auto scrollbar-thin -mx-4 px-4">
                   <table className="w-full border-collapse min-w-[680px]">
                     <thead>
                       <tr>

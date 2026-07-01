@@ -148,7 +148,7 @@ function GuideDetail({
       {/* Header */}
       <section className="relative overflow-hidden pb-8 md:pb-12">
         <div
-          className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[420px] h-[420px] rounded-full bg-gold-pale opacity-50 blur-3xl"
+          className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[280px] h-[280px] sm:w-[420px] sm:h-[420px] rounded-full bg-gold-pale opacity-50 blur-3xl"
           aria-hidden
         />
         <div className="container-aura max-w-3xl relative">

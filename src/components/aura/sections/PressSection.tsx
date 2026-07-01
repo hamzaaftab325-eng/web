@@ -100,7 +100,7 @@ export function PressSection() {
         {/* Header */}
         <div className="max-w-2xl mb-12 md:mb-16">
           <p className="t-label-caps c-gold-deep mb-3 flex items-center gap-2">
-            <span className="w-6 h-px bg-gold" aria-hidden />
+            <span className="w-6 h-px bg-gold hidden sm:block" aria-hidden />
             As Seen In
           </p>
           <TextBlurReveal

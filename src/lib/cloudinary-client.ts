@@ -34,8 +34,19 @@ export function getOptimizedUrl(
 ): string {
   if (!urlOrPublicId) return "";
   if (!CLOUD_NAME) return urlOrPublicId; // Can't optimize without cloud name
-  // If it's not a Cloudinary URL, return as-is (e.g., external images)
+  // If it's not a Cloudinary URL, optimize Unsplash URLs, return others as-is
   if (!urlOrPublicId.includes("res.cloudinary.com") && !urlOrPublicId.startsWith("aura-living/")) {
+    // Optimize Unsplash URLs with width + quality + format params
+    if (urlOrPublicId.includes("images.unsplash.com")) {
+      const { width, height, quality = "auto:best" } = options;
+      const params = new URLSearchParams();
+      params.set("q", quality === "auto:best" ? "80" : "60");
+      params.set("format", "webp");
+      if (width) params.set("w", String(width));
+      if (height) params.set("h", String(height));
+      const sep = urlOrPublicId.includes("?") ? "&" : "?";
+      return `${urlOrPublicId}${sep}${params.toString()}`;
+    }
     return urlOrPublicId;
   }
 

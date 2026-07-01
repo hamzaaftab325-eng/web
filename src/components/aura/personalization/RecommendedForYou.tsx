@@ -99,7 +99,7 @@ export function RecommendedForYou() {
                   transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
                 },
               }}
-              className="flex-shrink-0 w-[240px] md:w-auto"
+              className="flex-shrink-0 w-[200px] sm:w-[240px] md:w-auto"
             >
               <ProductCard product={product} />
             </motion.div>
