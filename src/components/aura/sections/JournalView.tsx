@@ -93,7 +93,7 @@ export function JournalView() {
     <div className="bg-canvas">
       {/* Page hero — full-bleed image under fixed header */}
       <PageHero
-        image="/hero/journal.png"
+        image="/hero/journal.webp"
         alt="An editor's desk with an open notebook, fountain pen, and a small ceramic vase of dried flowers."
         eyebrow="Journal"
         headline="Notes & Essays"

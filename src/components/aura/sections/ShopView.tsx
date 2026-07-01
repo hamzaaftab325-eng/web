@@ -150,7 +150,7 @@ export function ShopView() {
       <PullToRefreshIndicator pullDistance={pullDistance} isRefreshing={isRefreshing} />
       {/* Page hero — full-bleed image under fixed header */}
       <PageHero
-        image="/hero/shop.png"
+        image="/hero/shop.webp"
         alt="A curated home décor showroom with lamps, mirrors, and ceramics arranged on warm wood shelves."
         eyebrow={collection ? "Collection" : category ? "Category" : "Shop"}
         headline={heading}

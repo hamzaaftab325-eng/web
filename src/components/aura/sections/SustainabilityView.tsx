@@ -199,7 +199,7 @@ export function SustainabilityView() {
     <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
       {/* Page hero — full-bleed image under fixed header */}
       <PageHero
-        image="/hero/sustainability.png"
+        image="/hero/sustainability.webp"
         alt="Natural raw materials — stoneware clay, unbleached linen, solid brass, flax, and Carrara marble — arranged on a warm oak surface."
         eyebrow="Sustainability"
         headline="Our Impact"
@@ -468,7 +468,7 @@ export function SustainabilityView() {
             >
               <div className="aspect-[4/5] overflow-hidden bg-cream-deep rounded-sm ring-1 ring-hairline-cream h-full">
                 <img
-                  src="/hero/lookbook.png"
+                  src="/hero/lookbook.webp"
                   alt="A workshop shelf, photographed in afternoon light  the kind of corner where Aura pieces are made."
                   loading="lazy"
                   className="w-full h-full object-cover"

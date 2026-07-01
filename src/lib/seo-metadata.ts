@@ -23,37 +23,37 @@ const PAGE_META: Record<ViewKey, PageMeta> = {
     title: "Aura Living — Considered Objects for the Considered Home",
     description:
       "Premium home décor atelier offering lamps, mirrors, indoor plants, planters, and sculptural objects. Warm minimalism, artisanal craft, sourced from workshops we know by name.",
-    ogImage: "/hero/slide-1.png",
+    ogImage: "/hero/slide-1.webp",
   },
   shop: {
     title: "Shop — Aura Living",
     description:
       "Browse the full Aura Living catalogue: lamps, mirrors, ceramics, plants, and sculptural objects. Each piece made by hand in small workshops across Europe and beyond.",
-    ogImage: "/hero/shop.png",
+    ogImage: "/hero/shop.webp",
   },
   about: {
     title: "About — Aura Living",
     description:
       "Founded in Lahore, Punjab, Aura Living sources slowly from workshops we visit by name. Read the story behind the atelier and the makers who shape every piece.",
-    ogImage: "/hero/about.png",
+    ogImage: "/hero/about.webp",
   },
   journal: {
     title: "Journal — Aura Living",
     description:
       "Essays, workshop visits, and care guides from the Aura Living team. Notes on rooms, materials, and slow making — published slowly, read carefully.",
-    ogImage: "/hero/journal.png",
+    ogImage: "/hero/journal.webp",
   },
   collections: {
     title: "Collections — Aura Living",
     description:
       "Curated selections from the Aura Living catalogue — gathered by palette, purpose, or price. Each collection is a complete point of view.",
-    ogImage: "/hero/collections.png",
+    ogImage: "/hero/collections.webp",
   },
   care: {
     title: "Care Guides — Aura Living",
     description:
       "Seven material-specific care guides — ceramic, brass, wood, linen, plants, stone, and glass. Written by our small team with the same slow standard.",
-    ogImage: "/hero/care.png",
+    ogImage: "/hero/care.webp",
   },
   login: {
     title: "Sign In — Aura Living",
@@ -112,7 +112,7 @@ const PAGE_META: Record<ViewKey, PageMeta> = {
 export function pageMetadata(view: ViewKey, pathname: string): Metadata {
   const meta = PAGE_META[view] ?? PAGE_META.home;
   const canonical = BASE_URL + pathname;
-  const ogImage = meta.ogImage ? (meta.ogImage.startsWith("http") ? meta.ogImage : BASE_URL + meta.ogImage) : BASE_URL + "/hero/slide-1.png";
+  const ogImage = meta.ogImage ? (meta.ogImage.startsWith("http") ? meta.ogImage : BASE_URL + meta.ogImage) : BASE_URL + "/hero/slide-1.webp";
 
   return {
     title: meta.title,

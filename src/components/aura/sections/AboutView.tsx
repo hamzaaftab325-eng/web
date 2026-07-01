@@ -15,7 +15,7 @@ export function AboutView() {
     <div className="bg-canvas">
       {/* Page hero — full-bleed image under fixed header */}
       <PageHero
-        image="/hero/about.png"
+        image="/hero/about.webp"
         alt="A ceramics workshop — hands shaping a vessel on the wheel."
         eyebrow="About"
         headline="Our Story"

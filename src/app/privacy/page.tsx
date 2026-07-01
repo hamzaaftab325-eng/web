@@ -12,7 +12,7 @@ export default function PrivacyPage() {
   return (
     <>
       <PageHero
-        image="/hero/about.png"
+        image="/hero/about.webp"
         alt="A quiet interior with considered objects arranged on warm wood shelves."
         eyebrow="Legal"
         headline="Privacy Policy"

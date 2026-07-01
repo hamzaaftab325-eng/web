@@ -46,7 +46,7 @@ export function AuthShell({
   children,
   footer,
   backTo = "home",
-  heroImage = "/hero/slide-1.png",
+  heroImage = "/hero/slide-1.webp",
   quote = DEFAULT_QUOTE,
   className,
 }: AuthShellProps) {

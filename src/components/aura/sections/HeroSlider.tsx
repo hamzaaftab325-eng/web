@@ -9,7 +9,7 @@ import { useHeroSlides } from "@/hooks/queries/use-content";
 
 const FALLBACK_SLIDES = [
   {
-    image: "/hero/slide-1.png",
+    image: "/hero/slide-1.webp",
     eyebrow: "New — The Plant Edit",
     headline: "Considered objects, considered home.",
     subtitle: "Warm minimalism, artisanal craft, lived-in elegance. A small atelier of lamps, mirrors, plants, and ceramics — sourced from workshops we know by name.",
@@ -18,7 +18,7 @@ const FALLBACK_SLIDES = [
     alt: "A sun-warm living room with a brass arc lamp, an arched oak mirror, and ceramics arranged on a low shelf.",
   },
   {
-    image: "/hero/slide-2.png",
+    image: "/hero/slide-2.webp",
     eyebrow: "The Lighting Edit",
     headline: "Light, layered like afternoon sun.",
     subtitle: "Sculptural table lamps, smoky glass sconces, and linen pendants — each one thrown, blown, or sewn by hand, each one casting its own warmth.",
@@ -27,7 +27,7 @@ const FALLBACK_SLIDES = [
     alt: "A curated console table with a sculptural ceramic table lamp, art books, a hand-painted ceramic pot, and a smoky glass wall sconce.",
   },
   {
-    image: "/hero/slide-3.png",
+    image: "/hero/slide-3.webp",
     eyebrow: "Quiet Corners",
     headline: "A room breathes where light rests.",
     subtitle: "A reading nook, a fiddle leaf, a single linen cushion — the small notes that finish a room, sourced slowly and made to outlast a season.",
@@ -36,7 +36,7 @@ const FALLBACK_SLIDES = [
     alt: "A quiet reading nook by a tall window with a matte black sculptural desk lamp, a fiddle leaf fig in a ribbed terracotta planter, and a low oak bench.",
   },
   {
-    image: "/hero/slide-4.png",
+    image: "/hero/slide-4.webp",
     eyebrow: "The Shelf Edit",
     headline: "Small notes that finish a room.",
     subtitle: "Obsidian bookends, hand-painted ceramics, pressed botanicals, and beeswax tapers — the considered objects that turn a shelf into a still life.",

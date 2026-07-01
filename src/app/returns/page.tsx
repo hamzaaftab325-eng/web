@@ -12,7 +12,7 @@ export default function ReturnsPage() {
   return (
     <>
       <PageHero
-        image="/hero/care.png"
+        image="/hero/care.webp"
         alt="A considered workspace with ceramics and care guides arranged on warm wood."
         eyebrow="Service"
         headline="Returns & Exchanges"

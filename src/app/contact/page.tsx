@@ -44,7 +44,7 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
-        image="/hero/about.png"
+        image="/hero/about.webp"
         alt="The Aura Living atelier — a quiet space with considered objects and a writing desk."
         eyebrow="Concierge"
         headline="Contact Us"

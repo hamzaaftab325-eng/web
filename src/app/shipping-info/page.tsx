@@ -12,7 +12,7 @@ export default function ShippingInfoPage() {
   return (
     <>
       <PageHero
-        image="/hero/shop.png"
+        image="/hero/shop.webp"
         alt="A curated home décor showroom with packages and considered objects."
         eyebrow="Service"
         headline="Shipping Information"

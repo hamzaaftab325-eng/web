@@ -12,7 +12,7 @@ export default function TermsPage() {
   return (
     <>
       <PageHero
-        image="/hero/sustainability.png"
+        image="/hero/sustainability.webp"
         alt="A quiet workspace with considered objects arranged on warm wood shelves."
         eyebrow="Legal"
         headline="Terms of Service"

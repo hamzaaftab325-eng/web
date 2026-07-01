@@ -53,7 +53,7 @@ function GuideLibrary({ onOpen }: { onOpen: (slug: string) => void }) {
     <div>
       {/* Page hero — full-bleed image under fixed header */}
       <PageHero
-        image="/hero/care.png"
+        image="/hero/care.webp"
         alt="Care tools arranged on a linen cloth — a horsehair brush, microfiber cloth, beeswax polish, and a dried fern frond."
         eyebrow="Care"
         headline="Material Guides"

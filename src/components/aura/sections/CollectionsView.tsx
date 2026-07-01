@@ -25,7 +25,7 @@ export function CollectionsView() {
     <div className="bg-gradient-to-b from-canvas to-cream/20 min-h-screen">
       {/* Page hero — full-bleed image under fixed header */}
       <PageHero
-        image="/hero/collections.png"
+        image="/hero/collections.webp"
         alt="Three curated room vignettes side by side, each styled around a different palette."
         eyebrow="Collections"
         headline="Curated Edits"
