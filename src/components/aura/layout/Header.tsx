@@ -246,7 +246,7 @@ export function Header() {
             >
               <Heart size={20} strokeWidth={1.25} />
               {wishCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-gold text-paper text-[10px] font-semibold rounded-full h-[16px] min-w-[16px] px-1 flex items-center justify-center t-num">
+                <span className="absolute -top-1.5 -right-1.5 bg-gold text-paper t-num font-semibold rounded-full h-4 min-w-4 px-1 text-[10px] flex items-center justify-center t-num">
                   {wishCount}
                 </span>
               )}
@@ -264,7 +264,7 @@ export function Header() {
                   initial={prefersReducedMotion ? false : { scale: 0.6 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-                  className="absolute -top-1.5 -right-1.5 bg-gold text-paper text-[10px] font-semibold rounded-full h-[16px] min-w-[16px] px-1 flex items-center justify-center t-num"
+                  className="absolute -top-1.5 -right-1.5 bg-gold text-paper t-num font-semibold rounded-full h-4 min-w-4 px-1 text-[10px] flex items-center justify-center t-num"
                 >
                   {cartCount}
                 </motion.span>

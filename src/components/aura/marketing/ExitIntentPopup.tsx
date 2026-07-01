@@ -245,7 +245,7 @@ export function ExitIntentPopup() {
                       delay: 0.1,
                       ease: [0.34, 1.56, 0.64, 1],
                     }}
-                    className="w-16 h-16 mx-auto rounded-full bg-gold-pale border border-hairline-gold flex items-center justify-center mb-5 shadow-glow-gold"
+                    className="w-16 h-16 mx-auto rounded-full bg-gold-pale border border-hairline-gold flex items-center justify-center mb-5 shadow-gold-glow"
                   >
                     <Mail size={26} strokeWidth={1.25} className="c-gold-deep" />
                   </motion.div>
@@ -324,7 +324,7 @@ export function ExitIntentPopup() {
                       duration: 0.5,
                       ease: [0.34, 1.56, 0.64, 1],
                     }}
-                    className="w-16 h-16 mx-auto rounded-full bg-paper border border-hairline-gold flex items-center justify-center mb-5 shadow-glow-gold"
+                    className="w-16 h-16 mx-auto rounded-full bg-paper border border-hairline-gold flex items-center justify-center mb-5 shadow-gold-glow"
                   >
                     <Check size={30} strokeWidth={2} className="c-gold-deep" />
                   </motion.div>

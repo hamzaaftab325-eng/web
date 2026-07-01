@@ -142,7 +142,7 @@ export function MobileTabBar() {
                     />
                     {tab.badge !== undefined && tab.badge > 0 && (
                       <span
-                        className="absolute -top-1.5 -right-2 bg-gold c-paper text-[10px] font-semibold rounded-full h-[16px] min-w-[16px] px-1 flex items-center justify-center t-num"
+                        className="absolute -top-1.5 -right-2 bg-gold c-paper t-num font-semibold rounded-full h-4 min-w-4 px-1 text-[10px] flex items-center justify-center t-num"
                         aria-label={`${tab.badge} items`}
                       >
                         {tab.badge > 99 ? "99+" : tab.badge}

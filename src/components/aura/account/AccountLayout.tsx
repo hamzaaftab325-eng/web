@@ -62,7 +62,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
     <div className="flex flex-col h-full">
       <div className="p-6 border-b border-hairline-cream relative overflow-hidden bg-gradient-gold">
         <div className="relative flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-ink to-ink/80 flex items-center justify-center flex-shrink-0 shadow-glow-gold ring-2 ring-gold/20">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-ink to-ink/80 flex items-center justify-center flex-shrink-0 shadow-gold-glow ring-2 ring-gold/20">
             <span className="t-label-caps c-paper">{initials}</span>
           </div>
           <div className="min-w-0">
@@ -80,7 +80,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
             return (
               <li key={item.path}>
                 <button onClick={() => go(item.path)} className={cn("w-full flex items-center gap-3 px-4 py-3 t-body transition-all duration-300 relative group rounded-sm", isActive ? "c-ink font-medium" : "c-ink-muted hover:c-ink hover:bg-cream/60")}>
-                  {isActive && <motion.span layoutId="account-nav-active" className="absolute inset-0 bg-gold-pale rounded-sm border border-gold/40 shadow-glow-gold" transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} />}
+                  {isActive && <motion.span layoutId="account-nav-active" className="absolute inset-0 bg-gold-pale rounded-sm border border-gold/40 shadow-gold-glow" transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} />}
                   {isActive && <motion.span layoutId="account-nav-bar" className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-gold rounded-r-full" transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} />}
                   <item.icon size={18} strokeWidth={isActive ? 1.5 : 1.25} className={cn("flex-shrink-0 relative z-10 transition-colors", isActive ? "c-gold-deep" : "group-hover:c-gold")} />
                   <span className="flex-1 text-left relative z-10">{item.label}</span>
@@ -104,11 +104,11 @@ export function AccountLayout({ children }: { children: ReactNode }) {
       </div>
       <div className="p-4 border-t border-hairline-cream grid grid-cols-2 gap-2">
         <button onClick={() => useCartStore.getState().openCart()} className="flex flex-col items-center justify-center gap-1 py-3 border border-hairline-cream bg-cream/50 hover:bg-cream hover:border-hairline-gold transition-colors group rounded-sm">
-          <div className="relative"><ShoppingBag size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{cartCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper text-[9px] font-semibold rounded-full w-4 h-4 flex items-center justify-center t-num">{cartCount}</span>}</div>
+          <div className="relative"><ShoppingBag size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{cartCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper t-num font-semibold rounded-full w-4 h-4 text-[9px] flex items-center justify-center t-num">{cartCount}</span>}</div>
           <span className="t-caption c-ink-faint">Cart</span>
         </button>
         <button onClick={() => go("/account/wishlist")} className="flex flex-col items-center justify-center gap-1 py-3 border border-hairline-cream bg-cream/50 hover:bg-cream hover:border-hairline-gold transition-colors group rounded-sm">
-          <div className="relative"><Heart size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{wishCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper text-[9px] font-semibold rounded-full w-4 h-4 flex items-center justify-center t-num">{wishCount}</span>}</div>
+          <div className="relative"><Heart size={18} strokeWidth={1.25} className="c-ink group-hover:c-gold-deep transition-colors" />{wishCount > 0 && <span className="absolute -top-2 -right-2 bg-gold c-paper t-num font-semibold rounded-full w-4 h-4 text-[9px] flex items-center justify-center t-num">{wishCount}</span>}</div>
           <span className="t-caption c-ink-faint">Saved</span>
         </button>
       </div>

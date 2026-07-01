@@ -103,7 +103,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="p-6 border-b border-hairline-cream relative overflow-hidden bg-gradient-gold">
         <div className="absolute -top-8 -right-8 w-32 h-32 bg-gold/20 rounded-full blur-3xl opacity-60" aria-hidden />
         <div className="relative flex items-center gap-3 mb-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-ink to-ink/80 flex items-center justify-center flex-shrink-0 shadow-glow-gold ring-2 ring-gold/30">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-ink to-ink/80 flex items-center justify-center flex-shrink-0 shadow-gold-glow ring-2 ring-gold/30">
             <ShieldCheck size={20} strokeWidth={1.5} className="c-gold" />
           </div>
           <div className="min-w-0">
@@ -134,7 +134,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   {isActive && (
                     <motion.span
                       layoutId="admin-nav-active"
-                      className="absolute inset-0 bg-gold-pale rounded-sm border border-gold/40 shadow-glow-gold"
+                      className="absolute inset-0 bg-gold-pale rounded-sm border border-gold/40 shadow-gold-glow"
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     />
                   )}

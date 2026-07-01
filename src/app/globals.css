@@ -58,7 +58,7 @@
 
   --radius-sm: 2px;
   --radius-md: 4px;
-  --radius-lg: 4px;
+  --radius-lg: 6px;
   --radius-xl: 8px;
 }
 
@@ -416,11 +416,41 @@
     letter-spacing: var(--ls-label);
     text-transform: uppercase;
   }
+  .t-overline {
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-size: 0.625rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
   .t-italic-display {
     font-family: var(--font-display), Georgia, serif;
     font-style: italic;
     font-weight: 400;
   }
+
+  /* Badge — small pill for counts, status indicators */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-size: 0.625rem;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: var(--radius-pill);
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Transition utilities — mapped to design tokens */
+  .transition-aura { transition: all var(--t-base); }
+  .transition-aura-fast { transition: all var(--t-fast); }
+  .transition-aura-slow { transition: all var(--t-slow); }
+  .transition-aura-smooth { transition: all var(--t-smooth); }
 
   /* Color roles */
   .c-ink        { color: var(--ink); }

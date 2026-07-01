@@ -48,7 +48,7 @@ export function BackInStockForm({ productName, className }: BackInStockFormProps
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="bg-gold-pale border border-hairline-gold rounded-sm p-5 flex items-center gap-4"
           >
-            <span className="flex-shrink-0 w-11 h-11 rounded-full bg-paper flex items-center justify-center shadow-glow-gold">
+            <span className="flex-shrink-0 w-11 h-11 rounded-full bg-paper flex items-center justify-center shadow-gold-glow">
               <Check size={20} strokeWidth={2} className="c-gold-deep" />
             </span>
             <div className="flex-1">
