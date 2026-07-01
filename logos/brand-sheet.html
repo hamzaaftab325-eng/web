@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Aura Living — Brand Identity</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #ECE6D9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #2E2E2E;
+    padding: 60px 24px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .header { text-align: center; margin-bottom: 60px; }
+  .header h1 {
+    font-family: Georgia, serif;
+    font-size: 42px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .header p {
+    color: #6B5D4F;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .row { display: grid; gap: 24px; margin-bottom: 24px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-1 { grid-template-columns: 1fr; }
+
+  .card {
+    background: #FAF8F4;
+    border: 1px solid #D8CFC4;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #E8E0D5;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: #FDFBF7;
+  }
+  .card-title {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .card-tag {
+    font-size: 10px;
+    color: #B8901F;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .card-body {
+    padding: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 280px;
+  }
+  .card-body.dark { background: #2E2E2E; }
+  .card-body.checker {
+    background: repeating-conic-gradient(#ECE6D9 0% 25%, #FAF8F4 0% 50%) 50% / 20px 20px;
+  }
+  .card-body img { max-width: 100%; height: auto; display: block; }
+
+  /* Spec sections */
+  .spec {
+    background: #FAF8F4;
+    border: 1px solid #D8CFC4;
+    border-radius: 6px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+  }
+  .spec h2 {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E8E0D5;
+  }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .swatch {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: #FDFBF7;
+    border: 1px solid #E8E0D5;
+    border-radius: 4px;
+  }
+  .swatch-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+    flex-shrink: 0;
+  }
+  .swatch-info { font-size: 12px; }
+  .swatch-name { font-weight: 600; color: #2E2E2E; display: block; }
+  .swatch-hex { color: #6B5D4F; font-family: 'SF Mono', Menlo, monospace; }
+
+  .spec-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid #F0E8D4;
+    font-size: 13px;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-label { color: #6B5D4F; font-weight: 500; }
+  .spec-value { color: #2E2E2E; }
+
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid #D8CFC4;
+    color: #6B5D4F;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Aura Living</h1>
+    <p>Brand Identity · Production Assets</p>
+  </div>
+
+  <!-- Primary lockup -->
+  <div class="row row-1">
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Primary Lockup — Icon + Wordmark</p>
+        <span class="card-tag">PRIMARY</span>
+      </div>
+      <div class="card-body">
+        <img src="../logos/aura-primary.svg" alt="Primary lockup">
+      </div>
+    </div>
+  </div>
+
+  <!-- Inverted + Transparent -->
+  <div class="row row-2">
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Inverted (Dark Background)</p>
+        <span class="card-tag">FOOTER</span>
+      </div>
+      <div class="card-body dark">
+        <img src="../logos/aura-inverted.svg" alt="Inverted">
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Transparent Background</p>
+        <span class="card-tag">OVERLAY</span>
+      </div>
+      <div class="card-body checker">
+        <img src="../logos/aura-transparent.svg" alt="Transparent">
+      </div>
+    </div>
+  </div>
+
+  <!-- Monochrome + Icon -->
+  <div class="row row-2">
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Monochrome Lockup</p>
+        <span class="card-tag">ENGRAVE</span>
+      </div>
+      <div class="card-body">
+        <img src="../logos/aura-monochrome.svg" alt="Monochrome">
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Icon Only</p>
+        <span class="card-tag">FAVICON</span>
+      </div>
+      <div class="card-body">
+        <img src="../logos/aura-icon.svg" alt="Icon" style="max-width:75%">
+      </div>
+    </div>
+  </div>
+
+  <!-- Icon variations -->
+  <div class="row row-2">
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Icon — Monochrome</p>
+        <span class="card-tag">EMBROIDERY</span>
+      </div>
+      <div class="card-body">
+        <img src="../logos/aura-icon-mono.svg" alt="Icon mono" style="max-width:75%">
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">Icon — Inverted</p>
+        <span class="card-tag">DARK UI</span>
+      </div>
+      <div class="card-body dark">
+        <img src="../logos/aura-icon.svg" alt="Icon inverted" style="max-width:75%; filter: invert(1) hue-rotate(180deg);">
+      </div>
+    </div>
+  </div>
+
+  <!-- Color specs -->
+  <div class="spec">
+    <h2>Color Specifications</h2>
+    <div class="spec-grid">
+      <div class="swatch">
+        <span class="swatch-dot" style="background:#2E2E2E"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Charcoal</span>
+          <span class="swatch-hex">#2E2E2E</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-dot" style="background:#F2C66D"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Warm Mustard</span>
+          <span class="swatch-hex">#F2C66D</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-dot" style="background:#E9D8CC"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Soft Beige</span>
+          <span class="swatch-hex">#E9D8CC</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-dot" style="background:#FAF8F4; border:1px solid #D8CFC4"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Off White</span>
+          <span class="swatch-hex">#FAF8F4</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="spec">
+    <h2>Typography</h2>
+    <div class="spec-row">
+      <div class="spec-label">Wordmark</div>
+      <div class="spec-value">Avenir Next Heavy / Montserrat ExtraBold / Gilroy ExtraBold — 48pt, letter-spacing 6, uppercase, centered</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-label">Tagline</div>
+      <div class="spec-value">Avenir Next Medium / Montserrat Medium — 11pt, letter-spacing 5, uppercase, centered</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-label">Pairing</div>
+      <div class="spec-value">Geometric sans-serif (Gotham / Avenir / Montserrat family). Avoid serifs in wordmark.</div>
+    </div>
+  </div>
+
+  <!-- Spacing & Sizing -->
+  <div class="spec">
+    <h2>Clear Space &amp; Minimum Size</h2>
+    <div class="spec-row">
+      <div class="spec-label">Clear space</div>
+      <div class="spec-value">Maintain padding equal to the height of the "A" glyph around all sides of the lockup</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-label">Min size (lockup)</div>
+      <div class="spec-value">120px wide digital · 30mm wide print — wordmark remains legible</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-label">Min size (icon)</div>
+      <div class="spec-value">24px digital (favicon) · 8mm print — icon remains recognizable at 16px</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-label">Stroke width</div>
+      <div class="spec-value">3px at 600px viewBox — scale proportionally. Maintain 3.5px for icon-only at small sizes.</div>
+    </div>
+  </div>
+
+  <div class="footer">Aura Living · Brand Identity v1.0 · Handcrafted SVG · Production Ready</div>
+
+</div>
+</body>
+</html>
