@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AppChrome } from "@/components/aura/layout/AppChrome";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
@@ -129,6 +130,7 @@ export default function RootLayout({
         </QueryProvider>
         <Toaster />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
