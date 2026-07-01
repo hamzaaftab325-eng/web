@@ -72,8 +72,12 @@ export function Footer() {
               className="block text-left mb-6"
               aria-label="Aura Living home"
             >
-              <p className="t-display-md c-paper leading-none">Aura</p>
-              <p className="t-label-caps c-gold mt-2">Living</p>
+              <img
+                src="/logo-white.svg"
+                alt="Aura Living"
+                className="h-10 w-auto"
+                fetchPriority="low"
+              />
             </button>
             <p className="t-body c-paper/70 max-w-xs leading-relaxed mb-6">
               Considered objects for the considered home. Sourced from small

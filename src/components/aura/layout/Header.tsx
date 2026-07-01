@@ -114,18 +114,18 @@ export function Header() {
             <Menu size={22} strokeWidth={1.25} />
           </button>
 
-          {/* Logo */}
+          {/* Logo — swaps between dark and white version based on scroll/hero state */}
           <button
             onClick={goHome}
             className="flex-shrink-0 flex items-center gap-2 group"
             aria-label="Aura Living home"
           >
-            <span className={cn("t-display-md font-display leading-none tracking-tight transition-colors", (scrolled || isLightPage) ? "c-ink" : "hero-text")}>
-              Aura
-            </span>
-            <span className="t-label-caps c-gold hidden sm:inline-block self-end mb-[6px]">
-              Living
-            </span>
+            <img
+              src={(scrolled || isLightPage) ? "/logo.svg" : "/logo-white.svg"}
+              alt="Aura Living"
+              className="h-7 md:h-9 w-auto transition-opacity group-hover:opacity-80"
+              fetchPriority="high"
+            />
           </button>
 
           {/* Desktop nav */}
