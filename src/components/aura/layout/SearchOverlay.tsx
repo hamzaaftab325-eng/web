@@ -8,6 +8,7 @@ import { useUIStore } from "@/store/use-ui-store";
 import { useProductSearch } from "@/hooks/queries/use-products";
 import { search as trackSearch } from "@/lib/analytics/ecommerce";
 import { formatPrice } from "@/lib/utils";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 export function SearchOverlay() {
   const router = useRouter();
@@ -15,6 +16,8 @@ export function SearchOverlay() {
   const setOpen = useUIStore((s) => s.setSearchOpen);
 
   const [query, setQuery] = useState("");
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(overlayRef, open);
 
   // Reset query when overlay closes — using the documented "store information
   // from previous render" pattern to avoid setState-in-effect warnings.
@@ -69,6 +72,10 @@ export function SearchOverlay() {
           onClick={close}
         >
           <motion.div
+            ref={overlayRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Search products"
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -30, opacity: 0 }}

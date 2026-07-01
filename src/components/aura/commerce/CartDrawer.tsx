@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { X, ShoppingBag, Plus, Minus, Trash2, Heart, Clock, ArrowRight } from "lucide-react";
@@ -7,6 +8,7 @@ import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { formatPrice, cn } from "@/lib/utils";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 export function CartDrawer() {
   const router = useRouter();
@@ -21,6 +23,8 @@ export function CartDrawer() {
   const subtotal = useCartStore((s) => s.subtotal());
 
   const prefersReducedMotion = useReducedMotion();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(drawerRef, isOpen);
 
   const setCheckoutOpen = useUIStore((s) => s.setCheckoutOpen);
 
@@ -47,6 +51,10 @@ export function CartDrawer() {
             className="fixed inset-0 z-[1000] overlay-dark"
           />
           <motion.aside
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Shopping cart"
             initial={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}
@@ -56,7 +64,6 @@ export function CartDrawer() {
             dragElastic={0.2}
             onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
             className="fixed top-0 right-0 bottom-0 z-[1100] w-full max-w-[440px] bg-paper flex flex-col"
-            aria-label="Shopping cart"
           >
             {/* Drag handle (left edge) */}
             {!prefersReducedMotion && (

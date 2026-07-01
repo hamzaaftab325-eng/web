@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
@@ -9,6 +10,7 @@ import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-clo
 import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 export function MobileNav() {
   const router = useRouter();
@@ -18,6 +20,8 @@ export function MobileNav() {
   const setOpen = useUIStore((s) => s.setMobileNavOpen);
   const setCategory = useUIStore((s) => s.setCategory);
   const setCollection = useUIStore((s) => s.setCollection);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(drawerRef, open);
   const resetShop = useUIStore((s) => s.resetShop);
   const prefersReducedMotion = useReducedMotion();
 
@@ -54,6 +58,10 @@ export function MobileNav() {
             onClick={close}
           />
           <motion.aside
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

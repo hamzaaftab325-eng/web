@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { X, Heart, ShoppingBag } from "lucide-react";
@@ -8,6 +9,7 @@ import { useCartStore } from "@/store/use-cart-store";
 import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 import { formatPrice } from "@/lib/utils";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 export function WishlistDrawer() {
   const router = useRouter();
@@ -17,6 +19,8 @@ export function WishlistDrawer() {
   const remove = useWishlistStore((s) => s.remove);
   const addToCart = useCartStore((s) => s.addLine);
   const prefersReducedMotion = useReducedMotion();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(drawerRef, isOpen);
 
   const { products: items } = useProductsBySlugs(slugs);
 
@@ -43,6 +47,10 @@ export function WishlistDrawer() {
             className="fixed inset-0 z-[1000] overlay-dark"
           />
           <motion.aside
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Wishlist"
             initial={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}
@@ -52,7 +60,6 @@ export function WishlistDrawer() {
             dragElastic={0.2}
             onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
             className="fixed top-0 right-0 bottom-0 z-[1100] w-full max-w-[440px] bg-paper flex flex-col"
-            aria-label="Wishlist"
           >
             {/* Drag handle (left edge) */}
             {!prefersReducedMotion && (

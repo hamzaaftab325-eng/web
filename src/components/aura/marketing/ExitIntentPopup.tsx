@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Gift, Mail, Check, Sparkles, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 const SESSION_KEY = "aura-exit-intent-shown";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,6 +39,8 @@ export function ExitIntentPopup() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
   const [email, setEmail] = useState("");
   const [copied, setCopied] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(popupRef, open);
 
   // Fetch popup configuration from the API
   useEffect(() => {
@@ -173,6 +176,7 @@ export function ExitIntentPopup() {
     <AnimatePresence>
       {open && (
         <motion.div
+          ref={popupRef}
           className="fixed inset-0 z-[1200] flex items-center justify-center p-4 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
