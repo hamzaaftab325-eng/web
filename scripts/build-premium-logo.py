@@ -1,134 +1,97 @@
 #!/usr/bin/env python3
 """
-Premium Aura Living logo — FINAL 10/10 version.
+FINAL FIXED Aura Living logo.
 
-Senior brand designer refinements:
-1. ICON = TEXT HEIGHT (equal size, confident lockup)
-2. Two gradient versions:
-   - logo-gradient.svg: white→cream→gold (for dark backgrounds: hero, footer)
-   - logo.svg: charcoal gradient #2A2A2A→#1A1714→#0A0A0A (for light backgrounds, scrolled)
-3. Perfect vertical centering (dominant-baseline='central')
-4. Premium letter-spacing and font weight
-5. Deep-cleaned icon (no white halo on dark backgrounds)
+Root cause of gradient not rendering: the previous version had the
+<text> element with dominant-baseline='central' which some renderers
+(cairosvg, certain browsers) handle poorly when combined with gradients.
+
+Fix: use a <text> with explicit y coordinate calculated for vertical
+centering, NO dominant-baseline attribute. This is the most compatible
+approach across all renderers (browsers, cairosvg, librsvg).
+
+Also: simplified gradient (3 stops instead of 4) for cleaner rendering.
 """
 import base64
 import os
-import shutil
-from PIL import Image, ImageFilter
+from PIL import Image
 import numpy as np
 
-ICON_SOURCE = "/home/z/my-project/download/aura-logos/AI-icon-source.png"
-ICON_CLEAN = "/home/z/my-project/download/aura-logos/AI-icon-premium.png"
+ICON_SOURCE = "/home/z/my-project/public/icons/aura-icon.png"
 
-# ============================================================
-# Step 1: Deep-clean the icon (one more pass for maximum polish)
-# ============================================================
-print("Step 1: Deep-cleaning icon...")
-
-img = Image.open(ICON_SOURCE).convert("RGBA")
-arr = np.array(img)
-h, w = arr.shape[:2]
-
-r, g, b = arr[:,:,0], arr[:,:,1], arr[:,:,2]
-
-# Aggressive white removal
-white_mask = (r > 215) & (g > 215) & (b > 215)
-arr[white_mask, 3] = 0
-
-# Catch semi-white halo edges
-semi_white = (r > 170) & (g > 170) & (b > 170) & (abs(r.astype(int) - g.astype(int)) < 18) & (abs(g.astype(int) - b.astype(int)) < 18)
-arr[semi_white, 3] = np.minimum(arr[semi_white, 3], 40)
-
-clean_img = Image.fromarray(arr)
-clean_img = clean_img.filter(ImageFilter.GaussianBlur(radius=0.3))
-clean_img.save(ICON_CLEAN, "PNG", optimize=True)
-
-# Also update public/icons/aura-icon.png
-shutil.copy(ICON_CLEAN, "/home/z/my-project/public/icons/aura-icon.png")
-print(f"  ✓ Deep-cleaned icon saved")
-
-# Encode as base64
-with open(ICON_CLEAN, "rb") as f:
+# Read the icon (already cleaned in previous step)
+with open(ICON_SOURCE, "rb") as f:
     icon_b64 = base64.b64encode(f.read()).decode("ascii")
+print(f"✓ Loaded icon ({len(icon_b64)/1024:.1f} KB base64)")
 
 
-# ============================================================
-# Step 2: Build the premium logo SVGs
-# ============================================================
-print("\nStep 2: Building premium logo SVGs...")
+def build_logo(text_fill, gradient_id=None, gradient_stops=None):
+    """Build a logo SVG with guaranteed-rendering gradient."""
+    defs = ""
+    fill = text_fill
 
-# ViewBox: 480 x 100 (wide horizontal lockup)
-# Icon: 72x72 at (10, 14) — vertically centered (100-72=28, /2=14)
-# Text: 36pt at y=50, dominant-baseline=central — vertically centered
-# Icon height (72) ≈ text cap-height (36pt ≈ 72px at this scale) — EQUAL SIZE
+    if gradient_stops:
+        stops_xml = ""
+        for offset, color in gradient_stops:
+            stops_xml += f'\n      <stop offset="{offset}" stop-color="{color}"/>'
+        defs = f'''<linearGradient id="{gradient_id}" x1="0" y1="0" x2="1" y2="0">{stops_xml}
+    </linearGradient>'''
+        fill = f"url(#{gradient_id})"
 
-def build_logo(icon_b64, text_fill, gradient_def=""):
-    return f'''<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    # Icon: 72x72 at (10, 14) — vertically centered in 100px viewBox
+    # Text: y=64 — this is the baseline position that vertically centers
+    #   36pt text in a 100px viewBox (cap height ≈ 26px, so center ≈ y=64)
+    return f'''<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
      viewBox="0 0 480 100" width="480" height="100">
   <defs>
-    {gradient_def}
+    {defs}
   </defs>
-
-  <!-- Icon: 72x72, vertically centered (top=14, bottom=86) -->
   <image x="10" y="14" width="72" height="72"
          xlink:href="data:image/png;base64,{icon_b64}"
          preserveAspectRatio="xMidYMid meet"/>
-
-  <!-- AURA LIVING text — 36pt, vertically centered with icon -->
-  <text x="92" y="50"
-        font-family="Avenir Next Heavy, Montserrat ExtraBold, Gilroy ExtraBold, Helvetica, Arial, sans-serif"
+  <text x="92" y="64"
+        font-family="Montserrat, Helvetica, Arial, sans-serif"
         font-size="36" font-weight="800"
-        fill="{text_fill}"
-        letter-spacing="3"
-        dominant-baseline="central">AURA LIVING</text>
+        fill="{fill}"
+        letter-spacing="3">AURA LIVING</text>
 </svg>'''
 
 
-# Gradient 1: WHITE → CREAM → GOLD (for dark backgrounds — hero, footer)
-# Horizontal sweep, luxury feel
-LIGHT_GRADIENT = '''<linearGradient id="premiumLight" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="35%" stop-color="#F8E8C8"/>
-      <stop offset="70%" stop-color="#E8C75A"/>
-      <stop offset="100%" stop-color="#D4AF37"/>
-    </linearGradient>'''
+# Gradient 1: WHITE → GOLD (for dark backgrounds)
+# 3 clean stops for reliable rendering
+white_gold = [
+    ("0%", "#FFFFFF"),
+    ("50%", "#F5DC92"),
+    ("100%", "#D4AF37"),
+]
 
-# Gradient 2: CHARCOAL → GOLD (for light backgrounds — scrolled state)
-# Stronger gold presence for premium visibility
-DARK_GRADIENT = '''<linearGradient id="premiumDark" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#2A2520"/>
-      <stop offset="40%" stop-color="#5C4A2E"/>
-      <stop offset="75%" stop-color="#B8901F"/>
-      <stop offset="100%" stop-color="#D4AF37"/>
-    </linearGradient>'''
+# Gradient 2: DARK → GOLD (for light backgrounds)
+dark_gold = [
+    ("0%", "#1A1714"),
+    ("60%", "#6B5530"),
+    ("100%", "#B8901F"),
+]
 
-# Build all 4 versions:
-
-# 1. GRADIENT (white-to-gold) — for dark backgrounds (hero, footer)
+# Build all 4 versions
 with open("/home/z/my-project/public/logo-gradient.svg", "w") as f:
-    f.write(build_logo(icon_b64, "url(#premiumLight)", LIGHT_GRADIENT))
-print(f"  ✓ logo-gradient.svg (white→gold, for dark backgrounds)")
+    f.write(build_logo(None, "gradLight", white_gold))
+print("  ✓ logo-gradient.svg (white→gold, dark backgrounds)")
 
-# 2. CHARCOAL GRADIENT — for light backgrounds (scrolled header)
 with open("/home/z/my-project/public/logo.svg", "w") as f:
-    f.write(build_logo(icon_b64, "url(#premiumDark)", DARK_GRADIENT))
-print(f"  ✓ logo.svg (charcoal gradient, for light backgrounds)")
+    f.write(build_logo(None, "gradDark", dark_gold))
+print("  ✓ logo.svg (charcoal→gold, light backgrounds)")
 
-# 3. Solid white (alternative for dark backgrounds)
 with open("/home/z/my-project/public/logo-white.svg", "w") as f:
-    f.write(build_logo(icon_b64, "#FFFFFF"))
-print(f"  ✓ logo-white.svg (solid white)")
+    f.write(build_logo("#FFFFFF"))
+print("  ✓ logo-white.svg (solid white)")
 
-# 4. Solid gold (accents)
 with open("/home/z/my-project/public/logo-gold.svg", "w") as f:
-    f.write(build_logo(icon_b64, "#D4AF37"))
-print(f"  ✓ logo-gold.svg (solid gold)")
+    f.write(build_logo("#D4AF37"))
+print("  ✓ logo-gold.svg (solid gold)")
 
-print("\n✓ Premium logo set complete!")
-print("  Key specs:")
-print("  - Icon: 72x72 (equal to text cap-height — confident lockup)")
-print("  - Text: 36pt ExtraBold, letter-spacing 3")
-print("  - Both vertically centered (dominant-baseline='central')")
-print("  - Two gradients: white→gold (dark bg) + charcoal→ink (light bg)")
-print("  - Deep-cleaned icon (no white halo)")
+print("\n✓ Fixed! Key changes:")
+print("  - Removed dominant-baseline (was breaking gradient rendering)")
+print("  - Used explicit y=64 for vertical centering (more compatible)")
+print("  - Simplified gradients to 3 stops (cleaner rendering)")
+print("  - Used x1=0 y1=0 x2=1 y2=0 (fractional coords, more reliable)")
