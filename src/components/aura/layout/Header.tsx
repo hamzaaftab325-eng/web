@@ -12,6 +12,7 @@ import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
+import { useThemeStore } from "@/store/use-theme-store";
 
 const navLinks: { label: string; view: "shop" | "about" | "journal" }[] = [
   { label: "Shop", view: "shop" },
@@ -52,6 +53,33 @@ export function Header() {
   // care, shop) have dark image heroes — white header text when not scrolled.
   const LIGHT_PAGE_PREFIXES = ["/account", "/admin", "/product", "/cart", "/login", "/signup", "/forgot-password", "/reset-password"];
   const isLightPage = LIGHT_PAGE_PREFIXES.some(prefix => pathname.startsWith(prefix));
+
+  // Detect dark mode (theme system) — when dark mode is on, the header
+  // background is dark even when scrolled, so we need the white logo
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  useEffect(() => {
+    const checkDark = () => {
+      const theme = useThemeStore.getState().mode;
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setIsDarkMode(theme === "dark" || (theme === "system" && systemDark));
+    };
+    checkDark();
+    const unsub = useThemeStore.subscribe(checkDark);
+    // Also listen for system theme changes
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => checkDark();
+    mq.addEventListener("change", onChange);
+    return () => {
+      unsub();
+      mq.removeEventListener("change", onChange);
+    };
+  }, []);
+
+  // Logo selection logic:
+  // - Not scrolled + dark hero (light mode) → white→gold gradient + white icon
+  // - Scrolled OR light page (light mode) → charcoal→gold gradient + dark icon
+  // - Dark mode (any state) → white→gold gradient + white icon (header bg is dark)
+  const useLightLogo = isDarkMode || (!scrolled && !isLightPage);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -114,7 +142,7 @@ export function Header() {
             <Menu size={22} strokeWidth={1.25} />
           </button>
 
-          {/* Logo — swaps between gradient (dark hero) and charcoal (light/scrolled)
+          {/* Logo — swaps between gradient (dark hero/dark mode) and charcoal (light/scrolled)
               Responsive sizes: small (mobile) / medium (tablet) / large (desktop) */}
           <button
             onClick={goHome}
@@ -122,7 +150,7 @@ export function Header() {
             aria-label="Aura Living home"
           >
             <img
-              src={(scrolled || isLightPage) ? "/logo.svg" : "/logo-gradient.svg"}
+              src={useLightLogo ? "/logo-gradient.svg" : "/logo.svg"}
               alt="Aura Living"
               className="h-9 sm:h-11 md:h-12 lg:h-14 w-auto transition-all duration-300 group-hover:opacity-85"
               fetchPriority="high"

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Instagram, Mail, Facebook, Twitter } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { useSettings } from "@/hooks/use-settings";
+import { useThemeStore } from "@/store/use-theme-store";
 
 export function Footer() {
   const router = useRouter();
@@ -13,6 +14,21 @@ export function Footer() {
   const { data: collections = [] } = useCollections();
   const settings = useSettings();
   const setCategory = useUIStore((s) => s.setCategory);
+
+  // Detect dark mode to swap logo (footer bg-ink inverts in dark mode)
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const checkDark = () => {
+      const theme = useThemeStore.getState().mode;
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const dark = theme === "dark" || (theme === "system" && systemDark);
+      setIsDark(dark);
+    };
+    checkDark();
+    // Listen for theme changes
+    const unsub = useThemeStore.subscribe(checkDark);
+    return unsub;
+  }, []);
   const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
 
@@ -73,7 +89,7 @@ export function Footer() {
               aria-label="Aura Living home"
             >
               <img
-                src="/logo-gradient.svg"
+                src={isDark ? "/logo-dark.svg" : "/logo-gradient.svg"}
                 alt="Aura Living"
                 className="h-12 md:h-14 lg:h-16 w-auto"
                 fetchPriority="low"
