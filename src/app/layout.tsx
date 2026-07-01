@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AppChrome } from "@/components/aura/layout/AppChrome";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
@@ -127,6 +128,7 @@ export default function RootLayout({
           <AppChrome>{children}</AppChrome>
         </QueryProvider>
         <Toaster />
+        <SpeedInsights />
       </body>
     </html>
   );
