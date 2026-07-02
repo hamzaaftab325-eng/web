@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
@@ -52,11 +51,7 @@ export function CollectionsView() {
                   direction="up"
                   duration={0.8}
                 >
-                  <motion.article
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-10% 0px" }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  <article
                     className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-stretch bg-gradient-card-warm border border-hairline-cream rounded-sm card-modern overflow-hidden"
                   >
                     {/* Image */}
@@ -140,7 +135,7 @@ export function CollectionsView() {
                         </button>
                       </div>
                     </div>
-                  </motion.article>
+                  </article>
                 </RevealOnScroll>
               );
             })}

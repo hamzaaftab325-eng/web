@@ -115,6 +115,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             onClick={onAdd}
             initial={false}
             whileHover={{ backgroundColor: "rgba(17,17,17,0.92)" }}
+            whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
             className={cn(
               "absolute left-4 right-4 bottom-4 bg-ink/85 backdrop-blur-sm c-paper t-label-caps",
               "py-3.5 flex items-center justify-center gap-2 transition-opacity duration-300",

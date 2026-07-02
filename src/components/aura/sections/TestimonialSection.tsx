@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTestimonials } from "@/hooks/queries/use-content";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
@@ -16,6 +16,7 @@ export function TestimonialSection() {
   });
   const [selected, setSelected] = useState(0);
   const [paused, setPaused] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -33,10 +34,10 @@ export function TestimonialSection() {
   }, [emblaApi, onSelect]);
 
   useEffect(() => {
-    if (!emblaApi || paused) return;
+    if (!emblaApi || paused || prefersReducedMotion) return;
     const id = setInterval(() => emblaApi.scrollNext(), 5500);
     return () => clearInterval(id);
-  }, [emblaApi, paused]);
+  }, [emblaApi, paused, prefersReducedMotion]);
 
   return (
     <section
@@ -63,31 +64,41 @@ export function TestimonialSection() {
                   key={t.id}
                   className="flex-[0_0_100%] md:flex-[0_0_60%] md:pl-[20%] pr-4"
                 >
-                  <div className="text-center md:text-left">
-                    <span
-                      className="t-display-lg c-gold/40 font-display italic leading-none block mb-6"
-                      aria-hidden
+                  {/* AnimatePresence reanimates the quote block when the slide changes */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={selected}
+                      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="text-center md:text-left"
                     >
-                      “
-                    </span>
-                    <p className="t-headline-md c-ink font-display italic font-light leading-relaxed mb-8 max-w-3xl mx-auto md:mx-0">
-                      {t.quote}
-                    </p>
-                    <div className="flex items-center justify-center md:justify-start gap-1 mb-3">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={14}
-                          strokeWidth={1.25}
-                          className={cn(
-                            i < t.rating ? "fill-gold c-gold" : "c-ink-faint"
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <p className="t-label-caps c-ink">{t.name}</p>
-                    <p className="t-caption c-ink-faint mt-1">{t.location}</p>
-                  </div>
+                      <span
+                        className="t-display-lg c-gold/40 font-display italic leading-none block mb-6"
+                        aria-hidden
+                      >
+                        “
+                      </span>
+                      <p className="t-headline-md c-ink font-display italic font-light leading-relaxed mb-8 max-w-3xl mx-auto md:mx-0">
+                        {t.quote}
+                      </p>
+                      <div className="flex items-center justify-center md:justify-start gap-1 mb-3">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            strokeWidth={1.25}
+                            className={cn(
+                              i < t.rating ? "fill-gold c-gold" : "c-ink-faint"
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <p className="t-label-caps c-ink">{t.name}</p>
+                      <p className="t-caption c-ink-faint mt-1">{t.location}</p>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               ))}
             </div>

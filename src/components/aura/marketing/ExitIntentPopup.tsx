@@ -280,15 +280,19 @@ export function ExitIntentPopup() {
                     >
                       {status === "submitting" ? (
                         <>
-                          <motion.span
-                            animate={{ rotate: 360 }}
-                            transition={{
-                              duration: 0.8,
-                              repeat: Infinity,
-                              ease: "linear",
-                            }}
-                            className="inline-block w-3.5 h-3.5 border border-paper/30 border-t-paper rounded-full"
-                          />
+                          {prefersReducedMotion ? (
+                            <span className="inline-block w-3.5 h-3.5 border border-paper/30 border-t-paper rounded-full" />
+                          ) : (
+                            <motion.span
+                              animate={{ rotate: 360 }}
+                              transition={{
+                                duration: 0.8,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
+                              className="inline-block w-3.5 h-3.5 border border-paper/30 border-t-paper rounded-full"
+                            />
+                          )}
                           Unlocking
                         </>
                       ) : (

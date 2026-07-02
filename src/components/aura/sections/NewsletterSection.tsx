@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const prefersReducedMotion = useReducedMotion();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,11 +74,15 @@ export function NewsletterSection() {
                   className="group inline-flex items-center justify-center gap-2 bg-paper c-ink t-label-caps px-6 py-3.5 hover:bg-gold-deep hover:c-paper transition-colors rounded-sm disabled:opacity-60"
                 >
                   {status === "submitting" ? (
-                    <motion.span
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-                      className="inline-block w-3.5 h-3.5 border border-ink/30 border-t-ink rounded-full"
-                    />
+                    prefersReducedMotion ? (
+                      <span className="inline-block w-3.5 h-3.5 border border-ink/30 border-t-ink rounded-full" />
+                    ) : (
+                      <motion.span
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                        className="inline-block w-3.5 h-3.5 border border-ink/30 border-t-ink rounded-full"
+                      />
+                    )
                   ) : (
                     <>
                       Subscribe
@@ -93,7 +98,7 @@ export function NewsletterSection() {
             ) : (
               <motion.div
                 key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center gap-4"
               >

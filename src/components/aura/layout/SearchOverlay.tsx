@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useProductSearch } from "@/hooks/queries/use-products";
@@ -18,6 +18,16 @@ export function SearchOverlay() {
   const [query, setQuery] = useState("");
   const overlayRef = useRef<HTMLDivElement>(null);
   useFocusTrap(overlayRef, open);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Stagger variants — same gold-standard pattern as MobileNav
+  const listStagger = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } },
+  };
+  const listItem = prefersReducedMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1 } }
+    : { hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } };
 
   // Reset query when overlay closes — using the documented "store information
   // from previous render" pattern to avoid setState-in-effect warnings.
@@ -76,9 +86,9 @@ export function SearchOverlay() {
             role="dialog"
             aria-modal="true"
             aria-label="Search products"
-            initial={{ y: -30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -30, opacity: 0 }}
+            initial={prefersReducedMotion ? { opacity: 0 } : { y: -30, opacity: 0 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { y: 0, opacity: 1 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { y: -30, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="bg-paper w-full max-w-3xl mx-auto mt-20 md:mt-32"
             onClick={(e) => e.stopPropagation()}
@@ -105,20 +115,25 @@ export function SearchOverlay() {
 
             <div className="p-6 md:p-8 max-h-[60vh] overflow-y-auto scrollbar-thin">
               {!query.trim() && (
-                <div>
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={listStagger}
+                >
                   <p className="t-label-caps c-ink-faint mb-3">Popular searches</p>
                   <div className="flex flex-wrap gap-2">
                     {popular.map((term) => (
-                      <button
+                      <motion.button
                         key={term}
+                        variants={listItem}
                         onClick={() => setQuery(term)}
                         className="chip"
                       >
                         {term}
-                      </button>
+                      </motion.button>
                     ))}
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {query.trim() && results.length === 0 && (
@@ -145,9 +160,15 @@ export function SearchOverlay() {
                   <p className="t-label-caps c-ink-faint mb-4">
                     {results.length} {results.length === 1 ? "result" : "results"}
                   </p>
-                  <ul className="space-y-2">
+                  <motion.ul
+                    key={query}  // re-stagger when query changes
+                    initial="hidden"
+                    animate="visible"
+                    variants={listStagger}
+                    className="space-y-2"
+                  >
                     {results.map((p) => (
-                      <li key={p.id}>
+                      <motion.li key={p.id} variants={listItem}>
                         <button
                           onClick={() => openP(p.slug)}
                           className="flex items-center gap-4 w-full text-left p-2 hover:bg-cream transition-colors"
@@ -170,9 +191,9 @@ export function SearchOverlay() {
                             {formatPrice(p.price)}
                           </span>
                         </button>
-                      </li>
+                      </motion.li>
                     ))}
-                  </ul>
+                  </motion.ul>
                 </div>
               )}
             </div>

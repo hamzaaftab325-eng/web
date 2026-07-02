@@ -715,6 +715,12 @@
     0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
+  /* Pause marquee for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
 
   /* Custom thin scrollbar */
   .scrollbar-thin {
