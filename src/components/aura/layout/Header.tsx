@@ -2,37 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Search, Heart, ShoppingBag, Menu, User } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useAuthStore } from "@/store/use-auth-store";
-import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
 import { useThemeStore } from "@/store/use-theme-store";
 
-const navLinks: { label: string; view: "shop" | "about" | "journal" }[] = [
-  { label: "Shop", view: "shop" },
-  { label: "Collections", view: "shop" },
-  { label: "About", view: "about" },
-  { label: "Journal", view: "journal" },
-];
-
 export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
-  const [hovered, setHovered] = useState<string | null>(null);
 
-  const { data: categories = [] } = useCategories();
-  const { data: collections = [] } = useCollections();
-
-  const setCategory = useUIStore((s) => s.setCategory);
-  const setCollection = useUIStore((s) => s.setCollection);
   const resetShop = useUIStore((s) => s.resetShop);
   const openMobile = useUIStore((s) => s.setMobileNavOpen);
   const setSearchOpen = useUIStore((s) => s.setSearchOpen);
@@ -91,19 +76,6 @@ export function Header() {
   const goShop = () => {
     resetShop();
     router.push("/shop");
-    setMegaOpen(false);
-  };
-
-  const goCategory = (slug: string) => {
-    setCategory(slug as never);
-    router.push("/shop");
-    setMegaOpen(false);
-  };
-
-  const goCollection = (slug: string) => {
-    setCollection(slug);
-    router.push("/shop");
-    setMegaOpen(false);
   };
 
   const goHome = () => router.push("/");
@@ -126,10 +98,6 @@ export function Header() {
         "fixed top-0 inset-x-0 z-sticky transition-all duration-500",
         (scrolled || isLightPage) ? "glass-nav h-[60px] md:h-[72px]" : "bg-transparent h-[72px] md:h-[88px]"
       )}
-      onMouseLeave={() => {
-        setMegaOpen(false);
-        setHovered(null);
-      }}
     >
       <div className="container-aura h-full">
         <div className="flex items-center justify-between h-full gap-6">
@@ -159,37 +127,21 @@ export function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-10 flex-1 justify-center">
-            <div
-              onMouseEnter={() => {
-                setMegaOpen(true);
-                setHovered("shop");
-              }}
-              className="relative"
+            <button
+              onClick={goShop}
+              data-active={pathname === "/shop"}
+              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
             >
-              <button
-                onClick={goShop}
-                data-active={pathname === "/shop"}
-                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
-              >
-                Shop
-              </button>
-            </div>
+              Shop
+            </button>
 
-            <div
-              onMouseEnter={() => {
-                setMegaOpen(true);
-                setHovered("collections");
-              }}
-              className="relative"
+            <button
+              onClick={goCollections}
+              data-active={pathname === "/collections"}
+              className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
             >
-              <button
-                onClick={goCollections}
-                data-active={pathname === "/collections"}
-                className={cn("t-label-caps link-underline transition-colors hover:c-gold", (scrolled || isLightPage) ? "c-ink" : "hero-text")}
-              >
-                Collections
-              </button>
-            </div>
+              Collections
+            </button>
 
             <button
               onClick={goAbout}
@@ -273,102 +225,6 @@ export function Header() {
           </div>
         </div>
       </div>
-
-      {/* Mega menu */}
-      {/* Mega menu — fully opaque, compact, staggered entrance */}
-      <AnimatePresence>
-        {megaOpen && (
-          <>
-            {/* Full-opacity scrim to block hero text bleed-through */}
-            <div
-              className="hidden lg:block fixed inset-0 top-[88px] bg-canvas/95 backdrop-blur-sm"
-              style={{ zIndex: 90 }}
-              onMouseEnter={() => { setMegaOpen(false); setHovered(null); }}
-            />
-            <motion.div
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="hidden lg:block absolute top-full left-0 right-0 bg-paper border-t border-hairline shadow-elevated"
-              style={{ zIndex: 91 }}
-              onMouseEnter={() => setMegaOpen(true)}
-            >
-              <div className="container-aura py-8">
-                {hovered === "shop" ? (
-                  <div className="grid grid-cols-2 gap-10">
-                    {/* Categories */}
-                    <div>
-                      <p className="t-label-caps c-gold-deep mb-4">Categories</p>
-                      <motion.button
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.05 }}
-                        onClick={goShop}
-                        className="flex items-center justify-between w-full mb-3 group"
-                      >
-                        <span className="t-headline-sm c-ink group-hover:c-gold transition-colors">All Products</span>
-                        <span className="t-caption c-ink-faint t-num">{categories.reduce((s, c) => s + (c.productCount || 0), 0)}</span>
-                      </motion.button>
-                      <div className="space-y-1">
-                        {categories.map((c, i) => (
-                          <motion.button
-                            key={c.slug}
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.08 + i * 0.03 }}
-                            onClick={() => goCategory(c.slug)}
-                            className="flex items-center justify-between w-full py-1.5 group"
-                          >
-                            <span className="t-body c-ink-muted group-hover:c-gold transition-colors">{c.name}</span>
-                            <span className="t-caption c-ink-faint t-num">{c.productCount}</span>
-                          </motion.button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Collections */}
-                    <div>
-                      <p className="t-label-caps c-gold-deep mb-4">Collections</p>
-                      <div className="space-y-3">
-                        {collections.map((col, i) => (
-                          <motion.button
-                            key={col.slug}
-                            initial={{ opacity: 0, x: 8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.08 + i * 0.04 }}
-                            onClick={() => goCollection(col.slug)}
-                            className="block w-full text-left py-1 group"
-                          >
-                            <p className="t-body c-ink group-hover:c-gold transition-colors">{col.name}</p>
-                            <p className="t-caption c-ink-faint line-clamp-1 mt-0.5">{col.description}</p>
-                          </motion.button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-10">
-                    {collections.map((col, i) => (
-                      <motion.button
-                        key={col.slug}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.08 + i * 0.05 }}
-                        onClick={() => goCollection(col.slug)}
-                        className="block text-left py-1 group"
-                      >
-                        <p className="t-headline-sm c-ink group-hover:c-gold transition-colors">{col.name}</p>
-                        <p className="t-body-sm c-ink-muted mt-1 line-clamp-2">{col.description}</p>
-                      </motion.button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </header>
   );
 }
