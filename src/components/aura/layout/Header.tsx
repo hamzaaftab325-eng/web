@@ -287,75 +287,55 @@ export function Header() {
           >
             <div className="container-aura py-10">
               {hovered === "shop" ? (
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-2 gap-12">
                   <div className="col-span-1">
-                    <p className="t-label-caps c-ink-faint mb-4">Browse</p>
+                    <p className="t-label-caps c-ink-faint mb-4">Browse by Category</p>
                     <button
                       onClick={goShop}
-                      className="block t-headline-sm c-ink hover:c-gold transition-colors mb-3 link-underline"
+                      className="block t-headline-sm c-ink hover:c-gold transition-colors mb-4 link-underline"
                     >
                       All Products
                     </button>
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {categories.map((c) => (
                         <button
                           key={c.slug}
                           onClick={() => goCategory(c.slug)}
-                          className="block t-body c-ink-muted hover:c-gold transition-colors link-underline text-left"
+                          className="flex items-center justify-between w-full t-body c-ink-muted hover:c-gold transition-colors link-underline text-left"
                         >
-                          {c.name}
+                          <span>{c.name}</span>
+                          <span className="t-caption c-ink-faint t-num">{c.productCount}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div className="col-span-2 grid grid-cols-3 gap-4">
-                    {categories.slice(0, 3).map((c) => (
-                      <button
-                        key={c.slug}
-                        onClick={() => goCategory(c.slug)}
-                        className="group text-left"
-                      >
-                        <div className="aspect-[4/5] overflow-hidden bg-cream mb-3">
-                          <img
-                            src={c.heroImage}
-                            alt={c.name}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            loading="lazy"
-                          />
-                        </div>
-                        <p className="t-headline-sm c-ink group-hover:c-gold transition-colors">
-                          {c.name}
-                        </p>
-                        <p className="t-caption c-ink-faint mt-1">
-                          {c.productCount} pieces
-                        </p>
-                      </button>
-                    ))}
+                  <div className="col-span-1">
+                    <p className="t-label-caps c-ink-faint mb-4">Collections</p>
+                    <div className="space-y-2.5">
+                      {collections.map((col) => (
+                        <button
+                          key={col.slug}
+                          onClick={() => goCollection(col.slug)}
+                          className="block w-full text-left"
+                        >
+                          <p className="t-body c-ink hover:c-gold transition-colors link-underline">{col.name}</p>
+                          <p className="t-caption c-ink-faint line-clamp-1 mt-0.5">{col.description}</p>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-2 gap-12">
                   {collections.map((col) => (
                     <button
                       key={col.slug}
                       onClick={() => goCollection(col.slug)}
-                      className="group text-left"
+                      className="block text-left"
                     >
-                      <div className="aspect-[16/10] overflow-hidden bg-cream mb-4">
-                        <img
-                          src={col.heroImage}
-                          alt={col.name}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      </div>
-                      <p className="t-headline-sm c-ink group-hover:c-gold transition-colors">
-                        {col.name}
-                      </p>
-                      <p className="t-body-sm c-ink-muted mt-2 line-clamp-2">
-                        {col.description}
-                      </p>
+                      <p className="t-headline-sm c-ink hover:c-gold transition-colors link-underline">{col.name}</p>
+                      <p className="t-body-sm c-ink-muted mt-1 line-clamp-2">{col.description}</p>
                     </button>
                   ))}
                 </div>

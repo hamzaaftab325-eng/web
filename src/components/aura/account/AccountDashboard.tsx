@@ -23,13 +23,22 @@ export function AccountDashboard() {
   const user = useAuthStore((s) => s.user);
   const wishCount = useWishlistStore((s) => s.slugs.length);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [addressCount, setAddressCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/orders")
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data) => setOrders(Array.isArray(data) ? data : []))
-      .catch(() => setOrders([]))
+    Promise.all([
+      fetch("/api/orders").then((r) => (r.ok ? r.json() : [])),
+      fetch("/api/user/addresses").then((r) => (r.ok ? r.json() : [])),
+    ])
+      .then(([orderData, addrData]) => {
+        setOrders(Array.isArray(orderData) ? orderData : []);
+        setAddressCount(Array.isArray(addrData) ? addrData.length : 0);
+      })
+      .catch(() => {
+        setOrders([]);
+        setAddressCount(0);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -45,7 +54,7 @@ export function AccountDashboard() {
   const stats = [
     { label: "Orders", value: orders.length, icon: Package, view: "account-orders", hint: orders.length > 0 ? `Last order ${orders[0]?.date ?? ""}` : "No orders yet", gradient: "from-cream-deep to-cream", iconBg: "bg-gold-pale", iconColor: "c-gold-deep" },
     { label: "Wishlist", value: wishCount, icon: Heart, view: "account-wishlist", hint: wishCount > 0 ? `${wishCount} saved pieces` : "No saved pieces", gradient: "from-gold-pale to-cream", iconBg: "bg-cream-deep", iconColor: "c-gold-deep" },
-    { label: "Addresses", value: 1, icon: MapPin, view: "account-addresses", hint: "Default: Home", gradient: "from-cream to-cream-deep", iconBg: "bg-gold-pale", iconColor: "c-gold-deep" },
+    { label: "Addresses", value: addressCount, icon: MapPin, view: "account-addresses", hint: addressCount > 0 ? `${addressCount} saved` : "No saved addresses", gradient: "from-cream to-cream-deep", iconBg: "bg-gold-pale", iconColor: "c-gold-deep" },
   ];
 
   return (

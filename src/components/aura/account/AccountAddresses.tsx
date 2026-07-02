@@ -102,7 +102,7 @@ export function AccountAddresses() {
   const user = useAuthStore((s) => s.user);
   const { toast } = useToast();
 
-  const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -118,8 +118,16 @@ export function AccountAddresses() {
 
   // Simulate a brief hydrating load so the shimmer state is visible.
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 650);
-    return () => clearTimeout(t);
+    fetch("/api/user/addresses")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        setAddresses(Array.isArray(data) ? data : []);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setAddresses([]);
+        setIsLoading(false);
+      });
   }, []);
 
   const openAdd = () => {
