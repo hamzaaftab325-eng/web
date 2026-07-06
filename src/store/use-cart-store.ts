@@ -4,8 +4,6 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { CartLine, Product, ProductVariant } from "@/types";
 import { uid } from "@/lib/utils";
-import { addToCart, removeFromCart } from "@/lib/analytics/ecommerce";
-import { trackCartEvent } from "@/hooks/use-tracking";
 
 interface CartState {
   lines: CartLine[];
@@ -48,21 +46,6 @@ export const useCartStore = create<CartState>()(
           ? `${product.id}__${variant.id}`
           : product.id;
 
-        addToCart({
-          currency: "PKR",
-          value: product.price * quantity,
-          items: [{
-            item_id: product.id,
-            item_name: product.name,
-            price: product.price,
-            quantity,
-            item_variant: variantLabel,
-          }],
-        });
-
-        // Server-side cart event tracking
-        trackCartEvent("add_to_cart", product.slug, product.id, quantity);
-
         set((state) => {
           const existing = state.lines.find((l) => l.key === key);
           const maxStock = product.stockQuantity;
@@ -93,22 +76,6 @@ export const useCartStore = create<CartState>()(
       },
 
       removeLine: (key) => {
-        const line = get().lines.find((l) => l.key === key);
-        if (line) {
-          removeFromCart({
-            currency: "PKR",
-            value: line.price * line.quantity,
-            items: [{
-              item_id: line.productId,
-              item_name: line.name,
-              price: line.price,
-              quantity: line.quantity,
-              item_variant: line.variantLabel,
-            }],
-          });
-          // Server-side cart event tracking
-          trackCartEvent("remove_from_cart", line.slug, line.productId, line.quantity);
-        }
         set((s) => ({ lines: s.lines.filter((l) => l.key !== key) }));
       },
 

@@ -6,7 +6,6 @@ import { FeaturedProducts } from "@/components/aura/sections/FeaturedProducts";
 import { CuratedCollection } from "@/components/aura/sections/CuratedCollection";
 import { TestimonialSection } from "@/components/aura/sections/TestimonialSection";
 import { BrandValues } from "@/components/aura/sections/BrandValues";
-import { InstagramFeed } from "@/components/aura/sections/InstagramFeed";
 import { RecentlyViewed } from "@/components/aura/commerce/RecentlyViewed";
 import { NewsletterSection } from "@/components/aura/sections/NewsletterSection";
 import { FAQSection } from "@/components/aura/sections/FAQSection";
@@ -90,7 +89,6 @@ export default async function Home() {
       <CuratedCollection initialCollections={collections} />
       <TestimonialSection initialTestimonials={testimonials} />
       <BrandValues />
-      <InstagramFeed />
       <RecentlyViewed />
       <NewsletterSection />
       <FAQSection initialFAQ={faq} />

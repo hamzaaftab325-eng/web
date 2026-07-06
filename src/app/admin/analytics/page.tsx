@@ -18,12 +18,10 @@ import {
 import {
   BarChart3,
   Download,
-  Eye,
   Gem,
   Package,
   Percent,
   Repeat,
-  Search,
   ShoppingBag,
   TrendingUp,
   Users,
@@ -46,12 +44,7 @@ interface AnalyticsData {
   totalOrders: number;
   avgOrderValue: number;
   topProducts: Array<{ productName: string; productSlug: string; quantity: number; revenue: number }>;
-  mostViewedProducts: Array<{ slug: string; views: number }>;
   totalProducts: number;
-  totalPageViews: number;
-  searchTerms: Array<{ query: string; results: number }>;
-  cartFunnel: { addToCart: number; beginCheckout: number; purchase: number };
-  viewToPurchaseRate: number;
   revenueByCollection: Array<{ name: string; revenue: number }>;
   dayOfWeek: Array<{ day: string; revenue: number; orders: number }>;
   avgCustomerLTV: number;
@@ -100,10 +93,8 @@ const revenueConfig: ChartConfig = {
   revenue: { label: "Revenue", color: AURA.gold },
   orders: { label: "Orders", color: AURA.ink },
 };
-const funnelConfig: ChartConfig = { value: { label: "Events", color: AURA.gold } };
 const dowConfig: ChartConfig = { revenue: { label: "Revenue", color: AURA.gold } };
 const collectionConfig: ChartConfig = { revenue: { label: "Revenue", color: AURA.gold } };
-const viewsConfig: ChartConfig = { views: { label: "Views", color: AURA.gold } };
 
 /* ── Helpers ─────────────────────────────────────────────────────────────── */
 
@@ -119,17 +110,6 @@ function formatCompact(n: number): string {
   if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(n >= 10_000 ? 0 : 1)}k`;
   return `${Math.round(n)}`;
-}
-
-/** Turn a slug like "linen-throw-blush" into "Linen Throw Blush". */
-function prettifySlug(slug: string): string {
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-/** Percentage with one decimal, divide-by-zero safe. */
-function pct(n: number, d: number): number {
-  if (!d) return 0;
-  return Math.round((n / d) * 1000) / 10;
 }
 
 /** Short date for axis ticks: "Jul 3". */
@@ -293,28 +273,6 @@ export default function AdminAnalytics() {
 
   const dow = useMemo(() => reorderDays(data?.dayOfWeek ?? []), [data?.dayOfWeek]);
 
-  const funnelData = useMemo(() => {
-    const f = data?.cartFunnel;
-    return [
-      { stage: "Add to Cart", value: f?.addToCart ?? 0 },
-      { stage: "Checkout", value: f?.beginCheckout ?? 0 },
-      { stage: "Purchase", value: f?.purchase ?? 0 },
-    ];
-  }, [data?.cartFunnel]);
-
-  const funnelStats = useMemo(() => {
-    const f = data?.cartFunnel;
-    const add = f?.addToCart ?? 0;
-    const begin = f?.beginCheckout ?? 0;
-    const purch = f?.purchase ?? 0;
-    return [
-      { label: "Cart → Checkout", value: pct(begin, add) },
-      { label: "Checkout → Purchase", value: pct(purch, begin) },
-      { label: "Cart → Purchase", value: pct(purch, add) },
-      { label: "View → Purchase", value: data?.viewToPurchaseRate ?? 0 },
-    ];
-  }, [data?.cartFunnel, data?.viewToPurchaseRate]);
-
   const collectionData = useMemo(
     () => (data?.revenueByCollection ?? []).slice(0, 7),
     [data?.revenueByCollection],
@@ -324,16 +282,7 @@ export default function AdminAnalytics() {
     [collectionData],
   );
 
-  const mostViewed = useMemo(
-    () =>
-      (data?.mostViewedProducts ?? [])
-        .slice(0, 5)
-        .map((p) => ({ name: prettifySlug(p.slug), views: p.views })),
-    [data?.mostViewedProducts],
-  );
-
   const topProducts = data?.topProducts ?? [];
-  const searchTerms = data?.searchTerms ?? [];
 
   /* Sparkline series for KPI cards ──────────────────────────────────────── */
 
@@ -412,17 +361,6 @@ export default function AdminAnalytics() {
       spark: aovSpark,
       sparkColor: AURA.goldDeep,
     },
-    {
-      label: "Page Views",
-      value: loading ? "—" : (data?.totalPageViews ?? 0).toLocaleString(),
-      icon: Eye,
-      gradient: "from-cream-deep to-gold-pale",
-      iconBg: "bg-cream-deep",
-      iconColor: "c-gold-deep",
-      hint: `Last ${rangeLabel}`,
-      spark: null,
-      sparkColor: AURA.ink,
-    },
   ];
 
   /* Export handler — downloads sales CSV from the analytics export API ──── */
@@ -469,7 +407,7 @@ export default function AdminAnalytics() {
               Analytics
             </TextBlurReveal>
             <p className="t-body c-ink-muted max-w-lg">
-              Revenue trends, conversion funnels, customer behavior, and product performance.
+              Revenue trends, customer behavior, and product performance.
             </p>
           </div>
 
@@ -527,7 +465,7 @@ export default function AdminAnalytics() {
       {/* ── Row 1: KPI cards with sparklines ───────────────────────────── */}
       <RevealOnScroll
         stagger={0.08}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10"
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10"
       >
         {cards.map((card) => {
           const Icon = card.icon;
@@ -663,88 +601,8 @@ export default function AdminAnalytics() {
         </ChartCard>
       </RevealOnScroll>
 
-      {/* ── Row 3: Cart funnel + Day of week ───────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-        {/* Cart funnel */}
-        <RevealOnScroll>
-          <SectionHeader title="Cart Funnel" hint="Conversion" />
-          <ChartCard>
-            {loading ? (
-              <ChartLoading />
-            ) : funnelData.every((d) => d.value === 0) ? (
-              <ChartEmpty icon={BarChart3} message="No cart events recorded yet." />
-            ) : (
-              <>
-                <ChartContainer config={funnelConfig} className="aspect-auto h-[220px] w-full">
-                  <BarChart
-                    data={funnelData}
-                    layout="vertical"
-                    margin={{ top: 4, right: 24, bottom: 4, left: 8 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke={AURA.goldPale} horizontal={false} />
-                    <XAxis
-                      type="number"
-                      tickFormatter={formatCompact}
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fill: AURA.inkFaint, fontSize: 11 }}
-                    />
-                    <YAxis
-                      type="category"
-                      dataKey="stage"
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fill: AURA.inkMuted, fontSize: 12 }}
-                      width={92}
-                    />
-                    <ChartTooltip
-                      cursor={{ fill: AURA.goldPale, fillOpacity: 0.3 }}
-                      content={
-                        <ChartTooltipContent
-                          formatter={(value, name) =>
-                            tooltipRow(String(name), Number(value).toLocaleString())
-                          }
-                        />
-                      }
-                    />
-                    <Bar
-                      dataKey="value"
-                      radius={[0, 4, 4, 0]}
-                      barSize={26}
-                      isAnimationActive={anim}
-                      animationDuration={800}
-                    >
-                      {funnelData.map((_, i) => (
-                        <Cell
-                          key={i}
-                          fill={
-                            i === 0
-                              ? AURA.gold
-                              : i === 1
-                                ? AURA.goldDeep
-                                : AURA.ink
-                          }
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ChartContainer>
-                {/* Conversion stat chips */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-4 border-t border-hairline-cream">
-                  {funnelStats.map((s) => (
-                    <div key={s.label} className="text-center">
-                      <p className="t-display-sm c-gold-deep t-num">{s.value}%</p>
-                      <p className="t-caption c-ink-faint mt-1">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </ChartCard>
-        </RevealOnScroll>
-
-        {/* Day of week */}
-        <RevealOnScroll>
+      {/* ── Row 3: Day of week ────────────────────────────────────────── */}
+      <RevealOnScroll className="mb-10">
           <SectionHeader title="Revenue by Day of Week" hint="Mon – Sun" />
           <ChartCard>
             {loading ? (
@@ -792,7 +650,6 @@ export default function AdminAnalytics() {
             )}
           </ChartCard>
         </RevealOnScroll>
-      </div>
 
       {/* ── Row 4: Top products table + Revenue by collection donut ────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
@@ -901,36 +758,8 @@ export default function AdminAnalytics() {
         </RevealOnScroll>
       </div>
 
-      {/* ── Row 5: Top searches + Customer insights ────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-        {/* Top searches */}
-        <RevealOnScroll>
-          <SectionHeader title="Top Searches" hint="Recent queries" />
-          <ChartCard>
-            {loading ? (
-              <ChartLoading />
-            ) : searchTerms.length === 0 ? (
-              <ChartEmpty icon={Search} message="No searches recorded yet." />
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {searchTerms.map((s, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-2 chip bg-cream-deep c-ink-muted"
-                  >
-                    {s.query}
-                    <span className="t-caption t-num px-1.5 py-0.5 rounded-full bg-gold-pale c-gold-deep">
-                      {s.results} results
-                    </span>
-                  </span>
-                ))}
-              </div>
-            )}
-          </ChartCard>
-        </RevealOnScroll>
-
-        {/* Customer insights */}
-        <RevealOnScroll>
+      {/* ── Row 5: Customer insights ────────────────────────────────────── */}
+        <RevealOnScroll className="mb-10">
           <SectionHeader title="Customer Insights" hint="Loyalty & LTV" />
           <div className="grid grid-cols-2 gap-4">
             {customerStats.map((stat) => {
@@ -957,75 +786,8 @@ export default function AdminAnalytics() {
             })}
           </div>
         </RevealOnScroll>
-      </div>
 
-      {/* ── Row 6: Most viewed products ────────────────────────────────── */}
-      <RevealOnScroll className="mb-10">
-        <SectionHeader title="Most Viewed Products" hint="Top 5" />
-        <ChartCard>
-          {loading ? (
-            <ChartLoading />
-          ) : mostViewed.length === 0 ? (
-            <ChartEmpty icon={Eye} message="No product views recorded yet." />
-          ) : (
-            <ChartContainer config={viewsConfig} className="aspect-auto h-[260px] w-full">
-              <BarChart
-                data={mostViewed}
-                layout="vertical"
-                margin={{ top: 4, right: 24, bottom: 4, left: 8 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke={AURA.goldPale} horizontal={false} />
-                <XAxis
-                  type="number"
-                  tickFormatter={formatCompact}
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: AURA.inkFaint, fontSize: 11 }}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="name"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: AURA.inkMuted, fontSize: 12 }}
-                  width={150}
-                  tickFormatter={(v) =>
-                    String(v).length > 20 ? `${String(v).slice(0, 19)}…` : String(v)
-                  }
-                />
-                <ChartTooltip
-                  cursor={{ fill: AURA.goldPale, fillOpacity: 0.3 }}
-                  content={
-                    <ChartTooltipContent
-                      formatter={(value, name) =>
-                        tooltipRow(String(name), `${Number(value).toLocaleString()} views`)
-                      }
-                    />
-                  }
-                />
-                <Bar
-                  dataKey="views"
-                  fill={AURA.gold}
-                  radius={[0, 4, 4, 0]}
-                  barSize={20}
-                  isAnimationActive={anim}
-                  animationDuration={800}
-                >
-                  {mostViewed.map((_, i) => (
-                    <Cell
-                      key={i}
-                      fill={i === 0 ? AURA.goldDeep : AURA.gold}
-                      fillOpacity={1 - i * 0.15}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ChartContainer>
-          )}
-        </ChartCard>
-      </RevealOnScroll>
-
-      {/* ── Row 7: Recent Orders table ─────────────────────────────────── */}
+      {/* ── Row 6: Recent Orders table ──────────────────────────────────── */}
       <RevealOnScroll className="mb-10">
         <SectionHeader title="Recent Orders" hint={`Last ${rangeLabel}`} />
         <ChartCard className="p-0 overflow-hidden">

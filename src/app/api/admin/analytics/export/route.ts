@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
 
 /**
- * GET /api/admin/analytics/export?type=sales|products|customers|search
+ * GET /api/admin/analytics/export?type=sales|products|customers
  * Exports analytics data as CSV.
  */
 export async function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type") ?? "sales";
   // Allow the caller to specify a date range (defaults to 30 days for sales,
-  // unlimited for products/customers/search)
+  // unlimited for products/customers)
   const range = searchParams.get("range") ?? "30d";
   const days = range === "7d" ? 7 : range === "90d" ? 90 : 30;
   const startDate = new Date();
@@ -59,15 +59,6 @@ export async function GET(request: NextRequest) {
       return [`"${u.firstName} ${u.lastName}"`, u.email, u.createdAt.toISOString().split("T")[0], u.orders.length, totalSpent].join(",");
     }).join("\n");
     filename = "customers";
-  } else if (type === "search") {
-    const searches = await db.searchLog.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 200,
-      select: { query: true, resultsCount: true, createdAt: true },
-    });
-    csv = "Search Query,Results,Date\n";
-    csv += searches.map(s => [`"${s.query}"`, s.resultsCount ?? 0, s.createdAt.toISOString().split("T")[0]].join(",")).join("\n");
-    filename = "search-terms";
   }
 
   return new NextResponse(csv, {

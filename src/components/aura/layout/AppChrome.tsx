@@ -16,7 +16,6 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useProductBySlug } from "@/hooks/queries/use-product-by-slug";
-import { usePageViewTracking } from "@/hooks/use-tracking";
 import { useSettings } from "@/hooks/use-settings";
 import { hydrateWishlist } from "@/store/use-wishlist-store";
 
@@ -27,7 +26,6 @@ const WishlistDrawer = dynamic(() => import("@/components/aura/commerce/Wishlist
 const QuickViewModal = dynamic(() => import("@/components/aura/commerce/QuickViewModal").then(m => ({ default: m.QuickViewModal })), { ssr: false });
 const CompareTray = dynamic(() => import("@/components/aura/commerce/CompareTray").then(m => ({ default: m.CompareTray })), { ssr: false });
 const CheckoutFlow = dynamic(() => import("@/components/aura/commerce/CheckoutFlow").then(m => ({ default: m.CheckoutFlow })), { ssr: false });
-// ExitIntentPopup removed — feature discontinued
 const JournalReader = dynamic(() => import("@/components/aura/sections/JournalReader").then(m => ({ default: m.JournalReader })), { ssr: false });
 const InstallPrompt = dynamic(() => import("@/components/analytics/InstallPrompt").then(m => ({ default: m.InstallPrompt })), { ssr: false });
 
@@ -35,7 +33,7 @@ const InstallPrompt = dynamic(() => import("@/components/analytics/InstallPrompt
  * AppChrome — the persistent UI shell that wraps every page.
  *
  * Renders: Header, Footer, MobileNav, MobileTabBar, SearchOverlay,
- * CartDrawer, WishlistDrawer, CompareTray, CheckoutFlow, ExitIntentPopup,
+ * CartDrawer, WishlistDrawer, CompareTray, CheckoutFlow,
  * FirstOrderBanner, CookieConsent, InstallPrompt, AnalyticsProvider,
  * JournalReader (overlay), QuickViewModal, ProductDetailPage (overlay).
  *
@@ -53,7 +51,6 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
   useKeyboardShortcuts();
-  usePageViewTracking();
   useSettings(); // Loads store settings + updates currency symbol globally
 
   const quickViewSlug = useUIStore((s) => s.quickViewProductSlug);
@@ -110,8 +107,6 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         {!isAuthPage && <WishlistDrawer />}
         {!isAuthPage && <CompareTray />}
         {!isAuthPage && <CheckoutFlow />}
-        {/* ExitIntentPopup removed — was not working reliably */}
-
         {/* Product detail page overlay (triggered from quick view / compare) */}
         {/* Quick view modal */}
         <QuickViewModal product={quickViewProduct ?? null} onClose={() => setQuickViewProduct(null)} />

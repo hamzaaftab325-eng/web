@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight, Zap, Instagram, Gift } from "lucide-react";
+import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight, Zap, Gift } from "lucide-react";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
@@ -15,8 +15,6 @@ const contentSections = [
   { label: "Categories", description: "Product categories shown in the mega menu and shop filters.", icon: Sparkles, href: "/admin/content/categories" },
   { label: "Collections", description: "Curated product collections for seasonal and themed displays.", icon: Sparkles, href: "/admin/content/collections" },
   { label: "Brand Values", description: "The four values shown on the home page — what your atelier stands for.", icon: Sparkles, href: "/admin/content/brand-values" },
-  // Brand Marquee, Press, Exit Intent — removed (features discontinued)
-  { label: "Instagram Feed", description: "Instagram posts shown in the social proof section.", icon: Instagram, href: "/admin/content/instagram" },
   { label: "First Order Offer", description: "Discount popup for first-time visitors.", icon: Gift, href: "/admin/content/first-order-offer" },
   { label: "Flash Sales", description: "Time-limited discount events with start and end dates.", icon: Zap, href: "/admin/flash-sales" },
 ];

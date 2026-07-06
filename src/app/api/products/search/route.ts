@@ -23,8 +23,6 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    await db.searchLog.create({ data: { query: q, resultsCount: products.length } }).catch(() => {});
-
     // Always return an array — the useProductSearch hook expects Product[].
     // Previously returned { products: [], suggestions: [...] } when zero results,
     // which broke the hook's .map() call. Now returns [] consistently.

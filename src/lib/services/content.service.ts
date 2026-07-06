@@ -63,15 +63,6 @@ export interface CareGuideDTO {
   isActive: boolean;
 }
 
-export interface InstagramPostDTO {
-  id: string;
-  imageUrl: string;
-  caption: string;
-  productSlug: string | null;
-  instagramUrl: string;
-  sortOrder: number;
-  isActive: boolean;
-}
 
 export interface HeroSlideContentDTO {
   id: string;
@@ -214,28 +205,6 @@ export async function getCareGuides(): Promise<CareGuideDTO[]> {
       body: (g.body as { type: "paragraph" | "heading" | "list"; text?: string; items?: string[] }[]) ?? [],
       sortOrder: g.sortOrder,
       isActive: g.isActive,
-    }));
-  } catch {
-    return [];
-  }
-}
-
-// ── Instagram Posts ────────────────────────────────────────────────────
-
-export async function getInstagramPosts(): Promise<InstagramPostDTO[]> {
-  try {
-    const posts = await db.instagramPost.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-    });
-    return posts.map((p) => ({
-      id: p.id,
-      imageUrl: p.imageUrl,
-      caption: p.caption ?? "",
-      productSlug: p.productSlug,
-      instagramUrl: p.instagramUrl ?? "",
-      sortOrder: p.sortOrder,
-      isActive: p.isActive,
     }));
   } catch {
     return [];

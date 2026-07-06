@@ -310,9 +310,6 @@ export async function search(query: string): Promise<ProductListItem[]> {
       select: LIST_SELECT,
     });
 
-    // Log the search (fire-and-forget)
-    void db.searchLog.create({ data: { query, resultsCount: products.length } }).catch(() => {});
-
     return products.map(toListItem);
   } catch {
     return [];

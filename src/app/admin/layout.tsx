@@ -298,7 +298,6 @@ function AdminBreadcrumbs({ pathname }: { pathname: string }) {
     { prefix: "/admin/content/care-guides", label: "Care Guides", url: "/admin/content/care-guides" },
     { prefix: "/admin/content/faq", label: "FAQ", url: "/admin/content/faq" },
     { prefix: "/admin/content/testimonials", label: "Testimonials", url: "/admin/content/testimonials" },
-    { prefix: "/admin/content/instagram", label: "Instagram", url: "/admin/content/instagram" },
     { prefix: "/admin/content/first-order-offer", label: "First Order Offer", url: "/admin/content/first-order-offer" },
   ];
 

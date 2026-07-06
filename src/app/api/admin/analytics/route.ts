@@ -3,8 +3,8 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
 
 /**
- * GET /api/admin/analytics — comprehensive analytics data.
- * Query params: range (7d, 30d, 90d), detail (overview, pages, search, carts, revenue)
+ * GET /api/admin/analytics — order-based analytics data.
+ * Query params: range (7d, 30d, 90d), detail (overview, revenue)
  */
 export async function GET(request: NextRequest) {
   try {
@@ -17,68 +17,6 @@ export async function GET(request: NextRequest) {
     const days = range === "7d" ? 7 : range === "90d" ? 90 : 30;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-
-    if (detail === "pages") {
-      // Page view breakdown by path
-      const pageViews = await db.pageView.groupBy({
-        by: ["path"],
-        _count: { id: true },
-        where: { createdAt: { gte: startDate } },
-        orderBy: { _count: { id: "desc" } },
-        take: 20,
-      });
-      const totalViews = await db.pageView.count({ where: { createdAt: { gte: startDate } } });
-      return NextResponse.json({
-        pageViews: pageViews.map(pv => ({ path: pv.path, views: pv._count.id })),
-        totalViews,
-      });
-    }
-
-    if (detail === "search") {
-      // Search analytics
-      const [searchLogs, topSearches, zeroResults] = await Promise.all([
-        db.searchLog.findMany({
-          where: { createdAt: { gte: startDate } },
-          orderBy: { createdAt: "desc" },
-          take: 50,
-          select: { query: true, resultsCount: true, createdAt: true },
-        }),
-        db.searchLog.groupBy({
-          by: ["query"],
-          _count: { id: true },
-          where: { createdAt: { gte: startDate } },
-          orderBy: { _count: { id: "desc" } },
-          take: 20,
-        }),
-        db.searchLog.findMany({
-          where: { createdAt: { gte: startDate }, resultsCount: 0 },
-          orderBy: { createdAt: "desc" },
-          take: 20,
-          select: { query: true },
-        }),
-      ]);
-      return NextResponse.json({
-        recentSearches: searchLogs.map(s => ({ query: s.query, results: s.resultsCount ?? 0, date: s.createdAt.toISOString().split("T")[0] })),
-        topSearches: topSearches.map(s => ({ query: s.query, count: s._count.id })),
-        zeroResultSearches: zeroResults.map(s => s.query),
-        totalSearches: searchLogs.length,
-      });
-    }
-
-    if (detail === "carts") {
-      // Cart funnel
-      const [addToCart, beginCheckout, purchase] = await Promise.all([
-        db.cartEvent.count({ where: { eventType: "add_to_cart", createdAt: { gte: startDate } } }),
-        db.cartEvent.count({ where: { eventType: "begin_checkout", createdAt: { gte: startDate } } }),
-        db.cartEvent.count({ where: { eventType: "purchase", createdAt: { gte: startDate } } }),
-      ]);
-      const conversionRate = addToCart > 0 ? (purchase / addToCart) * 100 : 0;
-      return NextResponse.json({
-        funnel: { addToCart, beginCheckout, purchase },
-        conversionRate: Math.round(conversionRate * 100) / 100,
-        abandonmentRate: Math.round((100 - conversionRate) * 100) / 100,
-      });
-    }
 
     if (detail === "revenue") {
       // Revenue by category
@@ -96,8 +34,8 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Default: overview (existing behavior)
-    const [orders, products, topProducts, pageViews, searchLogs, productViews, cartEvents, recentOrders] = await Promise.all([
+    // Default: overview — order-based analytics
+    const [orders, products, topProducts, recentOrders] = await Promise.all([
       db.order.findMany({
         where: { createdAt: { gte: startDate } },
         orderBy: { createdAt: "asc" },
@@ -111,20 +49,6 @@ export async function GET(request: NextRequest) {
         orderBy: { _sum: { quantity: "desc" } },
         take: 10,
       }),
-      db.pageView.count({ where: { createdAt: { gte: startDate } } }),
-      db.searchLog.findMany({ where: { createdAt: { gte: startDate } }, take: 20, orderBy: { createdAt: "desc" }, select: { query: true, resultsCount: true } }),
-      db.productView.groupBy({
-        by: ["productSlug"],
-        _count: { id: true },
-        where: { createdAt: { gte: startDate } },
-        orderBy: { _count: { id: "desc" } },
-        take: 10,
-      }),
-      db.cartEvent.groupBy({
-        by: ["eventType"],
-        _count: { id: true },
-        where: { createdAt: { gte: startDate } },
-      }),
       db.order.findMany({
         take: 10,
         orderBy: { createdAt: "desc" },
@@ -136,12 +60,7 @@ export async function GET(request: NextRequest) {
       }),
     ]);
 
-    // 15.1: View-to-purchase conversion rate
-    const totalProductViews = productViews.reduce((sum, pv) => sum + pv._count.id, 0);
-    const purchasedSlugs = new Set(orders.flatMap(o => o.items.map(i => i.productSlug)));
-    const viewToPurchaseRate = totalProductViews > 0 ? (purchasedSlugs.size / totalProductViews) * 100 : 0;
-
-    // 15.3: Revenue by collection — batch query (was N+1: one query per order item)
+    // Revenue by collection — batch query
     const allOrderItemSlugs = [...new Set(orders.flatMap(o => o.items.map(i => i.productSlug)))];
     const productsWithCollections = await db.product.findMany({
       where: { slug: { in: allOrderItemSlugs } },
@@ -193,28 +112,13 @@ export async function GET(request: NextRequest) {
       salesByDate[date].orders += 1;
     });
 
-    const cartFunnel = cartEvents.reduce((acc, e) => {
-      acc[e.eventType] = e._count.id;
-      return acc;
-    }, {} as Record<string, number>);
-
     return NextResponse.json({
       sales: Object.entries(salesByDate).map(([date, data]) => ({ date, ...data })),
       totalRevenue: orders.reduce((s, o) => s + Number(o.total), 0),
       totalOrders: orders.length,
       avgOrderValue: orders.length > 0 ? orders.reduce((s, o) => s + Number(o.total), 0) / orders.length : 0,
       topProducts: topProducts.map(p => ({ productName: p.productName, productSlug: p.productSlug, quantity: p._sum.quantity ?? 0, revenue: (p._sum.quantity ?? 0) * Number(p._avg.price ?? 0) })),
-      mostViewedProducts: productViews.map(pv => ({ slug: pv.productSlug, views: pv._count.id })),
       totalProducts: products.length,
-      totalPageViews: pageViews,
-      searchTerms: searchLogs.map(s => ({ query: s.query, results: s.resultsCount ?? 0 })),
-      cartFunnel: {
-        addToCart: cartFunnel["add_to_cart"] ?? 0,
-        beginCheckout: cartFunnel["begin_checkout"] ?? 0,
-        purchase: cartFunnel["purchase"] ?? 0,
-      },
-      // New analytics
-      viewToPurchaseRate: Math.round(viewToPurchaseRate * 100) / 100,
       revenueByCollection: Object.entries(collectionRevenue).map(([name, revenue]) => ({ name, revenue })).sort((a, b) => b.revenue - a.revenue),
       dayOfWeek: dayNames.map((name, i) => ({ day: name, revenue: dayOfWeekRevenue[i].revenue, orders: dayOfWeekRevenue[i].orders })),
       avgCustomerLTV: Math.round(avgLTV),

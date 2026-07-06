@@ -1,34 +1,41 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Hammer, Leaf, Clock, Compass } from "lucide-react";
+import * as LucideIcons from "lucide-react";
+import { useBrandValues } from "@/hooks/queries/use-content";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { Hammer, Leaf, Clock, Compass } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-const values = [
-  {
-    icon: Hammer,
-    title: "Artisan Crafted",
-    body: "Each piece is thrown, welded, or woven by hand in small workshops we visit and know by name.",
-  },
-  {
-    icon: Leaf,
-    title: "Sustainably Sourced",
-    body: "We trace every material — the clay, the brass, the linen — back to its origin and its maker.",
-  },
-  {
-    icon: Clock,
-    title: "Timeless Design",
-    body: "We design for a decade of use, not a season. Each object is meant to outlast a trend cycle.",
-  },
-  {
-    icon: Compass,
-    title: "Thoughtfully Curated",
-    body: "We sell fewer things, more carefully. No catalogue — only the pieces we'd put in our own homes.",
-  },
+// Fallback values used when DB has no data or fetch fails
+const fallbackValues = [
+  { icon: "Hammer", title: "Artisan Crafted", body: "Each piece is thrown, welded, or woven by hand in small workshops we visit and know by name." },
+  { icon: "Leaf", title: "Sustainably Sourced", body: "We trace every material — the clay, the brass, the linen — back to its origin and its maker." },
+  { icon: "Clock", title: "Timeless Design", body: "We design for a decade of use, not a season. Each object is meant to outlast a trend cycle." },
+  { icon: "Compass", title: "Thoughtfully Curated", body: "We sell fewer things, more carefully. No catalogue — only the pieces we'd put in our own homes." },
 ];
 
+// Map icon name strings to Lucide icon components
+function getIcon(name: string): LucideIcon {
+  const key = name.charAt(0).toUpperCase() + name.slice(1) as keyof typeof LucideIcons;
+  const Icon = LucideIcons[key];
+  if (typeof Icon === "function") return Icon as LucideIcon;
+  // Fallback icons for common names
+  const fallbacks: Record<string, LucideIcon> = {
+    hammer: Hammer, leaf: Leaf, clock: Clock, compass: Compass,
+  };
+  return fallbacks[name.toLowerCase()] ?? Hammer;
+}
+
 export function BrandValues() {
+  const { data: dbValues } = useBrandValues();
+
+  // Use DB values if available, otherwise fallback
+  const values = (dbValues && dbValues.length > 0)
+    ? dbValues.map(v => ({ icon: v.icon, title: v.title, body: v.description }))
+    : fallbackValues;
+
   return (
     <section className="section-stack bg-canvas">
       <div className="container-aura">
@@ -38,35 +45,38 @@ export function BrandValues() {
             as="h2"
             className="t-display-md c-ink leading-tight mb-4"
           >
-            Four things we don't compromise on.
+            Four things we don&apos;t compromise on.
           </TextBlurReveal>
           <p className="t-body c-ink-muted">
-            They shape what we make, who we make it with, and what we'll never
+            They shape what we make, who we make it with, and what we&apos;ll never
             put our name on.
           </p>
         </div>
 
         <RevealOnScroll stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6">
-          {values.map((v) => (
-            <motion.div
-              key={v.title}
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
-                },
-              }}
-              className="text-center md:text-left"
-            >
-              <div className="inline-flex items-center justify-center w-12 h-12 mb-5 border border-hairline-cream rounded-full">
-                <v.icon size={20} strokeWidth={1.25} className="c-ink" />
-              </div>
-              <h3 className="t-headline-sm c-ink mb-3">{v.title}</h3>
-              <p className="t-body c-ink-muted leading-relaxed">{v.body}</p>
-            </motion.div>
-          ))}
+          {values.map((v) => {
+            const Icon = getIcon(v.icon);
+            return (
+              <motion.div
+                key={v.title}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
+                  },
+                }}
+                className="text-center md:text-left"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 mb-5 border border-hairline-cream rounded-full">
+                  <Icon size={20} strokeWidth={1.25} className="c-ink" />
+                </div>
+                <h3 className="t-headline-sm c-ink mb-3">{v.title}</h3>
+                <p className="t-body c-ink-muted leading-relaxed">{v.body}</p>
+              </motion.div>
+            );
+          })}
         </RevealOnScroll>
       </div>
     </section>

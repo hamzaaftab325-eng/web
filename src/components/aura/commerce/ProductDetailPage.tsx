@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
-import { trackProductView } from "@/hooks/use-tracking";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import {
@@ -111,17 +110,6 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
   useEffect(() => {
     if (product.slug) addRecentlyViewed(product.slug);
   }, [product.slug, addRecentlyViewed]);
-
-  // Bug #28 fix: track product view client-side (was SSR, inflated by crawlers).
-  // Fires once per real page load — POSTs to /api/track/product-view.
-  // Uses the shared trackProductView helper from use-tracking.ts so the field
-  // name (productSlug) matches the Zod schema on the server. Previously this
-  // was an inline fetch sending `{ slug }` which failed Zod validation
-  // (server expected `productSlug`) — silent tracking failure.
-  useEffect(() => {
-    if (!product.slug) return;
-    trackProductView(product.slug, product.id);
-  }, [product.slug, product.id]);
 
   // Embla slide tracking
   const onSelect = useCallback(() => {

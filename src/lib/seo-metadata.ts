@@ -44,18 +44,6 @@ const PAGE_META: Record<ViewKey, PageMeta> = {
       "Essays on slow living, material care, and interior design. Notes on rooms, craft, and considered objects from the Aura Living atelier.",
     ogImage: "/hero/journal.webp",
   },
-  artisans: {
-    title: "Aura Living - Meet Our Artisans & Workshop Stories",
-    description:
-      "Meet the makers behind every Aura Living piece. Workshop profiles, craft traditions, and the stories behind each handcrafted object.",
-    ogImage: "/hero/about.webp",
-  },
-  sustainability: {
-    title: "Aura Living - Sustainability & Ethical Sourcing",
-    description:
-      "Our commitment to slow craft, ethical sourcing, and materials that last. Sustainability at Aura Living is practice, not marketing.",
-    ogImage: "/hero/about.webp",
-  },
   collections: {
     title: "Aura Living - Curated Home Décor Collections",
     description:

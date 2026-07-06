@@ -82,7 +82,7 @@ export interface CartLine {
 }
 
 export type ViewKey =
-  | "home" | "shop" | "about" | "journal" | "artisans" | "sustainability"
+  | "home" | "shop" | "about" | "journal"
   | "login" | "signup" | "forgot-password" | "reset-password"
   | "account" | "account-orders" | "account-order-detail"
   | "account-addresses" | "account-wishlist" | "account-preferences"
@@ -103,5 +103,3 @@ export interface JournalArticle { id: string; slug: string; title: string; categ
 export interface HeroSlide { id: string; image: string; eyebrow: string; headline: string; subtitle: string; ctaLabel: string; ctaAction: string; alt: string; }
 // PressItem removed — feature discontinued
 export interface BrandValue { icon: string; title: string; description: string; }
-export interface InstagramPost { id: string; imageUrl: string; caption: string; productSlug?: string; instagramUrl: string; }
-export interface Artisan { id: string; slug: string; name: string; location: string; founded: string | null; craft: string; story: string[]; image: string; gallery: string[]; productSlugs: string[]; }
