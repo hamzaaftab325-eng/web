@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { X, ShoppingBag, Plus, Minus, Trash2, Heart, Clock, ArrowRight, Check } from "lucide-react";
@@ -24,6 +24,28 @@ export function CartDrawer() {
   const prefersReducedMotion = useReducedMotion();
   const drawerRef = useRef<HTMLDivElement>(null);
   useFocusTrap(drawerRef, isOpen);
+
+  // Lock body scroll when cart is open — prevents background scrolling on mobile
+  useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.overflowY = "hidden";
+      return () => {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        document.body.style.overflowY = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   const goCheckout = () => {
     close();
@@ -60,16 +82,16 @@ export function CartDrawer() {
             dragConstraints={RIGHT_DRAWER_CONSTRAINTS}
             dragElastic={0.2}
             onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
-            className="fixed top-0 right-0 bottom-0 z-[1100] w-full max-w-[440px] bg-paper flex flex-col safe-area-top safe-area-bottom"
+            className="fixed top-0 right-0 bottom-0 z-[1100] w-full sm:max-w-[440px] bg-paper flex flex-col safe-area-top safe-area-bottom"
           >
-            {/* Drag handle (left edge) */}
+            {/* Drag handle (left edge) — desktop only */}
             {!prefersReducedMotion && (
-              <div className="absolute top-0 left-0 bottom-0 w-1 flex items-center justify-center cursor-ew-resize" aria-hidden>
+              <div className="hidden sm:flex absolute top-0 left-0 bottom-0 w-1 items-center justify-center cursor-ew-resize" aria-hidden>
                 <div className="w-[3px] h-12 rounded-full bg-hairline-gold opacity-40" />
               </div>
             )}
             {/* Header */}
-            <div className="flex items-center justify-between px-6 h-[72px] border-b border-hairline">
+            <div className="flex items-center justify-between px-5 sm:px-6 h-16 sm:h-[72px] border-b border-hairline shrink-0">
               <div className="flex items-center gap-2">
                 <ShoppingBag size={18} strokeWidth={1.25} className="c-ink" />
                 <span className="t-headline-sm c-ink">Your Cart</span>
@@ -80,7 +102,7 @@ export function CartDrawer() {
               <button
                 onClick={close}
                 aria-label="Close cart"
-                className="p-2 text-ink hover:text-gold transition-colors"
+                className="p-2.5 -mr-1.5 text-ink hover:text-gold transition-colors"
               >
                 <X size={22} strokeWidth={1.25} />
               </button>
@@ -106,7 +128,7 @@ export function CartDrawer() {
             ) : (
               <>
                 {/* Items */}
-                <div className="flex-1 overflow-y-auto scrollbar-thin px-6 py-4">
+                <div className="flex-1 overflow-y-auto scrollbar-thin px-5 sm:px-6 py-4">
                   <AnimatePresence initial={false}>
                     {lines.map((line) => (
                       <motion.div
@@ -144,43 +166,44 @@ export function CartDrawer() {
                             </p>
                           </div>
                           <div className="flex items-center justify-between mt-2">
+                            {/* Quantity — 44px min touch target on mobile */}
                             <div className="inline-flex items-center border border-hairline">
                               <button
                                 onClick={() => decrement(line.key)}
                                 aria-label="Decrease quantity"
-                                className="w-8 h-8 flex items-center justify-center c-ink hover:c-gold transition-colors"
+                                className="w-11 h-11 flex items-center justify-center c-ink hover:c-gold transition-colors"
                               >
-                                <Minus size={12} strokeWidth={1.5} />
+                                <Minus size={14} strokeWidth={1.5} />
                               </button>
-                              <span className="w-8 text-center t-body-sm c-ink t-num">
+                              <span className="w-10 text-center t-body c-ink t-num font-medium">
                                 {line.quantity}
                               </span>
                               <button
                                 onClick={() => increment(line.key)}
                                 aria-label="Increase quantity"
-                                className="w-8 h-8 flex items-center justify-center c-ink hover:c-gold transition-colors"
+                                className="w-11 h-11 flex items-center justify-center c-ink hover:c-gold transition-colors"
                               >
-                                <Plus size={12} strokeWidth={1.5} />
+                                <Plus size={14} strokeWidth={1.5} />
                               </button>
                             </div>
                             <p className="t-body c-ink t-num font-medium">
                               {formatPrice(line.price * line.quantity)}
                             </p>
                           </div>
-                          {/* Quick actions */}
-                          <div className="flex items-center gap-3 mt-2">
+                          {/* Quick actions — bigger touch targets */}
+                          <div className="flex items-center gap-4 mt-2.5">
                             <button
                               onClick={() => saveForLater(line.key)}
-                              className="inline-flex items-center gap-1 t-caption c-ink-faint hover:c-gold-deep transition-colors link-underline"
+                              className="inline-flex items-center gap-1.5 t-caption c-ink-faint hover:c-gold-deep transition-colors link-underline py-1"
                             >
-                              <Clock size={10} strokeWidth={1.5} />
+                              <Clock size={11} strokeWidth={1.5} />
                               Save
                             </button>
                             <button
                               onClick={() => moveToWishlist(line.key)}
-                              className="inline-flex items-center gap-1 t-caption c-ink-faint hover:c-gold-deep transition-colors link-underline"
+                              className="inline-flex items-center gap-1.5 t-caption c-ink-faint hover:c-gold-deep transition-colors link-underline py-1"
                             >
-                              <Heart size={10} strokeWidth={1.5} />
+                              <Heart size={11} strokeWidth={1.5} />
                               Wishlist
                             </button>
                           </div>
@@ -189,7 +212,7 @@ export function CartDrawer() {
                         <button
                           onClick={() => removeLine(line.key)}
                           aria-label="Remove item"
-                          className="self-start p-1 c-ink-faint hover:c-gold transition-colors"
+                          className="self-start p-2.5 c-ink-faint hover:c-error transition-colors -mr-1.5"
                         >
                           <Trash2 size={16} strokeWidth={1.25} />
                         </button>
@@ -199,7 +222,7 @@ export function CartDrawer() {
                 </div>
 
                 {/* Summary */}
-                <div className="border-t border-hairline px-6 py-5 space-y-3">
+                <div className="border-t border-hairline px-5 sm:px-6 py-5 space-y-3 shrink-0">
                   <div className="flex justify-between t-body c-ink-muted">
                     <span>Subtotal</span>
                     <span className="t-num c-ink font-medium">{formatPrice(subtotal)}</span>

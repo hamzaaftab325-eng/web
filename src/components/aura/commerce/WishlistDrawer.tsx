@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { X, Heart, ShoppingBag } from "lucide-react";
@@ -21,6 +21,28 @@ export function WishlistDrawer() {
   const prefersReducedMotion = useReducedMotion();
   const drawerRef = useRef<HTMLDivElement>(null);
   useFocusTrap(drawerRef, isOpen);
+
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.overflowY = "hidden";
+      return () => {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        document.body.style.overflowY = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   const { products: items } = useProductsBySlugs(slugs);
 
@@ -59,7 +81,7 @@ export function WishlistDrawer() {
             dragConstraints={RIGHT_DRAWER_CONSTRAINTS}
             dragElastic={0.2}
             onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
-            className="fixed top-0 right-0 bottom-0 z-[1100] w-full max-w-[440px] bg-paper flex flex-col safe-area-top safe-area-bottom"
+            className="fixed top-0 right-0 bottom-0 z-[1100] w-full sm:max-w-[440px] bg-paper flex flex-col safe-area-top safe-area-bottom"
           >
             {/* Drag handle (left edge) */}
             {!prefersReducedMotion && (
