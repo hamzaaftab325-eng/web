@@ -412,8 +412,11 @@ model FlashSale {
   endDate DateTime
   discountPercent Decimal? @db.Decimal(5, 2)
   promoCode String?
+  maxUses Int?
+  usesCount Int @default(0)
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   @@index([isActive, startDate, endDate])
 }
 

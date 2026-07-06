@@ -10,6 +10,7 @@ const CreateSchema = z.object({
   endDate: z.string().datetime("Invalid end date format"),
   discountPercent: z.number().min(0, "Discount cannot be negative").max(100, "Discount cannot exceed 100%").optional(),
   promoCode: z.string().max(50, "Promo code too long").regex(/^[A-Za-z0-9_-]*$/, "Only letters, numbers, hyphens, and underscores").optional().or(z.literal("")),
+  maxUses: z.number().int().min(1, "Must be at least 1 customer").optional().nullable(),
   isActive: z.boolean().optional(),
 });
 
@@ -23,6 +24,7 @@ export async function GET(request: NextRequest) {
       flashSales: sales.map((s) => ({
         ...s,
         discountPercent: s.discountPercent ? Number(s.discountPercent) : null,
+        maxUses: s.maxUses ?? null,
         startDate: s.startDate.toISOString(),
         endDate: s.endDate.toISOString(),
       })),
@@ -65,7 +67,8 @@ export async function POST(request: NextRequest) {
         endDate: end,
         discountPercent: data.discountPercent ?? null,
         promoCode,
-        isActive: data.isActive ?? true, // Default ACTIVE when created from admin
+        maxUses: data.maxUses ?? null,
+        isActive: data.isActive ?? true,
       },
     });
 

@@ -9,8 +9,16 @@ const UpdateSchema = z.object({
   startDate: z.string().datetime("Invalid start date format").optional(),
   endDate: z.string().datetime("Invalid end date format").optional(),
   discountPercent: z.number().min(0, "Discount cannot be negative").max(100, "Max 100%").nullable().optional(),
-  promoCode: z.string().max(50, "Promo code too long").regex(/^[A-Za-z0-9_-]*$/, "Only letters, numbers, hyphens, underscores").nullable().optional().or(z.literal("")),
+  promoCode: z
+    .string()
+    .max(50, "Promo code too long")
+    .regex(/^[A-Za-z0-9_-]*$/, "Only letters, numbers, hyphens, underscores")
+    .nullable()
+    .optional()
+    .or(z.literal("")),
+  maxUses: z.number().int().min(1, "Must be at least 1").nullable().optional(),
   isActive: z.boolean().optional(),
+  resetUsesCount: z.boolean().optional(),
 });
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -28,30 +36,34 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const data = parsed.data;
 
-    // If both dates are provided, validate end > start
-    if (data.startDate && data.endDate) {
-      if (new Date(data.endDate) <= new Date(data.startDate)) {
-        return NextResponse.json({ error: "End date must be after start date", code: "VALIDATION_ERROR" }, { status: 400 });
-      }
+    // Validate date logic
+    const existing = await db.flashSale.findUnique({
+      where: { id },
+      select: { startDate: true, endDate: true, maxUses: true, usesCount: true },
+    });
+    if (!existing) {
+      return NextResponse.json({ error: "Flash sale not found", code: "NOT_FOUND" }, { status: 404 });
     }
 
-    // If only one date is provided, validate against the existing other date
-    if (data.startDate || data.endDate) {
-      const existing = await db.flashSale.findUnique({ where: { id }, select: { startDate: true, endDate: true } });
-      if (!existing) {
-        return NextResponse.json({ error: "Flash sale not found", code: "NOT_FOUND" }, { status: 404 });
-      }
-      const start = data.startDate ? new Date(data.startDate) : existing.startDate;
-      const end = data.endDate ? new Date(data.endDate) : existing.endDate;
-      if (end <= start) {
-        return NextResponse.json({ error: "End date must be after start date", code: "VALIDATION_ERROR" }, { status: 400 });
-      }
+    const start = data.startDate ? new Date(data.startDate) : existing.startDate;
+    const end = data.endDate ? new Date(data.endDate) : existing.endDate;
+    if (end <= start) {
+      return NextResponse.json({ error: "End date must be after start date", code: "VALIDATION_ERROR" }, { status: 400 });
+    }
+
+    // If admin is activating a sale that hit its max uses, warn
+    if (data.isActive === true && existing.maxUses && existing.usesCount >= existing.maxUses) {
+      return NextResponse.json(
+        {
+          error: "Cannot activate: usage limit already reached. Reset the usage count or increase the limit first.",
+          code: "LIMIT_REACHED",
+        },
+        { status: 409 }
+      );
     }
 
     // Clean empty promoCode to null
-    const promoCode = data.promoCode !== undefined
-      ? (data.promoCode?.trim() || null)
-      : undefined;
+    const promoCode = data.promoCode !== undefined ? (data.promoCode?.trim() || null) : undefined;
 
     const sale = await db.flashSale.update({
       where: { id },
@@ -62,7 +74,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         ...(data.endDate !== undefined && { endDate: new Date(data.endDate) }),
         ...(data.discountPercent !== undefined && { discountPercent: data.discountPercent }),
         ...(promoCode !== undefined && { promoCode }),
+        ...(data.maxUses !== undefined && { maxUses: data.maxUses }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.resetUsesCount && { usesCount: 0, isActive: true }),
       },
     });
 
@@ -79,13 +93,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   try {
     const { id } = await params;
-
-    // Verify it exists before deleting
     const existing = await db.flashSale.findUnique({ where: { id }, select: { id: true } });
     if (!existing) {
       return NextResponse.json({ error: "Flash sale not found", code: "NOT_FOUND" }, { status: 404 });
     }
-
     await db.flashSale.delete({ where: { id } });
     return NextResponse.json({ message: "Flash sale deleted successfully" });
   } catch (error) {

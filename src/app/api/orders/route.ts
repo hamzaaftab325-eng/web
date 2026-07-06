@@ -125,8 +125,12 @@ export async function POST(request: NextRequest) {
 
     let promoId: string | null = null;
     let promoMaxUses: number | null = null;
+    let flashSaleId: string | null = null;
+    let flashSaleMaxUses: number | null = null;
     if (promoCode) {
-      const promo = await db.promoCode.findUnique({ where: { code: promoCode.toUpperCase() } });
+      const upperCode = promoCode.toUpperCase();
+      // First try the PromoCode table (existing logic)
+      const promo = await db.promoCode.findUnique({ where: { code: upperCode } });
       if (promo && promo.isActive && (!promo.expiresAt || promo.expiresAt > new Date()) && (!promo.maxUses || promo.usesCount < promo.maxUses)) {
         if (promo.minOrder && subtotal < Number(promo.minOrder)) {
           return NextResponse.json(
@@ -140,6 +144,29 @@ export async function POST(request: NextRequest) {
         discount = Math.min(discount, subtotal);
         promoId = promo.id;
         promoMaxUses = promo.maxUses;
+      } else {
+        // Fallback: check if it's a FlashSale promo code
+        const flashSale = await db.flashSale.findFirst({
+          where: {
+            promoCode: upperCode,
+            isActive: true,
+            startDate: { lte: new Date() },
+            endDate: { gte: new Date() },
+            ...(promoMaxUses !== null ? { usesCount: { lt: promoMaxUses } } : {}),
+          },
+        });
+        if (flashSale && flashSale.discountPercent) {
+          if (flashSale.maxUses && flashSale.usesCount >= flashSale.maxUses) {
+            return NextResponse.json(
+              { error: "This flash sale code has reached its customer limit", code: "FLASH_SALE_EXHAUSTED" },
+              { status: 409 }
+            );
+          }
+          discount = subtotal * Number(flashSale.discountPercent) / 100;
+          discount = Math.min(discount, subtotal);
+          flashSaleId = flashSale.id;
+          flashSaleMaxUses = flashSale.maxUses;
+        }
       }
     }
 
@@ -230,11 +257,33 @@ export async function POST(request: NextRequest) {
           }
         }
 
+        // Increment FlashSale usage count and auto-deactivate if limit reached
+        if (flashSaleId) {
+          const flashWhere: Record<string, unknown> = { id: flashSaleId };
+          if (flashSaleMaxUses) {
+            flashWhere.usesCount = { lt: flashSaleMaxUses };
+          }
+          const flashUpdate = await tx.flashSale.updateMany({
+            where: flashWhere,
+            data: { usesCount: { increment: 1 } },
+          });
+          if (flashUpdate.count === 0) {
+            throw new Error("Flash sale usage limit reached");
+          }
+          // Auto-deactivate if this was the last use
+          if (flashSaleMaxUses) {
+            const updatedFlash = await tx.flashSale.findUnique({ where: { id: flashSaleId }, select: { usesCount: true, maxUses: true } });
+            if (updatedFlash && updatedFlash.maxUses && updatedFlash.usesCount >= updatedFlash.maxUses) {
+              await tx.flashSale.update({ where: { id: flashSaleId }, data: { isActive: false } });
+            }
+          }
+        }
+
         return createdOrder;
       });
     } catch (txError) {
       const errMsg = txError instanceof Error ? txError.message : "Transaction failed";
-      if (errMsg.includes("Promo code usage limit")) {
+      if (errMsg.includes("Promo code usage limit") || errMsg.includes("Flash sale usage limit")) {
         return NextResponse.json(
           { error: "This promo code has reached its usage limit", code: "PROMO_EXHAUSTED" },
           { status: 409 }
