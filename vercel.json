@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/daily-order-digest",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/low-stock-alerts",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup",
+      "schedule": "30 23 * * *"
+    }
+  ]
+}

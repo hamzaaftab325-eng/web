@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 480 100" width="480" height="100">
+  <image x="10" y="14" width="72" height="72"
+         xlink:href="/icons/aura-icon-dark.png"
+         href="/icons/aura-icon-dark.png"
+         preserveAspectRatio="xMidYMid meet"/>
+  <text x="92" y="64"
+        font-family="Montserrat, Helvetica, Arial, sans-serif"
+        font-size="36" font-weight="800"
+        fill="#000000"
+        letter-spacing="3">AURA LIVING</text>
+</svg>
