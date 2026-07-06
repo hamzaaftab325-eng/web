@@ -308,6 +308,29 @@
     line-height: var(--lh-body);
     letter-spacing: var(--ls-body);
     overflow-x: hidden;
+    /* Prevent iOS bounce scroll causing layout shifts */
+    overscroll-behavior-y: contain;
+    /* Safe area insets for notched devices */
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* ─── Mobile: prevent iOS auto-zoom on input focus ──────────────
+     iOS auto-zooms when focused inputs have font-size < 16px.
+     Force all text inputs/selects to at least 16px on touch devices. */
+  @media (pointer: coarse) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="url"],
+    input[type="search"],
+    input:not([type]),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
   }
 
   ::selection {
@@ -689,6 +712,23 @@
   .safe-area-bottom-mt { margin-top: env(safe-area-inset-bottom, 0px); }
   .safe-area-x { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
 
+  /* Mobile: use dvh (dynamic viewport height) instead of vh.
+     On iOS, 100vh includes the URL bar area, causing content to be
+     taller than the visible area. 100dvh adjusts as the bar shows/hides. */
+  @supports (height: 100dvh) {
+    .min-h-screen { min-height: 100dvh; }
+    .h-screen { height: 100dvh; }
+  }
+  /* Fallback for browsers without dvh support — already handled by Tailwind's min-h-screen */
+
+  /* Mobile footer bottom spacing — accounts for tab bar (56px) + safe area */
+  .pb-tab-bar {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 1024px) {
+    .pb-tab-bar { padding-bottom: 0; }
+  }
+
   /* Tap target enforcement — buttons / links on touch devices get at least 44×44 */
   @media (pointer: coarse) {
     .tap-target { min-height: 44px; min-width: 44px; }
@@ -697,6 +737,18 @@
   @media (pointer: coarse) {
     button, a, [role="button"], input[type="submit"], input[type="button"] {
       touch-action: manipulation;
+    }
+  }
+
+  /* ─── Mobile button hover-spacing utility ─────────────────────
+     Adds padding so hover ring doesn't clip on touch devices.
+     Also enforces 44px minimum touch target on coarse pointers. */
+  .btn-hover-spacing {
+    position: relative;
+  }
+  @media (pointer: coarse) {
+    .btn-hover-spacing {
+      min-height: 44px;
     }
   }
 

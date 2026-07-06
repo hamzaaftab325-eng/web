@@ -69,7 +69,7 @@ export function MobileNav() {
             dragConstraints={RIGHT_DRAWER_CONSTRAINTS}
             dragElastic={0.2}
             onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
-            className="fixed top-0 right-0 bottom-0 z-[160] w-full max-w-[420px] bg-paper lg:hidden flex flex-col shadow-elevated"
+            className="fixed top-0 right-0 bottom-0 z-[160] w-full max-w-[420px] bg-paper lg:hidden flex flex-col shadow-elevated safe-area-top safe-area-bottom"
           >
             {/* Drag handle (left edge) */}
             {!prefersReducedMotion && (

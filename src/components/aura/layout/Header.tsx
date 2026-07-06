@@ -76,7 +76,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 inset-x-0 z-sticky transition-all duration-500",
+        "fixed top-0 inset-x-0 z-sticky transition-all duration-500 safe-area-top",
         (scrolled || isLightPage) ? "glass-nav h-[60px] md:h-[72px]" : "bg-transparent h-[72px] md:h-[88px]"
       )}
     >

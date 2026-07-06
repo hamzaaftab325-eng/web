@@ -77,20 +77,20 @@ export function AuthShell({
 
   return (
     <section
-      className={cn("min-h-screen w-full grid lg:grid-cols-2 bg-canvas", className)}
+      className={cn("min-h-screen w-full grid lg:grid-cols-2 bg-canvas safe-area-top", className)}
       aria-labelledby="auth-shell-title"
     >
       {/* ── Left: form column ─────────────────────────────────────────── */}
       <div className="relative flex flex-col min-h-screen bg-gradient-to-br from-canvas via-cream to-cream-deep orb-bg noise-texture">
-        {/* Top bar — back + logo */}
-        <div className="relative z-10 flex items-center justify-between px-6 md:px-10 pt-6 md:pt-8">
+        {/* Top bar — back + logo (safe-area-top handled by parent section) */}
+        <div className="relative z-10 flex items-center justify-between px-5 sm:px-6 md:px-10 pt-4 sm:pt-6 md:pt-8">
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex items-center gap-2 t-label-caps c-ink-muted hover:c-gold-deep transition-colors link-underline"
+            className="inline-flex items-center gap-2 t-label-caps c-ink-muted hover:c-gold-deep transition-colors link-underline py-2 -my-2"
           >
             <ArrowLeft size={14} strokeWidth={1.5} />
-            {backTo === "login" ? "Back to login" : "Back to home"}
+            <span className="hidden sm:inline">{backTo === "login" ? "Back to login" : "Back to home"}</span>
           </button>
           <button
             type="button"
@@ -112,7 +112,7 @@ export function AuthShell({
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 flex-1 flex flex-col justify-center px-6 md:px-10 py-12 md:py-16"
+          className="relative z-10 flex-1 flex flex-col justify-center px-5 sm:px-6 md:px-10 py-8 sm:py-12 md:py-16 overflow-y-auto"
         >
           <div className="w-full max-w-[440px] mx-auto">
             <motion.div variants={itemVariants}>
@@ -155,7 +155,7 @@ export function AuthShell({
         </motion.div>
 
         {/* Trust signals — bottom of left column */}
-        <div className="relative z-10 px-6 md:px-10 pb-6 md:pb-8">
+        <div className="relative z-10 px-5 sm:px-6 md:px-10 pb-4 sm:pb-6 md:pb-8 safe-area-bottom">
           <div className="max-w-[440px] mx-auto flex items-center justify-center gap-3 md:gap-4 flex-wrap">
             {TRUST_SIGNALS.map((signal, i) => (
               <React.Fragment key={signal}>

@@ -120,8 +120,10 @@ function SquareToggle({ checked, onChange, label, id, invalid }: SquareTogglePro
       aria-label={label}
       onClick={() => onChange(!checked)}
       className={cn(
-        "shrink-0 w-4 h-4 border flex items-center justify-center transition-colors duration-300",
+        "shrink-0 w-5 h-5 border flex items-center justify-center transition-colors duration-300",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold",
+        /* 44px minimum touch target on mobile */
+        "min-w-[44px] min-h-[44px] p-[10px] -m-[10px]",
         checked
           ? "bg-ink border-ink"
           : invalid
@@ -129,7 +131,7 @@ function SquareToggle({ checked, onChange, label, id, invalid }: SquareTogglePro
             : "bg-transparent border-hairline-strong hover:border-gold"
       )}
     >
-      {checked && <Check size={11} strokeWidth={2.5} className="c-paper" />}
+      {checked && <Check size={12} strokeWidth={2.5} className="c-paper" />}
     </button>
   );
 }
@@ -380,7 +382,7 @@ export function SignupView() {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-1 -mr-1"
+              className="absolute right-1 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-2.5"
               aria-label={showPassword ? "Hide password" : "Show password"}
               aria-pressed={showPassword}
             >
@@ -472,7 +474,7 @@ export function SignupView() {
             <button
               type="button"
               onClick={() => setShowConfirm((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-1 -mr-1"
+              className="absolute right-1 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-2.5"
               aria-label={showConfirm ? "Hide password" : "Show password"}
               aria-pressed={showConfirm}
             >
@@ -537,11 +539,11 @@ export function SignupView() {
             />
             <span className="t-body-sm c-ink-muted group-hover:c-ink transition-colors">
               I agree to the{" "}
-              <a href="#" className="c-ink hover:c-gold-deep link-underline">
+              <a href="/terms" className="c-ink hover:c-gold-deep link-underline">
                 Terms of Service
               </a>{" "}
               and{" "}
-              <a href="#" className="c-ink hover:c-gold-deep link-underline">
+              <a href="/privacy" className="c-ink hover:c-gold-deep link-underline">
                 Privacy Policy
               </a>
               .

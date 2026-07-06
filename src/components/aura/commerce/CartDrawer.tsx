@@ -60,7 +60,7 @@ export function CartDrawer() {
             dragConstraints={RIGHT_DRAWER_CONSTRAINTS}
             dragElastic={0.2}
             onDragEnd={(_e: unknown, info: PanInfo) => rightDrawerDragEnd(info, close)}
-            className="fixed top-0 right-0 bottom-0 z-[1100] w-full max-w-[440px] bg-paper flex flex-col"
+            className="fixed top-0 right-0 bottom-0 z-[1100] w-full max-w-[440px] bg-paper flex flex-col safe-area-top safe-area-bottom"
           >
             {/* Drag handle (left edge) */}
             {!prefersReducedMotion && (

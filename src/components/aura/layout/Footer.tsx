@@ -62,7 +62,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-ink c-paper mt-auto pb-[56px] lg:pb-0 safe-area-bottom">
+    <footer className="bg-ink c-paper mt-auto pb-tab-bar">
       <div className="container-aura py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
           {/* Brand + newsletter */}

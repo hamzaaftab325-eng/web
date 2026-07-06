@@ -278,7 +278,7 @@ export function LoginView() {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-1 -mr-1"
+              className="absolute right-1 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-2.5"
               aria-label={showPassword ? "Hide password" : "Show password"}
               aria-pressed={showPassword}
             >

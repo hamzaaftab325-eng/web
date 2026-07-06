@@ -337,7 +337,7 @@ export function CheckoutFlow() {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[1100] bg-canvas overflow-y-auto scrollbar-thin"
+          className="fixed inset-0 z-[1100] bg-canvas overflow-y-auto scrollbar-thin safe-area-top safe-area-bottom"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

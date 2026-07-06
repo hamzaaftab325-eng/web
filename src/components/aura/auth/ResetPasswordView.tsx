@@ -276,7 +276,7 @@ export function ResetPasswordView() {
                 <button
                   type="button"
                   onClick={() => setShowNew((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-1 -mr-1"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-2.5"
                   aria-label={showNew ? "Hide password" : "Show password"}
                   aria-pressed={showNew}
                 >
@@ -369,7 +369,7 @@ export function ResetPasswordView() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-1 -mr-1"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 c-ink-faint hover:c-gold-deep transition-colors p-2.5"
                   aria-label={showConfirm ? "Hide password" : "Show password"}
                   aria-pressed={showConfirm}
                 >
