@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { Heart, Plus } from "lucide-react";
+import { Heart, Plus, Check, ShoppingBag } from "lucide-react";
 import type { Product } from "@/types";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
@@ -34,10 +34,19 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const toggleWish = useWishlistStore((s) => s.toggle);
   const isWished = useWishlistStore((s) => s.slugs.includes(product.slug));
   const addToCart = useCartStore((s) => s.addLine);
+  const cartLines = useCartStore((s) => s.lines);
   const prefersReducedMotion = useReducedMotion();
   const { toast } = useToast();
 
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+
+  // Check if this product is already in the cart
+  const cartLine = cartLines.find(
+    (l) => l.productId === product.id || l.slug === product.slug
+  );
+  const isInCart = Boolean(cartLine);
+  const cartQty = cartLine?.quantity ?? 0;
 
   const open = () => router.push(`/product/${product.slug}`);
 
@@ -45,6 +54,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     e.stopPropagation();
     if (!product.inStock) return;
     addToCart(product, { quantity: 1 });
+    // Brief "Added" feedback
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
     toast({
       title: "Added to cart",
       description: product.name,
@@ -97,7 +109,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         <button
           onClick={onWish}
           aria-label={isWished ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-4 right-4 p-2 bg-paper/80 backdrop-blur-sm rounded-full hover:bg-paper transition-colors"
+          className="absolute top-4 right-4 z-20 p-2 bg-paper/80 backdrop-blur-sm rounded-full hover:bg-paper transition-colors"
         >
           <motion.span
             animate={isWished ? { scale: [1, 1.3, 1] } : { scale: 1 }}
@@ -112,7 +124,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           </motion.span>
         </button>
 
-        {/* Quick add */}
+        {/* Quick add — always visible on mobile, hover-reveal on desktop */}
         {product.inStock && (
           <motion.button
             onClick={onAdd}
@@ -120,16 +132,32 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             whileHover={{ backgroundColor: "rgba(17,17,17,0.92)" }}
             whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
             className={cn(
-              "absolute left-4 right-4 bottom-4 bg-ink/85 backdrop-blur-sm c-paper t-label-caps",
-              "py-3.5 flex items-center justify-center gap-2 transition-opacity duration-300",
-              prefersReducedMotion
-                ? "opacity-100"
-                : "opacity-0 group-hover:opacity-100"
+              "absolute left-4 right-4 bottom-4 z-20 backdrop-blur-sm t-label-caps",
+              "py-3.5 flex items-center justify-center gap-2 transition-all duration-300",
+              /* Always visible on touch devices (no hover); hover-reveal on desktop */
+              "opacity-100 lg:opacity-0 lg:group-hover:opacity-100",
+              justAdded
+                ? "bg-success/90 c-paper"
+                : "bg-ink/85 c-paper"
             )}
             aria-label={`Quick add ${product.name} to cart`}
           >
-            <Plus size={14} strokeWidth={1.5} />
-            Quick Add
+            {justAdded ? (
+              <>
+                <Check size={14} strokeWidth={2.5} />
+                Added
+              </>
+            ) : isInCart ? (
+              <>
+                <ShoppingBag size={14} strokeWidth={1.5} />
+                Add More
+              </>
+            ) : (
+              <>
+                <Plus size={14} strokeWidth={1.5} />
+                Quick Add
+              </>
+            )}
           </motion.button>
         )}
       </div>
@@ -146,6 +174,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             </span>
           )}
         </div>
+        {/* Show cart quantity indicator below price when item is in cart */}
+        {isInCart && cartQty > 0 && (
+          <p className="t-caption c-gold-deep mt-1.5 flex items-center gap-1">
+            <ShoppingBag size={11} strokeWidth={1.5} />
+            {cartQty} in cart
+          </p>
+        )}
       </div>
     </motion.article>
   );
