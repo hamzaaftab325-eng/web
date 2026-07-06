@@ -15,7 +15,7 @@ interface CartState {
   closeCart: () => void;
   toggleCart: () => void;
   addLine: (
-    product: Pick<Product, "id" | "slug" | "name" | "price" | "images">,
+    product: Pick<Product, "id" | "slug" | "name" | "price" | "images" | "stockQuantity">,
     options?: { quantity?: number; variant?: ProductVariant }
   ) => void;
   removeLine: (key: string) => void;
@@ -65,14 +65,18 @@ export const useCartStore = create<CartState>()(
 
         set((state) => {
           const existing = state.lines.find((l) => l.key === key);
+          const maxStock = product.stockQuantity;
           if (existing) {
             return {
               lines: state.lines.map((l) =>
-                l.key === key ? { ...l, quantity: l.quantity + quantity } : l
+                l.key === key
+                  ? { ...l, quantity: maxStock ? Math.min(l.quantity + quantity, maxStock) : l.quantity + quantity }
+                  : l
               ),
               isOpen: true,
             };
           }
+          const cappedQuantity = maxStock ? Math.min(quantity, maxStock) : quantity;
           const line: CartLine = {
             key,
             productId: product.id,
@@ -81,7 +85,8 @@ export const useCartStore = create<CartState>()(
             image: product.images[0],
             price: product.price,
             variantLabel,
-            quantity,
+            quantity: cappedQuantity,
+            stockQuantity: maxStock,
           };
           return { lines: [...state.lines, line], isOpen: true };
         });
@@ -110,14 +115,18 @@ export const useCartStore = create<CartState>()(
       setQuantity: (key, quantity) =>
         set((s) => ({
           lines: s.lines.map((l) =>
-            l.key === key ? { ...l, quantity: Math.max(1, quantity) } : l
+            l.key === key
+              ? { ...l, quantity: l.stockQuantity ? Math.min(Math.max(1, quantity), l.stockQuantity) : Math.max(1, quantity) }
+              : l
           ),
         })),
 
       increment: (key) =>
         set((s) => ({
           lines: s.lines.map((l) =>
-            l.key === key ? { ...l, quantity: l.quantity + 1 } : l
+            l.key === key
+                  ? { ...l, quantity: l.stockQuantity ? Math.min(l.quantity + 1, l.stockQuantity) : l.quantity + 1 }
+                  : l
           ),
         })),
 

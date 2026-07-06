@@ -78,6 +78,7 @@ export interface CartLine {
   price: number;
   variantLabel?: string;
   quantity: number;
+  stockQuantity?: number;
 }
 
 export type ViewKey =

@@ -180,8 +180,9 @@ export function CartDrawer() {
                               </span>
                               <button
                                 onClick={() => increment(line.key)}
+                                disabled={line.stockQuantity ? line.quantity >= line.stockQuantity : false}
                                 aria-label="Increase quantity"
-                                className="w-11 h-11 flex items-center justify-center c-ink hover:c-gold transition-colors"
+                                className="w-11 h-11 flex items-center justify-center c-ink hover:c-gold transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                               >
                                 <Plus size={14} strokeWidth={1.5} />
                               </button>

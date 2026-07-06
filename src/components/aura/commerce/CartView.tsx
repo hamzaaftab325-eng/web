@@ -170,8 +170,9 @@ export function CartView() {
                           </span>
                           <button
                             onClick={() => increment(line.key)}
+                            disabled={line.stockQuantity ? line.quantity >= line.stockQuantity : false}
                             aria-label="Increase quantity"
-                            className="w-8 h-8 flex items-center justify-center c-ink-muted hover:c-gold-deep transition-colors"
+                            className="w-8 h-8 flex items-center justify-center c-ink-muted hover:c-gold-deep transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           >
                             <Plus size={12} strokeWidth={2} />
                           </button>
