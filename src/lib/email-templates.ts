@@ -5,7 +5,7 @@
  * Colors match the site's design system: cream canvas, gold accents, ink text.
  */
 
-const BASEStyles = `
+const BASE_STYLES = `
   body { margin: 0; padding: 0; background: #FAF7F0; font-family: Georgia, serif; color: #1a1714; }
   .container { max-width: 600px; margin: 0 auto; padding: 40px 24px; }
   .header { text-align: center; padding: 32px 0 24px; border-bottom: 1px solid #E8E0D5; }
@@ -29,7 +29,7 @@ const BASEStyles = `
 `;
 
 function wrapper(content: string, unsubscribeUrl?: string): string {
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Aura Living</title><style>${BASEStyles}</style></head><body><div class="container"><div class="header"><div class="brand">Aura<span class="brand-accent">Living</span></div></div><div class="content">${content}</div><div class="footer"><p>Aura Living · Considered home, sourced slowly<br>This email was sent to you because you have an account or subscribed to our newsletter.</p>${unsubscribeUrl ? `<p><a href="${unsubscribeUrl}" class="unsubscribe">Unsubscribe</a></p>` : ""}</div></div></body></html>`;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Aura Living</title><style>${BASE_STYLES}</style></head><body><div class="container"><div class="header"><div class="brand">Aura<span class="brand-accent">Living</span></div></div><div class="content">${content}</div><div class="footer"><p>Aura Living · Considered home, sourced slowly<br>This email was sent to you because you have an account or subscribed to our newsletter.</p>${unsubscribeUrl ? `<p><a href="${unsubscribeUrl}" class="unsubscribe">Unsubscribe</a></p>` : ""}</div></div></body></html>`;
 }
 
 export function orderConfirmationEmail(

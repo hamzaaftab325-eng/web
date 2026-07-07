@@ -467,11 +467,11 @@ export default function AdminAnalytics() {
           {/* Manual legend */}
           <div className="flex items-center gap-5 mb-4">
             <span className="inline-flex items-center gap-2 t-caption c-ink-muted">
-              <span className="w-3 h-1 rounded-full" style={{ background: AURA.goldDeep }} />
+              <span className="w-3 h-1 rounded-full bg-gold-deep" />
               Revenue
             </span>
             <span className="inline-flex items-center gap-2 t-caption c-ink-muted">
-              <span className="w-3 h-1 rounded-full" style={{ background: AURA.ink }} />
+              <span className="w-3 h-1 rounded-full bg-ink" />
               Orders
             </span>
           </div>
@@ -692,6 +692,7 @@ export default function AdminAnalytics() {
                     const share = collectionTotal > 0 ? Math.round((c.revenue / collectionTotal) * 100) : 0;
                     return (
                       <div key={c.name} className="flex items-center gap-3 py-1.5">
+                        {/* Phase 9D: Dynamic color from palette — justified inline style (can't be a static class) */}
                         <span
                           className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
                           style={{ background: DONUT_PALETTE[i % DONUT_PALETTE.length] }}

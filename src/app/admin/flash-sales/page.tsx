@@ -55,6 +55,7 @@ function UsageBar({ uses, max }: { uses: number; max: number }) {
             level === "mid" && "flash-sale-usage-bar-fill--mid",
             level === "high" && "flash-sale-usage-bar-fill--high",
           )}
+          // Phase 9D: Dynamic percentage width — justified inline style
           style={{ width: `${pct}%` }}
         />
       </div>
