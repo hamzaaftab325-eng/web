@@ -11,20 +11,18 @@ const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
 
-  // ─── Phase 0: a11y + import plugins installed but configured as warn-only ───
-  // Surfaced as warnings so they don't break the build; promoted to errors in Phase 8.
-  // NOTE: eslint-config-next already registers the jsx-a11y plugin, so we only add rules here.
+  // ─── Phase 8: a11y rules promoted from warn to error ───
   {
     rules: {
-      "jsx-a11y/alt-text": "warn",
-      "jsx-a11y/anchor-has-content": "warn",
-      "jsx-a11y/aria-props": "warn",
-      "jsx-a11y/aria-role": "warn",
-      "jsx-a11y/click-events-have-key-events": "warn",
-      "jsx-a11y/no-static-element-interactions": "warn",
-      "jsx-a11y/label-has-associated-control": "warn",
-      "jsx-a11y/no-autofocus": "warn",
-      "jsx-a11y/tabindex-no-positive": "warn",
+      "jsx-a11y/alt-text": "error",
+      "jsx-a11y/anchor-has-content": "error",
+      "jsx-a11y/aria-props": "error",
+      "jsx-a11y/aria-role": "error",
+      "jsx-a11y/click-events-have-key-events": "error",
+      "jsx-a11y/no-static-element-interactions": "error",
+      "jsx-a11y/label-has-associated-control": "error",
+      "jsx-a11y/no-autofocus": "error",
+      "jsx-a11y/tabindex-no-positive": "error",
     },
   },
   {

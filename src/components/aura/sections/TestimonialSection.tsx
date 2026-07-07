@@ -53,6 +53,7 @@ export function TestimonialSection({ initialTestimonials }: TestimonialSectionPr
       className="section-stack bg-cream-deep"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      aria-label="Customer testimonials"
     >
       <div className="container-aura">
         <div className="text-center mb-12 md:mb-16">

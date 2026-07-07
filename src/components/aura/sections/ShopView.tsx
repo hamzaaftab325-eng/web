@@ -244,9 +244,14 @@ export function ShopView({ initialProducts, initialCategories, initialCollection
                   <AnimatePresence>
                     {sortOpen && (
                       <>
+                        {/* Phase 8A: Added role + keyboard handler for a11y */}
                         <div
                           className="fixed inset-0 z-10"
                           onClick={() => setSortOpen(false)}
+                          onKeyDown={(e) => { if (e.key === "Escape") setSortOpen(false); }}
+                          role="button"
+                          tabIndex={-1}
+                          aria-label="Close sort menu"
                         />
                         <motion.ul
                           initial={{ opacity: 0, y: -8 }}

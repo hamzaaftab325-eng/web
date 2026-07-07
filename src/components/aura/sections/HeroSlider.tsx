@@ -122,10 +122,15 @@ export function HeroSlider({ initialSlides }: HeroSliderProps) {
     return () => clearTimeout(timer);
   }, [index, paused, prefersReducedMotion, next]);
 
+  // Phase 8E: Scope arrow-key listener to only fire when the hero section
+  // is focused or hovered — prevents hijacking arrow keys globally.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") next();
-      if (e.key === "ArrowLeft") prev();
+      // Only handle arrow keys when the hero section or a child has focus
+      const active = document.activeElement;
+      if (!sectionRef.current?.contains(active)) return;
+      if (e.key === "ArrowRight") { e.preventDefault(); next(); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

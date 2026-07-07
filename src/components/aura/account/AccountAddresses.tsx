@@ -635,6 +635,7 @@ export function AccountAddresses() {
                     />
                   </div>
 
+                  {/* Phase 8A: Added visible text inside label for jsx-a11y */}
                   <label className="flex items-start gap-3 p-4 bg-cream/60 border border-hairline-cream rounded-sm cursor-pointer hover:border-hairline-gold transition-colors">
                     <span className="relative flex items-center justify-center mt-0.5">
                       <input
@@ -642,6 +643,7 @@ export function AccountAddresses() {
                         checked={form.isDefault}
                         onChange={(e) => setField("isDefault", e.target.checked)}
                         className="peer sr-only"
+                        aria-label="Set as default address"
                       />
                       <span
                         className="w-5 h-5 rounded-sm border border-hairline-strong bg-paper flex items-center justify-center transition-colors peer-checked:bg-gold peer-checked:border-gold"

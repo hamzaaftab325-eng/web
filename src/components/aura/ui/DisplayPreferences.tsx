@@ -1,29 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Settings, X, Sun, Moon, Type, Contrast } from "lucide-react";
+
 import { useThemeStore } from "@/store/use-theme-store";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { cn } from "@/lib/utils";
 
 /**
  * DisplayPreferences — settings panel for accessibility + display options.
  *
- * Opens via a gear icon in the header. Controls:
- * - Theme: Light / Dark / System
- * - Contrast: Default / High
- * - Font size: Small / Medium / Large
- *
- * All settings are token swaps in globals.css (data-theme, data-contrast,
- * data-font-size on <html>) — zero component changes needed.
+ * Phase 8B: Added focus trap, Escape key handler, aria-modal, aria-pressed.
+ * Previously this modal had none of these — was an accessibility regression
+ * vs. other modals (MobileNav, CartDrawer, QuickViewModal).
  */
 
 export function DisplayPreferences({ className }: { className?: string }) {
   const prefersReducedMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const { mode, contrast, fontSize, setMode, setContrast, setFontSize } =
     useThemeStore();
+
+  // Phase 8B: Focus trap
+  useFocusTrap(dialogRef, open);
+
+  // Phase 8B: Escape key handler + focus restoration
+  useEffect(() => {
+    if (!open) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      // Restore focus to the trigger button when modal closes
+      triggerRef.current?.focus();
+    };
+  }, [open]);
 
   const options = [
     {
@@ -63,8 +84,10 @@ export function DisplayPreferences({ className }: { className?: string }) {
   return (
     <>
       <button
+        ref={triggerRef}
         onClick={() => setOpen(true)}
         aria-label="Display preferences"
+        aria-haspopup="dialog"
         className={cn("p-1 transition-colors hover:text-gold", className)}
       >
         <Settings size={18} strokeWidth={1.5} />
@@ -81,6 +104,7 @@ export function DisplayPreferences({ className }: { className?: string }) {
             onClick={() => setOpen(false)}
           >
             <motion.div
+              ref={dialogRef}
               initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 20 }}
@@ -88,6 +112,7 @@ export function DisplayPreferences({ className }: { className?: string }) {
               className="bg-paper w-full max-w-md rounded-sm shadow-modal overflow-hidden"
               onClick={(e) => e.stopPropagation()}
               role="dialog"
+              aria-modal="true"
               aria-label="Display preferences"
             >
               {/* Header */}
@@ -95,7 +120,7 @@ export function DisplayPreferences({ className }: { className?: string }) {
                 <h2 className="t-headline-sm c-ink">Display Preferences</h2>
                 <button
                   onClick={() => setOpen(false)}
-                  aria-label="Close"
+                  aria-label="Close display preferences"
                   className="p-2 c-ink-faint hover:c-gold-deep transition-colors"
                 >
                   <X size={18} strokeWidth={1.5} />
@@ -112,13 +137,14 @@ export function DisplayPreferences({ className }: { className?: string }) {
                         <Icon size={14} strokeWidth={1.5} className="c-gold-deep" />
                         <p className="t-label-caps c-ink-faint">{opt.label}</p>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2" role="group" aria-label={opt.label}>
                         {opt.options.map((o) => {
                           const isActive = opt.value === o.value;
                           return (
                             <button
                               key={o.value}
                               onClick={() => opt.onChange(o.value)}
+                              aria-pressed={isActive}
                               className={cn(
                                 "flex-1 py-2.5 t-body-sm rounded-sm border transition-colors",
                                 isActive

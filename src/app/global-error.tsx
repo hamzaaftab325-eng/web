@@ -47,7 +47,8 @@ export default function GlobalError({
               margin: "0 auto 32px",
             }}
           >
-            <span style={{ fontSize: "24px", color: "#b8901f" }}>⚠</span>
+            <span style={{ fontSize: "24px", color: "#b8901f" }} aria-hidden="true" role="img">⚠</span>
+            <span className="sr-only">Warning</span>
           </div>
 
           <p

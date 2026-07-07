@@ -115,7 +115,7 @@ export default function AdminSettings() {
               { key: "paymentEasyPaisa", label: "EasyPaisa", desc: "Online payment via EasyPaisa mobile wallet. Requires merchant account." },
               { key: "paymentBankTransfer", label: "Bank Transfer", desc: "Customers transfer money to your bank account manually." },
             ].map(method => (
-              <label key={method.key} className="flex items-center gap-4 cursor-pointer p-3 border border-hairline-cream rounded-sm hover:border-gold/40 transition-colors">
+              <div key={method.key} className="flex items-center gap-4 cursor-pointer p-3 border border-hairline-cream rounded-sm hover:border-gold/40 transition-colors">
                 <button type="button" role="switch" aria-checked={settings[method.key] === "true"} onClick={() => update(method.key, settings[method.key] === "true" ? "false" : "true")}
                   className={cn("relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0", settings[method.key] === "true" ? "bg-ink" : "bg-cream-deep border border-hairline")}>
                   <span className={cn("inline-block h-4 w-4 rounded-full bg-paper shadow-ambient transition-all", settings[method.key] === "true" ? "ml-auto mr-1.5" : "ml-1.5")} />
@@ -125,7 +125,7 @@ export default function AdminSettings() {
                   <p className="t-caption c-ink-muted">{method.desc}</p>
                 </div>
                 {settings[method.key] === "true" ? <Eye size={16} className="c-success" /> : <EyeOff size={16} className="c-ink-faint" />}
-              </label>
+              </div>
             ))}
             <p className="t-caption c-ink-faint bg-cream/40 p-3 rounded-sm">Note: JazzCash and EasyPaisa require merchant account credentials in environment variables to process payments. COD is always available.</p>
           </motion.div>
@@ -134,13 +134,14 @@ export default function AdminSettings() {
         {activeTab === "email" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-card-warm border border-hairline-cream rounded-sm p-6 space-y-5">
             <h2 className="t-headline-sm c-ink flex items-center gap-3"><span className="w-6 h-px bg-gold" aria-hidden />Email Configuration</h2>
-            <label className="flex items-center gap-4 cursor-pointer p-3 border border-hairline-cream rounded-sm">
+            {/* Phase 8A: Changed <label> to <div> — this wraps a toggle switch, not a form control */}
+            <div className="flex items-center gap-4 cursor-pointer p-3 border border-hairline-cream rounded-sm">
               <button type="button" role="switch" aria-checked={settings.emailEnabled === "true"} onClick={() => update("emailEnabled", settings.emailEnabled === "true" ? "false" : "true")}
                 className={cn("relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0", settings.emailEnabled === "true" ? "bg-ink" : "bg-cream-deep border border-hairline")}>
                 <span className={cn("inline-block h-4 w-4 rounded-full bg-paper shadow-ambient transition-all", settings.emailEnabled === "true" ? "ml-auto mr-1.5" : "ml-1.5")} />
               </button>
               <div><p className="t-body c-ink font-medium">Enable Email Sending</p><p className="t-caption c-ink-muted">When enabled, transactional emails are sent via Resend.</p></div>
-            </label>
+            </div>
             <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">Email Provider</span><input value={settings.emailProvider ?? "resend"} onChange={e => update("emailProvider", e.target.value)} className={inputCls} readOnly /></label>
             <label className="block"><span className="t-label-caps c-ink-faint block mb-1.5">From Email Address</span><input type="email" value={settings.emailFrom ?? ""} onChange={e => update("emailFrom", e.target.value)} className={inputCls} placeholder="hello@auraliving.com" /></label>
             <div className="bg-gold-pale/30 border border-hairline-gold rounded-sm p-4">

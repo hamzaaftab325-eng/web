@@ -97,6 +97,15 @@ export const ProductCard = memo(function ProductCard({ product, priority = false
       whileHover={prefersReducedMotion ? undefined : { y: -4 }}
       className="group cursor-pointer product-card-compact"
       onClick={open}
+      onKeyDown={(e) => {
+        // Phase 8D: Keyboard accessibility — Enter/Space opens product
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open();
+        }
+      }}
+      role="link"
+      tabIndex={0}
       aria-label={`${product.name} — view details`}
     >
       {/* Image — Phase 7B: Migrated from motion.img to next/image */}

@@ -85,11 +85,13 @@ export function Footer() {
             </p>
 
             <form onSubmit={submit} className="max-w-sm">
-              <label className="t-label-caps c-paper/50 block mb-2">
+              {/* Phase 8C: Added htmlFor + id for label association (was jsx-a11y error) */}
+              <label htmlFor="footer-newsletter-email" className="t-label-caps c-paper/50 block mb-2">
                 Join the list
               </label>
               <div className="flex items-center gap-2 border-b border-paper/20 focus-within:border-gold transition-colors">
                 <input
+                  id="footer-newsletter-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

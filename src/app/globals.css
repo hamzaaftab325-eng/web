@@ -997,18 +997,20 @@
     font-variant-numeric: tabular-nums lining-nums;
   }
 
-  /* Skip to content */
+  /* Skip to content — Phase 8F: Modern transform approach (was left:-9999px) */
   .skip-link {
     position: absolute;
-    left: -9999px;
+    transform: translateY(-100%);
     top: 0;
+    left: 0;
     z-index: 9999;
     padding: 8px 16px;
     background: var(--ink);
     color: var(--paper);
+    transition: transform 0.2s ease;
   }
   .skip-link:focus {
-    left: 0;
+    transform: translateY(0);
   }
 
   /* ─── View Transitions API ────────────────────────────────────── */

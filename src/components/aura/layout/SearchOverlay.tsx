@@ -17,8 +17,17 @@ export function SearchOverlay() {
 
   const [query, setQuery] = useState("");
   const overlayRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   useFocusTrap(overlayRef, open);
   const prefersReducedMotion = useReducedMotion();
+
+  // Phase 8A: Focus the search input when the overlay opens (replaces autoFocus)
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => searchInputRef.current?.focus(), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   // Stagger variants — same gold-standard pattern as MobileNav
   const listStagger = {
@@ -98,7 +107,9 @@ export function SearchOverlay() {
             <div className="flex items-center gap-4 px-6 md:px-8 py-5 border-b border-hairline">
               <Search size={20} strokeWidth={1.25} className="c-ink" />
               <input
-                autoFocus
+                // Phase 8A: autoFocus removed — was causing jsx-a11y/no-autofocus error.
+                // Focus is now set via useEffect + ref (see open state effect below).
+                ref={searchInputRef}
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}

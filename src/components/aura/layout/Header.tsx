@@ -106,7 +106,7 @@ export function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-10 flex-1 justify-center">
+          <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-10 flex-1 justify-center">
             <Link
               href="/shop"
               onClick={resetShop}
