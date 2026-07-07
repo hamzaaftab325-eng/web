@@ -9,6 +9,7 @@
  */
 
 import { db } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 import type { Product } from "@/types";
 
 // ── DTO Types ──────────────────────────────────────────────────────────
@@ -50,10 +51,17 @@ export interface ProductFilters {
   limit?: number;
 }
 
-// ── Private Helpers ────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────
 
-/** Map a Prisma product (with relations) to the ProductListItem DTO. */
-function toListItem(
+/**
+ * Map a Prisma product (with relations) to the ProductListItem DTO.
+ *
+ * Phase 3: Exported so other services + tests can reuse it.
+ * Previously this was private — Phase 3D refactored the duplicated transforms
+ * in 4 consumers (product/[slug]/page.tsx, api/products/route.ts,
+ * api/products/[slug]/route.ts, sitemap.ts) to call this directly.
+ */
+export function toListItem(
   p: {
     id: string;
     slug: string;
@@ -149,7 +157,10 @@ export async function getAll(filters: ProductFilters = {}): Promise<{
     limit = 100,
   } = filters;
 
-  const where: Record<string, unknown> = { isActive: true };
+  // Phase 3F: Use Prisma.ProductWhereInput for compile-time field/operator checking.
+  // Previously this was `Record<string, unknown>` which allowed typos like
+  // `where.categry = ...` to slip through to runtime.
+  const where: Prisma.ProductWhereInput = { isActive: true };
   if (category && category !== "all") where.category = { slug: category };
   if (collection) where.collections = { some: { collection: { slug: collection } } };
   if (search)
@@ -159,7 +170,7 @@ export async function getAll(filters: ProductFilters = {}): Promise<{
       { subtitle: { contains: search, mode: "insensitive" } },
     ];
 
-  let orderBy: Record<string, string> = {};
+  let orderBy: Prisma.ProductOrderByWithRelationInput = {};
   switch (sort) {
     case "price-asc": orderBy = { price: "asc" }; break;
     case "price-desc": orderBy = { price: "desc" }; break;

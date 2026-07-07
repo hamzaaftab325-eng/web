@@ -30,14 +30,22 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   }
 }
 
-/** DELETE /api/admin/questions/[id] — delete a question */
+/** DELETE /api/admin/questions/[id] — soft-delete a question (isActive: false) */
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireAdmin(request);
     if (auth instanceof NextResponse) return auth;
 
     const { id } = await params;
-    await db.question.delete({ where: { id } });
+    // Phase 3E: Soft-delete instead of hard-delete.
+    // The project's stated rule (README:205) is "Soft delete only — set isActive: false".
+    // The Question model has an isActive field (schema.prisma:559) — use it.
+    // Public GET /api/products/[slug]/questions filters on isActive: true,
+    // so the question disappears from the public list but is preserved in DB.
+    await db.question.update({
+      where: { id },
+      data: { isActive: false },
+    });
     return NextResponse.json({ message: "Question deleted" });
   } catch {
     return NextResponse.json({ error: "Failed", code: "DELETE_ERROR" }, { status: 500 });

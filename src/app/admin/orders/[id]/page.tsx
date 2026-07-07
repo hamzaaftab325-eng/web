@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Package, Download, User, AlertTriangle, Check } from "lucide-react";
+
 import { formatPrice, cn } from "@/lib/utils";
+import { statusConfig, statusFlow as sharedStatusFlow } from "@/lib/order-status";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
 interface OrderDetail {
@@ -17,14 +19,9 @@ interface OrderDetail {
   customer?: { id: string; name: string; email: string; phone: string | null } | null;
 }
 
-const statusFlow = ["processing", "packed", "shipped", "delivered"];
-const statusConfig: Record<string, { color: string; dot: string; label: string }> = {
-  processing: { color: "c-info", dot: "bg-info", label: "Processing" },
-  packed: { color: "c-info", dot: "bg-info", label: "Packed" },
-  shipped: { color: "c-gold-deep", dot: "bg-gold", label: "Shipped" },
-  delivered: { color: "c-success", dot: "bg-success", label: "Delivered" },
-  cancelled: { color: "c-error", dot: "bg-error", label: "Cancelled" },
-};
+// statusConfig + statusFlow imported from @/lib/order-status (Phase 3D dedup)
+// Local statusFlow kept as the legacy "happy path" subset (excludes cancelled/refunded)
+const statusFlow = ["processing", "packed", "shipped", "delivered"] as const;
 
 const inputCls = "w-full px-3 py-2 t-body-sm c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors";
 
@@ -70,7 +67,7 @@ export default function AdminOrderDetail() {
   if (!order) return <div className="p-8 text-center"><Package size={40} className="c-ink-faint mx-auto mb-4" /><p className="t-headline-sm c-ink mb-2">Order not found</p><Link href="/admin/orders" className="inline-flex items-center gap-2 bg-ink c-paper t-label-caps px-6 py-3 rounded-sm hover:bg-gold-deep transition-colors mt-4"><ArrowLeft size={14} /> Back to Orders</Link></div>;
 
   const isCancelled = order.status === "cancelled";
-  const currentStepIndex = statusFlow.indexOf(order.status);
+  const currentStepIndex = statusFlow.indexOf(order.status as (typeof statusFlow)[number]);
 
   return (
     <div>
@@ -95,7 +92,7 @@ export default function AdminOrderDetail() {
           <h2 className="t-headline-sm c-ink mb-4 flex items-center gap-3"><span className="w-6 h-px bg-gold" aria-hidden />Status Timeline</h2>
           <div className="flex items-center gap-2">
             {statusFlow.map((s, i) => {
-              const cfg = statusConfig[s]!;
+              const cfg = statusConfig[s as keyof typeof statusConfig] ?? statusConfig.processing;
               const isDone = i <= currentStepIndex;
               const isCurrent = i === currentStepIndex;
               return (
@@ -143,11 +140,11 @@ export default function AdminOrderDetail() {
             <h2 className="t-headline-sm c-ink mb-4 flex items-center gap-3"><span className="w-6 h-px bg-gold" aria-hidden />Update Status</h2>
             <div className="flex flex-wrap gap-2">
               {[...statusFlow, "cancelled"].map(s => {
-                const cfg = statusConfig[s]!;
+                const cfg = statusConfig[s as keyof typeof statusConfig] ?? statusConfig.processing;
                 const isActive = order.status === s;
                 return (
                   <button key={s} onClick={() => updateStatus(s)} disabled={updating || isActive} className={cn("inline-flex items-center gap-1.5 px-4 py-2.5 t-label-caps rounded-sm border transition-all", isActive ? "bg-ink c-paper border-ink" : s === "cancelled" ? "bg-error/10 c-error border-error/20 hover:bg-error hover:c-paper" : "bg-paper c-ink-muted border-hairline-cream hover:border-gold hover:c-gold-deep", updating && "opacity-50 cursor-not-allowed")}>
-                    <span className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-gold" : cfg.dot)} aria-hidden />{cfg.label}
+                    <span className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-gold" : cfg.dotClass)} aria-hidden />{cfg.label}
                   </button>
                 );
               })}

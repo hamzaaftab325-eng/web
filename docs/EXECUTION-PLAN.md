@@ -13,8 +13,8 @@
 |-------|------|--------|----------:|
 | 0 | Safety Net & Environment Setup | ✅ COMPLETE | — |
 | 1 | Critical Security Fixes | ✅ COMPLETE | +1.5 (5.8 → 7.3) |
-| 2 | Database Schema Reconciliation | ⏳ NEXT | +0.5 (7.3 → 7.8) |
-| 3 | Backend Hardening | ⏳ Pending | +0.5 (7.8 → 8.3) |
+| 2 | Database Schema Reconciliation | ✅ COMPLETE | +0.5 (7.3 → 7.8) |
+| 3 | Backend Hardening | ⏳ IN PROGRESS | +0.5 (7.8 → 8.3) |
 | 4 | Next.js Modernization | ⏳ Pending | +0.5 (8.3 → 8.8) |
 | 5 | React Engineering | ⏳ Pending | +0.4 (8.8 → 9.2) |
 | 6 | TypeScript Hardening | ⏳ Pending | +0.3 (9.2 → 9.5) |
@@ -29,7 +29,7 @@
 | 15 | Documentation & Developer Experience | ⏳ Pending | +0.2 |
 | 16 | Final Verification & Release | ⏳ Pending | confirm |
 
-**Current Score: 7.3/10** — All critical security holes closed in Phase 1.
+**Current Score: 7.8/10** — Phases 0, 1, 2 complete. Phase 3 in progress.
 
 ---
 
@@ -129,7 +129,7 @@
 
 ---
 
-## Phase 2 — Database Schema Reconciliation ⏳ NEXT
+## Phase 2 — Database Schema Reconciliation ✅ COMPLETE
 
 **Goal:** Eliminate schema drift, add missing constraints, switch to migration-based workflow.
 **Estimated effort:** 1 day · **Score lift:** +0.5 (7.3 → 7.8)
@@ -186,7 +186,7 @@ These were dropped from the live DB by `cleanup-tables.sql` but are still in `sc
 
 ---
 
-## Phase 3 — Backend Hardening ⏳ Pending
+## Phase 3 — Backend Hardening ⏳ IN PROGRESS
 
 **Goal:** Consistent API responses, service-layer consolidation, transaction safety.
 **Estimated effort:** 2 days · **Score lift:** +0.5 (7.8 → 8.3)

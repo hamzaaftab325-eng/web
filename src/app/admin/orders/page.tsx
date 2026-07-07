@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ShoppingBag, Search, ChevronRight, Calendar, Download } from "lucide-react";
+
 import { formatPrice, cn } from "@/lib/utils";
+import { statusConfig } from "@/lib/order-status";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
@@ -15,13 +17,7 @@ interface AdminOrder {
   customer?: { id: string; name: string; email: string } | null;
 }
 
-const statusConfig: Record<string, { color: string; dot: string; label: string }> = {
-  processing: { color: "c-info", dot: "bg-info", label: "Processing" },
-  packed: { color: "c-info", dot: "bg-info", label: "Packed" },
-  shipped: { color: "c-gold-deep", dot: "bg-gold", label: "Shipped" },
-  delivered: { color: "c-success", dot: "bg-success", label: "Delivered" },
-  cancelled: { color: "c-error", dot: "bg-error", label: "Cancelled" },
-};
+// statusConfig imported from @/lib/order-status (Phase 3D dedup)
 
 const inputCls = "w-full pl-12 pr-4 py-3 t-body c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors";
 
@@ -132,15 +128,15 @@ export default function AdminOrders() {
         <>
           <RevealOnScroll stagger={0.04} className="space-y-3">
             {orders.map(order => {
-              const status = statusConfig[order.status] ?? statusConfig.processing!;
+              const status = statusConfig[order.status as keyof typeof statusConfig] ?? statusConfig.processing;
               return (
                 <motion.button key={order.id} variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }} onClick={() => router.push(`/admin/orders/${order.id}`)} className="group w-full bg-gradient-card-warm border border-hairline-cream rounded-sm p-5 hover:shadow-card-hover transition-shadow text-left">
                   <div className="flex flex-col md:flex-row md:items-center gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-1 flex-wrap">
                         <p className="t-body c-ink font-medium">{order.orderNumber}</p>
-                        <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-pale t-label-caps border border-hairline-gold", status.color)}>
-                          <span className={cn("w-1.5 h-1.5 rounded-full", status.dot)} aria-hidden />{status.label}
+                        <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-pale t-label-caps border border-hairline-gold", status.colorClass)}>
+                          <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} aria-hidden />{status.label}
                         </span>
                         <span className="t-caption c-ink-faint">{order.itemCount} item{order.itemCount === 1 ? "" : "s"}</span>
                       </div>

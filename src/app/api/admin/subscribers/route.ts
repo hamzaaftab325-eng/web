@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth-guard";
 
 /**
@@ -17,8 +19,9 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
     const limit = Math.min(500, Math.max(1, parseInt(searchParams.get("limit") ?? "200", 10)));
 
-    const where: Record<string, unknown> = {};
-    if (search) where.email = { contains: search, mode: "insensitive" as const };
+    // Phase 3F: Use Prisma.EmailSubscriberWhereInput for compile-time type safety.
+    const where: Prisma.EmailSubscriberWhereInput = {};
+    if (search) where.email = { contains: search, mode: "insensitive" };
     if (sourceFilter && sourceFilter !== "all") where.source = sourceFilter;
 
     const [subscribers, total] = await Promise.all([

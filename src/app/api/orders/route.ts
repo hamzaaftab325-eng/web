@@ -298,15 +298,28 @@ export async function POST(request: NextRequest) {
       throw txError;
     }
 
+    // Phase 3E: revalidate cached paths after order creation so the home/shop/sale
+    // pages pick up the new stock levels. Per-path try/catch so a single failure
+    // doesn't block the order response (the order is already saved at this point).
     try {
       const { revalidatePath } = await import("next/cache");
-      revalidatePath("/");
-      revalidatePath("/shop");
-      revalidatePath("/sale");
+      const pathsToRevalidate = ["/", "/shop", "/sale"];
       for (const item of items) {
-        revalidatePath(`/product/${item.slug}`);
+        pathsToRevalidate.push(`/product/${item.slug}`);
       }
-    } catch { /* revalidatePath may not be available in all contexts */ }
+      for (const path of pathsToRevalidate) {
+        try {
+          revalidatePath(path);
+        } catch (pathError) {
+          // Log but continue — order is already saved, single-path failure shouldn't break the response
+          console.warn(`[orders] Failed to revalidate ${path}:`, pathError);
+        }
+      }
+    } catch (importError) {
+      // revalidatePath is always available in App Router route handlers — but if
+      // the dynamic import fails for any reason, log and continue.
+      console.warn("[orders] Failed to import revalidatePath:", importError);
+    }
 
     if (userId) {
       void createNotification({

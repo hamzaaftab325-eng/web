@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,12 +13,13 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20", 10)));
 
-    const where: Record<string, unknown> = { isActive: true };
+    // Phase 3F: Use Prisma.ProductWhereInput for compile-time type safety.
+    const where: Prisma.ProductWhereInput = { isActive: true };
     if (category && category !== "all") where.category = { slug: category };
     if (collection) where.collections = { some: { collection: { slug: collection } } };
     if (search) where.OR = [{ name: { contains: search, mode: "insensitive" } }, { description: { contains: search, mode: "insensitive" } }, { subtitle: { contains: search, mode: "insensitive" } }];
 
-    let orderBy: Record<string, string> = {};
+    let orderBy: Prisma.ProductOrderByWithRelationInput = {};
     switch (sort) {
       case "price-asc": orderBy = { price: "asc" }; break;
       case "price-desc": orderBy = { price: "desc" }; break;

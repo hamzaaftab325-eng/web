@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth-guard";
 
 /**
@@ -19,7 +21,8 @@ export async function GET(request: NextRequest) {
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
 
-    const where: Record<string, unknown> = {};
+    // Phase 3F: Use Prisma.OrderWhereInput for compile-time type safety.
+    const where: Prisma.OrderWhereInput = {};
     if (status !== "all") where.status = status;
     if (search) {
       where.OR = [
@@ -28,7 +31,7 @@ export async function GET(request: NextRequest) {
       ];
     }
     if (dateFrom || dateTo) {
-      const dateRange: Record<string, Date> = {};
+      const dateRange: { gte?: Date; lte?: Date } = {};
       if (dateFrom) dateRange.gte = new Date(dateFrom);
       if (dateTo) { const end = new Date(dateTo); end.setHours(23, 59, 59, 999); dateRange.lte = end; }
       where.createdAt = dateRange;

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth-guard";
 
 const ProductCreateSchema = z.object({
@@ -114,7 +116,8 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    const where: Record<string, unknown> = {};
+    // Phase 3F: Use Prisma.ProductWhereInput for compile-time type safety.
+    const where: Prisma.ProductWhereInput = {};
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
@@ -130,7 +133,7 @@ export async function GET(request: NextRequest) {
 
     // Price range filter
     if (minPrice || maxPrice) {
-      const priceFilter: Record<string, number> = {};
+      const priceFilter: { gte?: number; lte?: number } = {};
       if (minPrice) priceFilter.gte = Number(minPrice);
       if (maxPrice) priceFilter.lte = Number(maxPrice);
       where.price = priceFilter;

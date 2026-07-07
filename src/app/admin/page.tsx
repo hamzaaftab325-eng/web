@@ -16,6 +16,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { formatPrice, cn } from "@/lib/utils";
+import { statusConfig } from "@/lib/order-status";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
@@ -28,13 +29,7 @@ interface DashboardStats {
   lowStockProducts: Array<{ id: string; name: string; slug: string; stockQuantity: number }>;
 }
 
-const statusConfig: Record<string, { color: string; dot: string; label: string }> = {
-  processing: { color: "c-info", dot: "bg-info", label: "Processing" },
-  packed: { color: "c-info", dot: "bg-info", label: "Packed" },
-  shipped: { color: "c-gold-deep", dot: "bg-gold", label: "Shipped" },
-  delivered: { color: "c-success", dot: "bg-success", label: "Delivered" },
-  cancelled: { color: "c-error", dot: "bg-error", label: "Cancelled" },
-};
+// statusConfig imported from @/lib/order-status (Phase 3D dedup)
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -200,7 +195,7 @@ export default function AdminDashboard() {
             ) : (
               <div className="divide-y divide-hairline-cream">
                 {(stats?.recentOrders ?? []).map((order, i) => {
-                  const status = statusConfig[order.status] ?? statusConfig.processing!;
+                  const status = statusConfig[order.status as keyof typeof statusConfig] ?? statusConfig.processing;
                   return (
                     <motion.button
                       key={order.id}
@@ -213,8 +208,8 @@ export default function AdminDashboard() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-1">
                           <p className="t-body c-ink font-medium">{order.orderNumber}</p>
-                          <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-pale t-label-caps border border-hairline-gold capitalize", status.color)}>
-                            <span className={cn("w-1.5 h-1.5 rounded-full", status.dot)} aria-hidden />
+                          <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-pale t-label-caps border border-hairline-gold capitalize", status.colorClass)}>
+                            <span className={cn("w-1.5 h-1.5 rounded-full", status.dotClass)} aria-hidden />
                             {status.label}
                           </span>
                         </div>
