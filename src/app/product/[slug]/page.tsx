@@ -59,10 +59,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     materials: product.materials, dimensions: product.dimensions ?? undefined, careInstructions: product.careInstructions ?? undefined, featured: product.featured,
   };
 
+  // Phase 10C: Fetch review aggregate for aggregateRating in JSON-LD
+  let rating: { average: number; count: number } | undefined;
+  try {
+    const reviewAgg = await db.review.aggregate({
+      where: { productId: product.id, status: "approved" },
+      _avg: { rating: true },
+      _count: { rating: true },
+    });
+    if (reviewAgg._count.rating > 0) {
+      rating = {
+        average: Math.round((reviewAgg._avg.rating ?? 0) * 10) / 10,
+        count: reviewAgg._count.rating,
+      };
+    }
+  } catch {
+    // DB error — skip rating
+  }
+
   return (
     <>
       <ProductDetailPage product={transformedProduct} />
-      <ProductJsonLd product={transformedProduct} />
+      <ProductJsonLd product={transformedProduct} rating={rating} />
       <BreadcrumbJsonLd items={[{ name: "Home", url: `${BASE_URL}/` }, { name: "Shop", url: `${BASE_URL}/shop` }, { name: product.name, url: `${BASE_URL}/product/${product.slug}` }]} />
     </>
   );

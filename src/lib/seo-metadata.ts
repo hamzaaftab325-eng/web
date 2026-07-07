@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+
 import type { ViewKey } from "@/types";
+import { getSiteUrl } from "@/lib/site-url";
 
 /**
  * SEO metadata library — single source of truth for per-page metadata.
@@ -8,10 +10,10 @@ import type { ViewKey } from "@/types";
  * Descriptions: 150-155 characters, unique, keyword-rich, compelling CTA.
  *
  * All canonical URLs are ABSOLUTE (required by Google).
- * BASE_URL comes from env so it works across environments.
+ * BASE_URL comes from getSiteUrl() which throws in production if env var is missing.
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aura-living-1.vercel.app";
+const BASE_URL = getSiteUrl();
 
 interface PageMeta {
   title: string;

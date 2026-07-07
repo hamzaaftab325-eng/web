@@ -1,4 +1,5 @@
 import type { Product } from "@/types";
+import { getSiteUrl } from "@/lib/site-url";
 
 /**
  * ProductJsonLd — renders Product schema.org structured data as
@@ -7,17 +8,23 @@ import type { Product } from "@/types";
  * Enables Google Rich Results (price, availability, ratings) in
  * search results. Validate at https://search.google.com/test/rich-results
  *
- * Uses PKR currency and dynamic BASE_URL from env.
+ * Phase 10A: Uses getSiteUrl() instead of hardcoded BASE_URL.
+ * Phase 10C: Supports aggregateRating when reviews exist.
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aura-living-1.vercel.app";
+const BASE_URL = getSiteUrl();
 
 interface ProductJsonLdProps {
   product: Product;
+  /** Optional aggregate rating data — pass from the product page when reviews exist. */
+  rating?: {
+    average: number;
+    count: number;
+  };
 }
 
-export function ProductJsonLd({ product }: ProductJsonLdProps) {
-  const data = {
+export function ProductJsonLd({ product, rating }: ProductJsonLdProps) {
+  const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
@@ -44,6 +51,18 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
       },
     },
   };
+
+  // Phase 10C: Add aggregateRating when reviews exist.
+  // This enables star ratings in Google rich results → measurable CTR lift.
+  if (rating && rating.count > 0) {
+    data.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: rating.average,
+      reviewCount: rating.count,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
 
   return (
     <script
