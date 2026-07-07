@@ -4,6 +4,7 @@ import type { NextConfig } from "next";
 const withBundleAnalyzer = (config: NextConfig): NextConfig => {
   if (process.env.ANALYZE === "true") {
     // Lazy-import only when analyzing — doesn't affect normal builds
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { default: analyzer } = require("@next/bundle-analyzer");
     return analyzer({ enabled: true })(config);
   }
