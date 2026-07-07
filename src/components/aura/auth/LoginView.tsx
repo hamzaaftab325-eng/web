@@ -135,7 +135,11 @@ export function LoginView() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // ensure httpOnly cookies are sent + received
-        body: JSON.stringify({ email: values.email, password: values.password }),
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+          rememberMe: remember, // Phase 7 fix: pass rememberMe to API
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
