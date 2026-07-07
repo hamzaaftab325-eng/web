@@ -42,7 +42,7 @@ bun run start
 bun run lint
 
 # Push Prisma schema to DB
-bun run db:push
+bun run db:migrate
 
 # Regenerate Prisma client
 bun run db:generate
@@ -186,7 +186,7 @@ NEXT_PUBLIC_SITE_URL=https://aura-living-1.vercel.app
 2. Run the migration in `supabase/migrations/001_rate_limit_function.sql` via Supabase SQL Editor
 3. Push the Prisma schema:
    ```bash
-   bun run db:push
+   bun run db:migrate
    ```
 4. Set `DATABASE_URL` and `DIRECT_URL` in `.env` and on Vercel
 

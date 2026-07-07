@@ -117,6 +117,7 @@ model User {
   orders       Order[]
   reviews      Review[]
   wishlist     Wishlist[]
+  wishlistShares WishlistShare[]
   sessions     UserSession[]
   preferences  UserPreferences?
   notifications Notification[]
@@ -190,15 +191,6 @@ model UsedResetToken {
 
 /// Atomic rate-limit counters shared across serverless instances.
 /// Updated via the `increment_rate_limit` Postgres function (see supabase/migrations).
-model RateLimitCounter {
-  key       String   @id
-  count     Int      @default(0)
-  resetAt   DateTime
-  updatedAt DateTime @updatedAt
-
-  @@index([resetAt])
-}
-
 model Order {
   id              String   @id @default(cuid())
   orderNumber     String   @unique
@@ -239,8 +231,9 @@ model OrderItem {
   quantity     Int
   variantLabel String?
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product? @relation(fields: [productId], references: [id])
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
   @@index([orderId])
   @@index([productId])
 }
@@ -291,7 +284,7 @@ model Review {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   product Product? @relation(fields: [productId], references: [id])
-  user    User?    @relation(fields: [userId], references: [id])
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   @@index([productId])
   @@index([status])
 }
@@ -312,13 +305,6 @@ model HeroSlide {
   @@index([isActive, sortOrder])
 }
 
-model BrandMarqueeItem {
-  id String @id @default(cuid())
-  text String
-  sortOrder Int @default(0)
-  isActive Boolean @default(true)
-  @@index([isActive, sortOrder])
-}
 model BrandValue {
   id String @id @default(cuid())
   icon String
@@ -326,20 +312,6 @@ model BrandValue {
   description String
   sortOrder Int @default(0)
   isActive Boolean @default(true)
-  @@index([isActive, sortOrder])
-}
-model PressFeature {
-  id String @id @default(cuid())
-  publication String
-  year String?
-  tagline String?
-  quote String
-  author String?
-  authorRole String?
-  featureUrl String?
-  sortOrder Int @default(0)
-  isActive Boolean @default(true)
-  createdAt DateTime @default(now())
   @@index([isActive, sortOrder])
 }
 model Testimonial {
@@ -362,24 +334,6 @@ model FaqItem {
   sortOrder Int @default(0)
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
-  @@index([isActive, sortOrder])
-}
-
-model Artisan {
-  id           String   @id @default(cuid())
-  slug         String   @unique
-  name         String
-  location     String
-  founded      String?
-  craft        String
-  story        String[]
-  image        String
-  gallery      String[]
-  productSlugs String[]
-  sortOrder    Int      @default(0)
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
   @@index([isActive, sortOrder])
 }
 
@@ -413,26 +367,6 @@ model JournalArticle {
   updatedAt DateTime @updatedAt
   @@index([isActive, publishedAt])
 }
-model InstagramPost {
-  id String @id @default(cuid())
-  imageUrl String
-  caption String?
-  productSlug String?
-  instagramUrl String?
-  sortOrder Int @default(0)
-  isActive Boolean @default(true)
-  createdAt DateTime @default(now())
-  @@index([isActive, sortOrder])
-}
-model SustainabilityContent {
-  id String @id @default(cuid())
-  section String
-  data Json
-  isActive Boolean @default(true)
-  updatedAt DateTime @updatedAt
-  @@index([isActive, section])
-}
-
 model FirstOrderOffer {
   id String @id @default(cuid())
   isActive Boolean @default(true)
@@ -443,18 +377,6 @@ model FirstOrderOffer {
   bannerText String?
   dismissDurationDays Int @default(30)
   showDelayMs Int @default(3000)
-  updatedAt DateTime @updatedAt
-  @@index([isActive])
-}
-model ExitIntentPopup {
-  id String @id @default(cuid())
-  isActive Boolean @default(true)
-  title String
-  description String?
-  discountPercent Decimal? @db.Decimal(5, 2)
-  promoCode String?
-  imageUrl String?
-  triggerDelaySeconds Int @default(30)
   updatedAt DateTime @updatedAt
   @@index([isActive])
 }
@@ -474,58 +396,29 @@ model FlashSale {
   @@index([isActive, startDate, endDate])
 }
 
-model PageView {
-  id String @id @default(cuid())
-  path String
-  userId String?
-  sessionId String?
-  referrer String?
-  userAgent String?
+model WishlistShare {
+  id        String   @id @default(cuid())
+  shareId   String   @unique @default(cuid())
+  userId    String
   createdAt DateTime @default(now())
-  @@index([createdAt])
-  @@index([path])
-  @@index([sessionId])
+  expiresAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([shareId])
 }
-model ProductView {
-  id String @id @default(cuid())
-  productId String?
-  productSlug String
-  userId String?
-  sessionId String?
-  createdAt DateTime @default(now())
-  @@index([productSlug])
-  @@index([createdAt])
-  @@index([sessionId])
-}
-model SearchLog {
-  id String @id @default(cuid())
-  query String
-  resultsCount Int?
-  userId String?
-  sessionId String?
-  createdAt DateTime @default(now())
-  @@index([createdAt])
-  @@index([query])
-}
-model CartEvent {
-  id String @id @default(cuid())
-  eventType String
-  productId String?
-  productSlug String?
-  quantity Int?
-  userId String?
-  sessionId String?
-  createdAt DateTime @default(now())
-  @@index([eventType])
-  @@index([createdAt])
-  @@index([sessionId])
-}
+
 model EmailSubscriber {
-  id String @id @default(cuid())
-  email String
-  source String
-  promoCode String?
-  createdAt DateTime @default(now())
+  id               String   @id @default(cuid())
+  email            String   @unique
+  unsubscribeToken String   @unique @default(cuid())
+  source           String   @default("footer")
+  promoCode        String?
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
   @@index([email])
   @@index([source])
   @@index([createdAt])

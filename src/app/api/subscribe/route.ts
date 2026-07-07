@@ -36,28 +36,49 @@ export async function POST(request: NextRequest) {
     const { email, source, promoCode } = parsed.data;
     const emailLower = email.toLowerCase().trim();
 
-    // Check if already subscribed
-    const existing = await db.emailSubscriber.findFirst({
+    // Phase 2E: Use upsert instead of findFirst+create (eliminates TOCTOU race).
+    // Now safe because Phase 2B added @unique to EmailSubscriber.email.
+    // If two concurrent requests arrive with the same email, the second one's
+    // upsert will just update the existing row instead of throwing P2002.
+    //
+    // To detect "already subscribed" vs "new subscriber", we check if the
+    // subscriber existed before this call. We do this BEFORE the upsert to
+    // avoid the timestamp-comparison fragility.
+    const existing = await db.emailSubscriber.findUnique({
       where: { email: emailLower },
+      select: { id: true, isActive: true },
     });
 
-    if (existing) {
-      return NextResponse.json({ message: "You're already subscribed!", alreadySubscribed: true });
-    }
-
-    // Create new subscriber
-    await db.emailSubscriber.create({
-      data: {
+    await db.emailSubscriber.upsert({
+      where: { email: emailLower },
+      update: {
+        // Re-subscribe if previously unsubscribed (isActive was set to false)
+        isActive: true,
+        ...(source && { source }),
+        ...(promoCode !== undefined && { promoCode }),
+      },
+      create: {
         email: emailLower,
         source: source ?? "footer",
         promoCode: promoCode ?? null,
       },
     });
 
-    return NextResponse.json(
-      { message: "Successfully subscribed! Check your inbox for a welcome email.", subscribed: true },
-      { status: 201 }
-    );
+    if (!existing) {
+      return NextResponse.json(
+        { message: "Successfully subscribed! Check your inbox for a welcome email.", subscribed: true },
+        { status: 201 }
+      );
+    }
+
+    if (existing.isActive) {
+      return NextResponse.json({ message: "You're already subscribed!", alreadySubscribed: true });
+    }
+
+    return NextResponse.json({
+      message: "Welcome back! You've been re-subscribed.",
+      resubscribed: true,
+    });
   } catch {
     return NextResponse.json(
       { error: "Something went wrong. Please try again.", code: "SUBSCRIBE_ERROR" },

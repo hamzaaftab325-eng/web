@@ -83,14 +83,21 @@ export async function POST(request: NextRequest) {
       }
 
       // 2. Delete all personal data — cascade will handle related rows.
+      // NOTE: Reviews are NOT deleted — Phase 2B changed Review.user to
+      // onDelete: SetNull, so reviews are preserved with userId set to null
+      // (anonymized author). This is the GDPR-correct behavior: keep the
+      // review content for other shoppers, just disassociate it from the user.
       await tx.address.deleteMany({ where: { userId } });
       await tx.wishlist.deleteMany({ where: { userId } });
-      await tx.review.deleteMany({ where: { userId } });
       await tx.notification.deleteMany({ where: { userId } });
       await tx.userSession.deleteMany({ where: { userId } });
       await tx.userPreferences.deleteMany({ where: { userId } });
 
       // 3. Finally, delete the user record itself.
+      // Reviews will be auto-anonymized via onDelete: SetNull on Review.user.
+      // OrderItems will be auto-nullified via onDelete: SetNull on OrderItem.product
+      // (if the user's products are deleted — they typically aren't, but the
+      // safety net is there).
       await tx.user.delete({ where: { id: userId } });
     });
 

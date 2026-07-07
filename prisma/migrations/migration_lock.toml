@@ -1,0 +1,3 @@
+# Prisma migration lock file.
+# Defines the provider used for migrations. Do not remove or change.
+provider = "postgresql"

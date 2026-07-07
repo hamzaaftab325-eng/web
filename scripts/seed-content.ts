@@ -96,25 +96,7 @@ async function main() {
     console.log(`  ○ First order offer already exists`);
   }
 
-  // 3. Exit Intent Popup
-  const existingExit = await db.exitIntentPopup.count();
-  if (existingExit === 0) {
-    console.log("Adding exit intent popup...");
-    await db.exitIntentPopup.create({
-      data: {
-        isActive: true,
-        title: "Wait! 10% off your first order",
-        description: "Enter your email for a one-time discount code.",
-        discountPercent: 10,
-        promoCode: "WELCOME10",
-        imageUrl: "",
-        triggerDelaySeconds: 30,
-      },
-    });
-    console.log("  ✓ Added exit intent popup");
-  } else {
-    console.log(`  ○ Exit intent popup already exists`);
-  }
+  // 3. (ExitIntentPopup removed in Phase 2A — model dropped from schema)
 
   // 4. Promo Code
   const existingPromo = await db.promoCode.count();
@@ -270,7 +252,7 @@ async function main() {
   console.log("\nSeed complete! Database counts:");
   console.log("  Hero slides:", await db.heroSlide.count());
   console.log("  First order offers:", await db.firstOrderOffer.count());
-  console.log("  Exit intent popups:", await db.exitIntentPopup.count());
+  // (ExitIntentPopup removed in Phase 2A)
   console.log("  Promo codes:", await db.promoCode.count());
   console.log("  Shipping methods:", await db.shippingMethod.count());
   console.log("  FAQ items:", await db.faqItem.count());
