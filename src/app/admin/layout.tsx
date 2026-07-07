@@ -27,7 +27,6 @@ import {
 } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useAuthStore } from "@/store/use-auth-store";
-import { api } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 
 const navItems: { label: string; icon: typeof LayoutDashboard; path: string; description: string }[] = [
@@ -57,30 +56,67 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  // Verify admin access on mount
-  // Phase 5 fix: Use apiFetch (with auto-refresh) instead of raw fetch.
-  // Previously: raw fetch("/api/auth/me") — when the access token expired
-  // (every 15 min), the admin layout would get 401 and redirect to /login.
-  // Now: apiFetch auto-refreshes the access token via /api/auth/refresh
-  // before giving up and redirecting.
+  // Verify admin access on mount.
+  // Phase 6 fix: Use raw fetch() with manual refresh — NOT apiFetch.
+  // apiFetch's auto-redirect-to-login was causing a redirect loop:
+  //   /admin → 401 → apiFetch refreshes → refresh fails → redirect to /login
+  //   → user logs in → /admin → 401 again → loop
+  //
+  // With raw fetch, we control the flow:
+  //   1. Try /api/auth/me
+  //   2. If 401, try /api/auth/refresh
+  //   3. If refresh succeeds, retry /api/auth/me
+  //   4. If refresh fails, redirect to /login (ONCE — no loop)
   useEffect(() => {
-    api.get<{ user: { role: string } }>("/api/auth/me")
-      .then((data) => {
-        if (data.user?.role !== "admin") {
-          router.push("/");
-          return;
+    let cancelled = false;
+
+    async function checkAuth() {
+      try {
+        // Step 1: Try /api/auth/me
+        let res = await fetch("/api/auth/me", { credentials: "include" });
+
+        // Step 2: If 401, try refresh
+        if (res.status === 401) {
+          const refreshRes = await fetch("/api/auth/refresh", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          if (refreshRes.ok) {
+            // Step 3: Refresh succeeded — retry /api/auth/me
+            res = await fetch("/api/auth/me", { credentials: "include" });
+          }
         }
-        setIsAdmin(true);
-      })
-      .catch(() => {
-        // apiFetch already tried refreshing — if we're here, refresh failed too.
-        // Redirect to login with ?redirect=/admin so user comes back here.
-        router.push("/login?redirect=/admin");
-      })
-      .finally(() => {
-        setLoading(false);
-        setHydrated(true);
-      });
+
+        if (cancelled) return;
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user?.role === "admin") {
+            setIsAdmin(true);
+          } else {
+            // Not an admin — send to home
+            router.push("/");
+          }
+        } else {
+          // Still 401 after refresh attempt — redirect to login ONCE
+          router.push("/login?redirect=/admin");
+        }
+      } catch {
+        if (!cancelled) {
+          router.push("/login?redirect=/admin");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+          setHydrated(true);
+        }
+      }
+    }
+
+    checkAuth();
+    return () => { cancelled = true; };
   }, [router]);
 
   if (loading || !hydrated) {

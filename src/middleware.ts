@@ -61,7 +61,11 @@ export const config = {
     "/api/orders/:path*",
     "/api/admin/:path*",
     "/api/notifications/:path*",
-    "/api/auth/:path*",
+    // Phase 6 fix: Removed "/api/auth/:path*" from matcher.
+    // Auth API routes (login, register, refresh, me, logout) should NOT go
+    // through the middleware — the middleware's cookie-existence check was
+    // interfering with auth flows (e.g., blocking /api/auth/refresh when
+    // the access cookie was expired but refresh cookie was valid).
     "/api/reviews/:path*",
     "/api/upload/:path*",
   ],
