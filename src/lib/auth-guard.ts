@@ -52,10 +52,16 @@ export async function requireUser(request: NextRequest): Promise<{ id: string; e
     );
   }
 
-  // Check in-memory cache first (60s TTL)
+  // Check in-memory cache first (60s TTL).
+  // On cache miss AND on stale hit, evict the entry — prevents the Map from
+  // growing unboundedly across the serverless isolate's lifetime (memory leak).
   const cached = userCache.get(payload.userId);
-  if (cached && Date.now() - cached.cachedAt < CACHE_TTL) {
-    return { id: cached.id, email: cached.email, role: cached.role };
+  if (cached) {
+    if (Date.now() - cached.cachedAt < CACHE_TTL) {
+      return { id: cached.id, email: cached.email, role: cached.role };
+    }
+    // Stale entry — delete it before falling through to the DB lookup.
+    userCache.delete(payload.userId);
   }
 
   // Fetch the CURRENT user from the database (role may have changed since JWT was issued)
@@ -68,7 +74,7 @@ export async function requireUser(request: NextRequest): Promise<{ id: string; e
     return NextResponse.json({ error: "Account not found or inactive", code: "UNAUTHORIZED" }, { status: 401 });
   }
 
-  // Cache for 60 seconds
+  // Cache for 60 seconds. Set overwrites any stale entry that wasn't deleted above.
   userCache.set(payload.userId, { id: user.id, email: user.email, role: user.role, cachedAt: Date.now() });
 
   return { id: user.id, email: user.email, role: user.role };

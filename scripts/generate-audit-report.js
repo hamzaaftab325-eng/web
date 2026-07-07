@@ -600,7 +600,7 @@ function buildAppendix() {
     body("• Python 3.12 — JSON response parsing and validation"),
     body("• Direct database inspection via Prisma queries (for catalog counts)"),
     h2("13.2 Auth Flow"),
-    body("1. POST /api/auth/login with admin@auraliving.com / Aura@2026 → returns access + refresh tokens in Set-Cookie headers."),
+    body("1. POST /api/auth/login with admin credentials (email/password redacted for security) → returns access + refresh tokens in Set-Cookie headers."),
     body("2. Subsequent requests sent with -H “Cookie: aura_access=<token>” to simulate an authenticated browser session."),
     body("3. /api/auth/me verified to return the admin user object when cookie is present, and 401 when absent."),
     h2("13.3 What Was NOT Tested"),

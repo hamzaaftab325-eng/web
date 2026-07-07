@@ -1,27 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { randomUUID } from "crypto";
+
 import { db } from "@/lib/db";
 import { verifyTokenWithType, hashPassword } from "@/lib/auth";
 import { validatePasswordStrength } from "@/lib/security";
-import { randomUUID } from "crypto";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const schema = z.object({ token: z.string().min(1), newPassword: z.string().min(8) });
 
 /**
  * POST /api/auth/reset-password
  *
- * Verifies the JWT reset token (must have type: "reset"), checks it hasn't
- * been used already (replay protection via UsedResetToken table), updates
- * the password, invalidates all sessions.
- *
- * Single-use enforcement:
- *   1. Compute a deterministic jti from the JWT (header.payload).
- *   2. INSERT into UsedResetToken with unique(jti). If the token was already
- *      consumed, the unique constraint throws P2002 → return 410 Gone.
- *   3. On success, also delete all user sessions to force re-login everywhere.
+ * Security:
+ *   - Rate limited: 5 attempts per minute per IP (prevents token brute-force).
  */
 export async function POST(request: NextRequest) {
   try {
+    const blocked = await rateLimit(request, 5, "1 m", `reset-pw:${getClientIp(request)}`);
+    if (blocked) return blocked;
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Invalid input", code: "VALIDATION_ERROR" }, { status: 400 });

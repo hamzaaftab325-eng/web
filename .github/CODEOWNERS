@@ -1,0 +1,21 @@
+# CODEOWNERS — code review enforcement
+# Each path requires approval from the listed owner(s).
+
+* @hamzaaftab325-eng
+
+/.github/workflows/       @hamzaaftab325-eng
+/src/lib/auth-guard.ts    @hamzaaftab325-eng
+/src/lib/auth.ts          @hamzaaftab325-eng
+/src/lib/auth-jwt.ts      @hamzaaftab325-eng
+/src/lib/auth-cookies.ts  @hamzaaftab325-eng
+/src/lib/rate-limit.ts    @hamzaaftab325-eng
+/src/lib/security.ts      @hamzaaftab325-eng
+/src/middleware.ts        @hamzaaftab325-eng
+/prisma/schema.prisma     @hamzaaftab325-eng
+/prisma/migrations/       @hamzaaftab325-eng
+
+/src/lib/services/        @hamzaaftab325-eng
+/src/lib/db.ts            @hamzaaftab325-eng
+
+/src/app/api/orders/      @hamzaaftab325-eng
+/src/app/api/admin/       @hamzaaftab325-eng

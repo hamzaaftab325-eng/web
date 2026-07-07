@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { hashPassword, signAccessToken, signRefreshToken, sanitizeUser } from "@/lib/auth";
 import { setAuthCookies } from "@/lib/auth-cookies";
 import { sendEmail } from "@/lib/email";
 import { welcomeEmail } from "@/lib/email-templates";
 import { sanitizeObject, validatePasswordStrength } from "@/lib/security";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const schema = z.object({
   firstName: z.string().min(1).max(60), lastName: z.string().min(1).max(60),
@@ -14,6 +16,9 @@ const schema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const blocked = await rateLimit(request, 3, "1 h", `register:${getClientIp(request)}`);
+    if (blocked) return blocked;
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input", code: "VALIDATION_ERROR" }, { status: 400 });

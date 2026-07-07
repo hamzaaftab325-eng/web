@@ -1,48 +1,29 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
 import { sanitizeObject } from "@/lib/security";
 import { sendContactNotificationEmail } from "@/lib/email-templates";
 import { sendEmail } from "@/lib/email";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 /**
  * POST /api/contact
  *
- * Public endpoint — accepts contact form submissions.
- * Stores the message, notifies admins (in-app + email), and returns success.
- * Rate limited (in-memory, 5 messages per hour per IP) to prevent abuse.
+ * Security:
+ *   - Rate limited via Upstash Redis: 5 messages per hour per IP.
+ *     (Previously used an in-memory Map — broken on Vercel serverless because
+ *     each function instance has its own Map. Upstash is shared across all
+ *     instances.)
+ *   - Input HTML-sanitized to prevent stored XSS in admin notifications.
  */
-
-interface RateLimitEntry { count: number; resetTime: number; }
-const rateLimitStore = new Map<string, RateLimitEntry>();
-
-function rateLimit(key: string, max: number, windowMs: number): boolean {
-  const now = Date.now();
-  const entry = rateLimitStore.get(key);
-  if (!entry || entry.resetTime < now) {
-    rateLimitStore.set(key, { count: 1, resetTime: now + windowMs });
-    return true;
-  }
-  if (entry.count >= max) return false;
-  entry.count += 1;
-  return true;
-}
-
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // Rate limit: 5 messages per hour per IP.
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-    const allowed = rateLimit(`contact:${ip}`, 5, 60 * 60 * 1000);
-    if (!allowed) {
-      return NextResponse.json(
-        { error: "Too many messages. Please try again later." },
-        { status: 429 }
-      );
-    }
+    const blocked = await rateLimit(req, 5, "1 h", `contact:${getClientIp(req)}`);
+    if (blocked) return blocked;
 
     const body = await req.json();
     const { name, email, subject, message } = sanitizeObject(body);
 
-    // Validate required fields.
     if (!name || typeof name !== "string" || name.trim().length < 2) {
       return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
     }
@@ -59,7 +40,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Message is too long (5000 character max)." }, { status: 400 });
     }
 
-    // Store the contact message in the database as a system notification to all admins.
     const adminUsers = await db.user.findMany({
       where: { role: "admin" },
       select: { id: true, email: true },
@@ -80,7 +60,6 @@ export async function POST(req: Request) {
       )
     );
 
-    // Send email notification to admins (best-effort, not blocking).
     for (const admin of adminUsers) {
       try {
         const template = sendContactNotificationEmail({
@@ -95,7 +74,7 @@ export async function POST(req: Request) {
           html: template.html,
         });
       } catch {
-        // Email failure is non-blocking — the in-app notification is enough.
+        /* non-blocking */
       }
     }
 
@@ -109,9 +88,6 @@ export async function POST(req: Request) {
   }
 }
 
-/**
- * Safe notification creation — doesn't throw if it fails.
- */
 async function createNotificationSafe(params: {
   userId: string;
   type: "system";

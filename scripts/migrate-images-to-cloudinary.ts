@@ -1,20 +1,36 @@
 /**
  * Migrate product images from Unsplash URLs to Cloudinary.
- * 
- * Downloads each Unsplash image URL from the ProductImage table,
- * uploads to Cloudinary, then updates the ProductImage.url field.
+ *
+ * Usage:
+ *   bun run scripts/migrate-images-to-cloudinary.ts
+ *
+ * Requires DATABASE_URL, NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+ * CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET environment variables
+ * (loaded from .env.local). Never hardcodes credentials.
  */
 import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
+import { config } from "dotenv";
 
-process.env.DATABASE_URL = "postgresql://postgres.stekfrfpwnxsczwjsrtc:Cobalt%21Tree%23981@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1";
-process.env.DIRECT_URL = "postgresql://postgres.stekfrfpwnxsczwjsrtc:Cobalt%21Tree%23981@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres";
+config({ path: ".env.local" });
+
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const API_KEY = process.env.CLOUDINARY_API_KEY;
+const API_SECRET = process.env.CLOUDINARY_API_SECRET;
+
+if (!process.env.DATABASE_URL) {
+  console.error("✗ DATABASE_URL is not set. Add it to .env.local and re-run.");
+  process.exit(1);
+}
+if (!CLOUD_NAME || !API_KEY || !API_SECRET) {
+  console.error("✗ Cloudinary credentials missing. Set these in .env.local:");
+  console.error("    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME");
+  console.error("    CLOUDINARY_API_KEY");
+  console.error("    CLOUDINARY_API_SECRET");
+  process.exit(1);
+}
 
 const db = new PrismaClient();
-
-const CLOUD_NAME = "diometfe9";
-const API_KEY = "557379872884882";
-const API_SECRET = "rNr_wVZdo-Vxdu0VvRn-aNty29g";
 
 async function generateSignature(paramsToSign: string, apiSecret: string): Promise<string> {
   return crypto.createHash("sha1").update(paramsToSign + apiSecret).digest("hex");
@@ -41,18 +57,17 @@ async function uploadToCloudinary(imageUrl: string, publicId: string): Promise<s
   );
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
+    const error = await response.json().catch(() => ({})) as { error?: { message?: string } };
     throw new Error(error?.error?.message ?? "Upload failed");
   }
 
-  const result = await response.json();
-  return result.secure_url as string;
+  const result = await response.json() as { secure_url: string };
+  return result.secure_url;
 }
 
 async function main() {
   console.log("Migrating product images from Unsplash to Cloudinary...\n");
 
-  // Get all product images that are NOT on Cloudinary
   const images = await db.productImage.findMany({
     where: {
       url: { contains: "unsplash.com" }
@@ -70,20 +85,19 @@ async function main() {
 
   for (const img of images) {
     const publicId = `${img.product.slug}-${img.sortOrder + 1}`;
-    
+
     try {
       console.log(`  ↑ ${img.product.name} — image ${img.sortOrder + 1}...`);
       const cloudinaryUrl = await uploadToCloudinary(img.url, publicId);
-      
+
       await db.productImage.update({
         where: { id: img.id },
         data: { url: cloudinaryUrl }
       });
-      
+
       console.log(`    ✓ ${cloudinaryUrl.substring(0, 70)}...`);
       migrated++;
-      
-      // Small delay to avoid rate limiting
+
       await new Promise((r) => setTimeout(r, 500));
     } catch (error) {
       console.error(`    ✗ Failed: ${error instanceof Error ? error.message : error}`);
@@ -94,8 +108,7 @@ async function main() {
   console.log(`\nMigration complete!`);
   console.log(`  Migrated: ${migrated}`);
   console.log(`  Failed: ${failed}`);
-  
-  // Verify
+
   const remaining = await db.productImage.count({
     where: { url: { contains: "unsplash.com" } }
   });

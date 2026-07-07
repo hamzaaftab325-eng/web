@@ -1,4 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+import { requireAdmin } from "@/lib/auth-guard";
 
 /**
  * GET /api/health/integrations
@@ -6,9 +8,15 @@ import { NextResponse } from "next/server";
  * Checks the configuration status of ALL third-party integrations.
  * Returns which are configured vs missing (without exposing secrets).
  *
- * Used by admins to quickly verify all integrations are working.
+ * SECURITY: Admin-only. Previously this endpoint was public, allowing any
+ * attacker to probe the configuration status of the deployment and learn
+ * which integrations are misconfigured (e.g. "Resend is not configured"
+ * reveals that password-reset emails won't actually send).
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await requireAdmin(request);
+  if (auth instanceof NextResponse) return auth;
+
   const integrations = {
     database: {
       configured: Boolean(process.env.DATABASE_URL),

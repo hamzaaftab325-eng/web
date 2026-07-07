@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { emailWrapper, statCardRow, dataTable } from "@/lib/email-wrapper";
+import { getSiteUrl } from "@/lib/site-url";
 
 /**
  * GET /api/cron/daily-order-digest
@@ -174,7 +175,7 @@ function buildDigestEmail(params: {
     <hr class="divider" />
 
     <div style="text-align:center;">
-      <a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aura-living-1.vercel.app'}/admin/orders" class="button">View All Orders</a>
+      <a href="${getSiteUrl()}/admin/orders" class="button">View All Orders</a>
     </div>
   `;
 
