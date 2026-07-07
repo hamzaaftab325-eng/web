@@ -16,8 +16,11 @@ import {
   Mail,
   ShieldCheck,
 } from "lucide-react";
+
 import { AuthShell } from "./AuthShell";
 import { Button } from "@/components/aura/ui/Button";
+import { SquareToggle } from "./SquareToggle";
+import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { cn } from "@/lib/utils";
@@ -61,82 +64,6 @@ const signupSchema = z
 type SignupValues = z.infer<typeof signupSchema>;
 
 /* ────────────────────────────────────────────────────────────────────────
-   Strength meter helpers
-   ──────────────────────────────────────────────────────────────────────── */
-interface StrengthCheck {
-  len: boolean;
-  num: boolean;
-  caseOk: boolean;
-  special: boolean;
-}
-
-function evaluatePassword(pw: string): { score: 0 | 1 | 2 | 3 | 4; checks: StrengthCheck } {
-  const checks: StrengthCheck = {
-    len: pw.length >= 8,
-    num: /[0-9]/.test(pw),
-    caseOk: /[a-z]/.test(pw) && /[A-Z]/.test(pw),
-    special: /[^A-Za-z0-9]/.test(pw),
-  };
-  const score = (["len", "num", "caseOk", "special"] as const).filter(
-    (k) => checks[k]
-  ).length as 0 | 1 | 2 | 3 | 4;
-  return { score, checks };
-}
-
-const STRENGTH_COLOR: Record<0 | 1 | 2 | 3 | 4, string> = {
-  0: "bg-ink-faint/30",
-  1: "bg-error",
-  2: "c-warning",
-  3: "bg-gold",
-  4: "bg-success",
-};
-
-const STRENGTH_LABEL: Record<0 | 1 | 2 | 3 | 4, string> = {
-  0: "—",
-  1: "Weak",
-  2: "Fair",
-  3: "Good",
-  4: "Strong",
-};
-
-/* ────────────────────────────────────────────────────────────────────────
-   Custom checkbox (square)
-   ──────────────────────────────────────────────────────────────────────── */
-interface SquareToggleProps {
-  checked: boolean;
-  onChange: (next: boolean) => void;
-  label: string;
-  id?: string;
-  invalid?: boolean;
-}
-
-function SquareToggle({ checked, onChange, label, id, invalid }: SquareToggleProps) {
-  return (
-    <button
-      type="button"
-      role="checkbox"
-      id={id}
-      aria-checked={checked}
-      aria-label={label}
-      onClick={() => onChange(!checked)}
-      className={cn(
-        "shrink-0 w-5 h-5 border flex items-center justify-center transition-colors duration-300",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold",
-        /* 44px minimum touch target on mobile */
-        "min-w-[44px] min-h-[44px] p-[10px] -m-[10px]",
-        checked
-          ? "bg-ink border-ink"
-          : invalid
-            ? "bg-transparent border-error"
-            : "bg-transparent border-hairline-strong hover:border-gold"
-      )}
-    >
-      {checked && <Check size={12} strokeWidth={2.5} className="c-paper" />}
-    </button>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────────────
    SignupView
    ──────────────────────────────────────────────────────────────────────── */
 export function SignupView() {
@@ -173,7 +100,6 @@ export function SignupView() {
   const confirmPasswordValue = useWatch({ control, name: "confirmPassword" }) ?? "";
   const acceptTermsValue = useWatch({ control, name: "acceptTerms" }) ?? false;
   const joinNewsletterValue = useWatch({ control, name: "joinNewsletter" }) ?? true;
-  const { score, checks } = evaluatePassword(passwordValue || "");
   const passwordsMatch =
     confirmPasswordValue.length > 0 && passwordValue === confirmPasswordValue;
 
@@ -226,13 +152,6 @@ export function SignupView() {
       </button>
     </p>
   );
-
-  const requirements: { key: keyof StrengthCheck; label: string }[] = [
-    { key: "len", label: "8+ characters" },
-    { key: "num", label: "One number" },
-    { key: "caseOk", label: "Upper & lower case" },
-    { key: "special", label: "Special character" },
-  ];
 
   return (
     <AuthShell
@@ -394,49 +313,11 @@ export function SignupView() {
             </button>
           </div>
 
-          {/* Strength meter */}
-          <div id="signup-password-strength" className="mt-2.5">
-            <div className="flex items-center gap-1.5">
-              {[0, 1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "h-1 flex-1 rounded-full transition-colors duration-300",
-                    i < score ? STRENGTH_COLOR[score] : "bg-ink-faint/15"
-                  )}
-                />
-              ))}
-              <span className="t-caption c-ink-faint ml-2 w-12 text-right tabular-nums">
-                {passwordValue ? STRENGTH_LABEL[score] : "—"}
-              </span>
-            </div>
-
-            {/* Requirements checklist */}
-            <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5">
-              {requirements.map((req) => {
-                const ok = checks[req.key];
-                return (
-                  <li
-                    key={req.key}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 t-caption transition-colors",
-                      ok ? "c-success" : "c-ink-faint"
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "shrink-0 inline-flex items-center justify-center w-3.5 h-3.5 rounded-full border transition-colors",
-                        ok ? "bg-success border-success" : "border-hairline-strong"
-                      )}
-                    >
-                      {ok && <Check size={9} strokeWidth={3} className="c-paper" />}
-                    </span>
-                    {req.label}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          {/* Phase 5A: Strength meter extracted to <PasswordStrengthMeter /> */}
+          <PasswordStrengthMeter
+            id="signup-password-strength"
+            password={passwordValue}
+          />
 
           {errors.password && (
             <p id="signup-password-error" className="t-caption c-error mt-1.5" role="alert">

@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import useEmblaCarousel from "embla-carousel-react";
 import {
   ChevronLeft,
   ChevronDown,
@@ -33,6 +32,7 @@ import { ReadAloud } from "@/components/aura/ui/ReadAloud";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { ProductCard } from "./ProductCard";
+import { ProductGallery } from "./ProductGallery";
 import { ProductShare } from "./ProductShare";
 import { Badge } from "@/components/aura/ui/Badge";
 import { SocialProof } from "./SocialProof";
@@ -68,13 +68,8 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
   const setCategory = useUIStore((s) => s.setCategory);
   const { add: addRecentlyViewed } = useRecentlyViewed();
 
-  // Carousel
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    duration: 30,
-    dragFree: false,
-  });
-  const [selectedSlide, setSelectedSlide] = useState(0);
+  // Phase 5A: Embla carousel state moved to <ProductGallery /> component.
+  // Phase 5A: selectedSlide + imgLoaded state moved to <ProductGallery />.
 
   // Local UI state
   const [quantity, setQuantity] = useState(1);
@@ -86,20 +81,10 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
   );
   const [openSection, setOpenSection] = useState<string | null>("description");
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
-  const [imgLoaded, setImgLoaded] = useState<Record<number, boolean>>({});
-
-  // Reset local state when the product changes — "previous render" pattern.
-  const [prevId, setPrevId] = useState(product.id);
-  if (product.id !== prevId) {
-    setPrevId(product.id);
-    setQuantity(1);
-    setVariant(product.variants?.[0]);
-    setAddingState("idle");
-    setOpenSection("description");
-    setSelectedSlide(0);
-    setImgLoaded({});
-    if (emblaApi) emblaApi.scrollTo(0, true);
-  }
+  // Phase 5D: Removed imgLoaded state — now managed inside <ProductGallery />
+  // Phase 5D: Removed prevId state-during-render pattern — parent now passes
+  // key={product.id} which remounts the component on product change, naturally
+  // resetting all local state (quantity, variant, addingState, openSection, selectedSlide).
 
   // Scroll to top when the PDP mounts.
   useEffect(() => {
@@ -111,21 +96,7 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
     if (product.slug) addRecentlyViewed(product.slug);
   }, [product.slug, addRecentlyViewed]);
 
-  // Embla slide tracking
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedSlide(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-    return () => {
-      emblaApi.off("select", onSelect);
-      emblaApi.off("reInit", onSelect);
-    };
-  }, [emblaApi, onSelect]);
+  // Phase 5A: Embla onSelect callback + event listeners moved to <ProductGallery />.
 
   const onAddToCart = async () => {
     if (!product.inStock) return;
@@ -289,59 +260,9 @@ export function ProductDetailPage({ product, onBack }: ProductDetailPageProps) {
       {/* Main two-column layout */}
       <div className="container-aura pt-6 lg:pt-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-10">
-          {/* Gallery */}
+          {/* Gallery — Phase 5A: Extracted to <ProductGallery /> */}
           <div className="lg:col-span-7">
-            <div className="lg:sticky lg:top-6">
-              <div className="overflow-hidden bg-cream" ref={emblaRef}>
-                <div className="flex">
-                  {product.images.map((src, i) => (
-                    <div
-                      key={i}
-                      className="flex-[0_0_100%] aspect-[4/5] md:aspect-[3/4] relative"
-                    >
-                      {!imgLoaded[i] && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-cream to-cream-deep animate-pulse" />
-                      )}
-                      <img
-                        src={src}
-                        alt={`${product.name} — view ${i + 1}`}
-                        loading={i === 0 ? "eager" : "lazy"}
-                        onLoad={() =>
-                          setImgLoaded((prev) => ({ ...prev, [i]: true }))
-                        }
-                        className={cn(
-                          "w-full h-full object-cover transition-opacity duration-700",
-                          imgLoaded[i] ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Thumbnails */}
-              <div className="flex gap-2 mt-3 overflow-x-auto scrollbar-hide">
-                {product.images.map((src, i) => (
-                  <button
-                    key={i}
-                    onClick={() => emblaApi?.scrollTo(i)}
-                    aria-label={`View image ${i + 1}`}
-                    className={cn(
-                      "flex-shrink-0 w-16 h-20 md:w-20 md:h-24 overflow-hidden border-2 transition-colors",
-                      selectedSlide === i
-                        ? "border-gold"
-                        : "border-transparent hover:border-hairline-gold"
-                    )}
-                  >
-                    <img
-                      src={src}
-                      alt=""
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
+            <ProductGallery images={product.images} productName={product.name} />
           </div>
 
           {/* Info */}
