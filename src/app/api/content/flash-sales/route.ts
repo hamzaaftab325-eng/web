@@ -20,9 +20,14 @@ export async function GET() {
       description: sale.description,
       discountPercent: sale.discountPercent ? Number(sale.discountPercent) : null,
       promoCode: sale.promoCode,
+      maxUses: sale.maxUses,
+      usesCount: sale.usesCount,
       endDate: sale.endDate.toISOString(),
     });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "FETCH_ERROR" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed", code: "FETCH_ERROR" },
+      { status: 500 }
+    );
   }
 }

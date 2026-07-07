@@ -8,34 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum UserRole {
-  customer
-  admin
-}
-
-enum OrderStatus {
-  processing
-  confirmed
-  packed
-  shipped
-  delivered
-  cancelled
-  refunded
-}
-
-enum PaymentStatus {
-  pending
-  paid
-  failed
-  refunded
-}
-
-enum PromoCodeType {
-  percent
-  fixed
-  shipping
-}
-
 model Category {
   id          String   @id @default(cuid())
   slug        String   @unique
@@ -137,7 +109,7 @@ model User {
   firstName    String
   lastName     String
   phone        String?
-  role         UserRole   @default(customer)
+  role         String   @default("customer")
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -216,12 +188,23 @@ model UsedResetToken {
   @@index([expiresAt])
 }
 
+/// Atomic rate-limit counters shared across serverless instances.
+/// Updated via the `increment_rate_limit` Postgres function (see supabase/migrations).
+model RateLimitCounter {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
+}
+
 model Order {
   id              String   @id @default(cuid())
   orderNumber     String   @unique
   userId          String?
   email           String
-  status          OrderStatus   @default(processing)
+  status          String   @default("processing")
   subtotal        Decimal  @db.Decimal(10, 2)
   discount        Decimal  @default(0) @db.Decimal(10, 2)
   shippingCost    Decimal  @default(0) @db.Decimal(10, 2)
@@ -235,7 +218,7 @@ model Order {
   estimatedDelivery DateTime?
   orderNotes      String?
   paymentMethod   String   @default("cod")
-  paymentStatus   PaymentStatus @default(pending)
+  paymentStatus   String   @default("pending")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   user  User?       @relation(fields: [userId], references: [id])
@@ -265,7 +248,7 @@ model OrderItem {
 model PromoCode {
   id         String   @id @default(cuid())
   code       String   @unique
-  type       PromoCodeType
+  type       String
   value      Decimal  @db.Decimal(10, 2)
   label      String
   minOrder   Decimal  @default(0) @db.Decimal(10, 2)
@@ -329,6 +312,13 @@ model HeroSlide {
   @@index([isActive, sortOrder])
 }
 
+model BrandMarqueeItem {
+  id String @id @default(cuid())
+  text String
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+  @@index([isActive, sortOrder])
+}
 model BrandValue {
   id String @id @default(cuid())
   icon String
@@ -336,6 +326,20 @@ model BrandValue {
   description String
   sortOrder Int @default(0)
   isActive Boolean @default(true)
+  @@index([isActive, sortOrder])
+}
+model PressFeature {
+  id String @id @default(cuid())
+  publication String
+  year String?
+  tagline String?
+  quote String
+  author String?
+  authorRole String?
+  featureUrl String?
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
   @@index([isActive, sortOrder])
 }
 model Testimonial {
@@ -358,6 +362,24 @@ model FaqItem {
   sortOrder Int @default(0)
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  @@index([isActive, sortOrder])
+}
+
+model Artisan {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  location     String
+  founded      String?
+  craft        String
+  story        String[]
+  image        String
+  gallery      String[]
+  productSlugs String[]
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   @@index([isActive, sortOrder])
 }
 
@@ -391,6 +413,26 @@ model JournalArticle {
   updatedAt DateTime @updatedAt
   @@index([isActive, publishedAt])
 }
+model InstagramPost {
+  id String @id @default(cuid())
+  imageUrl String
+  caption String?
+  productSlug String?
+  instagramUrl String?
+  sortOrder Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  @@index([isActive, sortOrder])
+}
+model SustainabilityContent {
+  id String @id @default(cuid())
+  section String
+  data Json
+  isActive Boolean @default(true)
+  updatedAt DateTime @updatedAt
+  @@index([isActive, section])
+}
+
 model FirstOrderOffer {
   id String @id @default(cuid())
   isActive Boolean @default(true)
@@ -404,6 +446,18 @@ model FirstOrderOffer {
   updatedAt DateTime @updatedAt
   @@index([isActive])
 }
+model ExitIntentPopup {
+  id String @id @default(cuid())
+  isActive Boolean @default(true)
+  title String
+  description String?
+  discountPercent Decimal? @db.Decimal(5, 2)
+  promoCode String?
+  imageUrl String?
+  triggerDelaySeconds Int @default(30)
+  updatedAt DateTime @updatedAt
+  @@index([isActive])
+}
 model FlashSale {
   id String @id @default(cuid())
   name String
@@ -412,18 +466,64 @@ model FlashSale {
   endDate DateTime
   discountPercent Decimal? @db.Decimal(5, 2)
   promoCode String?
+  isActive Boolean @default(true)
   maxUses Int?
   usesCount Int @default(0)
-  isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([isActive, startDate, endDate])
 }
 
+model PageView {
+  id String @id @default(cuid())
+  path String
+  userId String?
+  sessionId String?
+  referrer String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+  @@index([path])
+  @@index([sessionId])
+}
+model ProductView {
+  id String @id @default(cuid())
+  productId String?
+  productSlug String
+  userId String?
+  sessionId String?
+  createdAt DateTime @default(now())
+  @@index([productSlug])
+  @@index([createdAt])
+  @@index([sessionId])
+}
+model SearchLog {
+  id String @id @default(cuid())
+  query String
+  resultsCount Int?
+  userId String?
+  sessionId String?
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+  @@index([query])
+}
+model CartEvent {
+  id String @id @default(cuid())
+  eventType String
+  productId String?
+  productSlug String?
+  quantity Int?
+  userId String?
+  sessionId String?
+  createdAt DateTime @default(now())
+  @@index([eventType])
+  @@index([createdAt])
+  @@index([sessionId])
+}
 model EmailSubscriber {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  source     String
+  id String @id @default(cuid())
+  email String
+  source String
   promoCode String?
   createdAt DateTime @default(now())
   @@index([email])
