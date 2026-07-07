@@ -14,34 +14,17 @@ import { productMetadata } from "@/lib/seo-metadata";
 // First request after expiry serves stale + triggers regeneration (stale-while-revalidate).
 // Expected: ~80% reduction in product page TTFB on cache hit.
 //
-// generateStaticParams() below pre-renders all active products at build time
-// so the most-visited pages are cached from the very first request.
+// NOTE: We deliberately do NOT use generateStaticParams() here.
+// Pre-rendering all products at build time exhausts the Prisma connection pool
+// (connection_limit=1 for serverless) — see Vercel build log P2024 error.
+// Instead, pages render on first request (lazy static generation), then cache.
+// This keeps build times fast and avoids the connection-pool issue.
 export const revalidate = 3600; // 1 hour
 
-// Fallback: pages not pre-rendered at build time are rendered on first request,
-// then cached. This gives us "lazy static generation" — long-tail products
-// don't slow down the build, but get cached after first view.
+// Fallback: pages not yet cached are rendered on first request, then cached.
 export const dynamicParams = true;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aura-living-1.vercel.app";
-
-/**
- * Pre-render all active products at build time.
- * Returns slugs for every active product so they're cached from day one.
- */
-export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
-  try {
-    const products = await db.product.findMany({
-      where: { isActive: true },
-      select: { slug: true },
-    });
-    return products.map((p) => ({ slug: p.slug }));
-  } catch (error) {
-    // If DB is unreachable at build time, render all product pages on-demand
-    console.warn("[product/generateStaticParams] Failed to fetch product slugs:", error);
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
