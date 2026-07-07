@@ -3,19 +3,34 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
+
+import { api } from "@/lib/api/client";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const prefersReducedMotion = useReducedMotion();
 
+  // Phase 5G: Replaced fake setTimeout with real API call to /api/subscribe.
+  // Previously this component silently faked a successful subscription —
+  // users saw "Welcome to the family" but were never actually subscribed.
+  // Now calls the real endpoint (same one Footer.tsx uses).
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
     setStatus("submitting");
-    await new Promise((r) => setTimeout(r, 800));
-    setStatus("success");
+    setErrorMessage("");
+
+    try {
+      await api.post("/api/subscribe", { email, source: "homepage-newsletter-section" });
+      setStatus("success");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Something went wrong. Please try again.";
+      setErrorMessage(message);
+      setStatus("error");
+    }
   };
 
   return (
@@ -63,10 +78,15 @@ export function NewsletterSection() {
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (status === "error") setStatus("idle");
+                  }}
                   placeholder="your@email.com"
                   className="flex-1 bg-transparent border border-paper/30 px-4 py-3.5 t-body c-paper placeholder:c-paper/40 focus:border-gold transition-colors outline-none"
                   aria-label="Email address"
+                  aria-invalid={status === "error"}
+                  aria-describedby={status === "error" ? "newsletter-error" : undefined}
                 />
                 <button
                   type="submit"
@@ -112,6 +132,17 @@ export function NewsletterSection() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Phase 5G: Error message — shown below form, allows retry */}
+          {status === "error" && (
+            <p
+              id="newsletter-error"
+              role="alert"
+              className="t-caption c-error mt-3"
+            >
+              {errorMessage}
+            </p>
+          )}
 
           <p className="t-caption c-paper/40 mt-6">
             One letter a month. Unsubscribe anytime. We never share your email.

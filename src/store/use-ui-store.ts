@@ -12,7 +12,6 @@ interface UIState {
   activeProductSlug: string | null;
   quickViewProductSlug: string | null;
   activeArticleSlug: string | null;
-  activeOrderId: string | null;
   authRedirect: string | null;
   checkoutOpen: boolean;
   searchOpen: boolean;
@@ -28,7 +27,6 @@ interface UIState {
   openProductPage: (slug: string) => void;
   setQuickViewProduct: (slug: string | null) => void;
   openArticle: (slug: string | null) => void;
-  openOrder: (id: string | null) => void;
   setAuthRedirect: (path: string | null) => void;
   setCheckoutOpen: (open: boolean) => void;
   setSearchOpen: (open: boolean) => void;
@@ -48,7 +46,6 @@ export const useUIStore = create<UIState>((set) => ({
   activeProductSlug: null,
   quickViewProductSlug: null,
   activeArticleSlug: null,
-  activeOrderId: null,
   authRedirect: null,
   checkoutOpen: false,
   searchOpen: false,
@@ -68,7 +65,7 @@ export const useUIStore = create<UIState>((set) => ({
     set({ activeProductSlug: slug, view: "product-detail" }),
   setQuickViewProduct: (slug) => set({ quickViewProductSlug: slug }),
   openArticle: (slug) => set({ activeArticleSlug: slug }),
-  openOrder: (id) => set({ activeOrderId: id, view: "account-order-detail" }),
+  // Phase 5C: Removed openOrder/activeOrderId — were set but never read by any component.
   setAuthRedirect: (path) => set({ authRedirect: path }),
   setCheckoutOpen: (open) => set({ checkoutOpen: open }),
   setSearchOpen: (open) => set({ searchOpen: open }),

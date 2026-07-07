@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { Heart, Plus, Check, ShoppingBag } from "lucide-react";
+
 import type { Product } from "@/types";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
@@ -29,22 +30,35 @@ interface ProductCardProps {
   priority?: boolean;
 }
 
-export function ProductCard({ product, priority = false }: ProductCardProps) {
+/**
+ * Phase 5B: Wrapped in React.memo + changed cart selector.
+ *
+ * Previously: `const cartLines = useCartStore((s) => s.lines)` — every cart
+ * mutation re-rendered EVERY visible ProductCard (because the lines array
+ * identity changed). On /shop with 24+ cards, this was 24 wasted re-renders
+ * per cart add.
+ *
+ * Now: selector returns only the relevant line for THIS product. Cart mutations
+ * only re-render the card whose product is in the cart.
+ *
+ * React.memo prevents re-renders when parent re-renders but props are unchanged.
+ */
+export const ProductCard = memo(function ProductCard({ product, priority = false }: ProductCardProps) {
   const router = useRouter();
   const toggleWish = useWishlistStore((s) => s.toggle);
   const isWished = useWishlistStore((s) => s.slugs.includes(product.slug));
   const addToCart = useCartStore((s) => s.addLine);
-  const cartLines = useCartStore((s) => s.lines);
+  // Phase 5B: Select only the cart line for THIS product — not the entire lines array.
+  // This prevents N re-renders per cart mutation on /shop.
+  const cartLine = useCartStore(
+    (s) => s.lines.find((l) => l.productId === product.id || l.slug === product.slug) ?? null,
+  );
   const prefersReducedMotion = useReducedMotion();
   const { toast } = useToast();
 
   const [imgLoaded, setImgLoaded] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
 
-  // Check if this product is already in the cart
-  const cartLine = cartLines.find(
-    (l) => l.productId === product.id || l.slug === product.slug
-  );
   const isInCart = Boolean(cartLine);
   const cartQty = cartLine?.quantity ?? 0;
 
@@ -184,6 +198,6 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       </div>
     </motion.article>
   );
-}
+});
 
 export default ProductCard;

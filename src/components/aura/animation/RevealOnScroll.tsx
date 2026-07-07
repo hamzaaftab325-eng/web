@@ -16,7 +16,7 @@ interface RevealOnScrollProps {
   once?: boolean;
   start?: string;
   className?: string;
-  as?: keyof typeof motion;
+  // Phase 5D: Removed dead 'as?: keyof typeof motion' prop — declared but never read.
 }
 
 const directionToOffset = (dir: Direction, dist: number) => {

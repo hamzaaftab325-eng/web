@@ -2,8 +2,10 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+
 import type { CartLine, Product, ProductVariant } from "@/types";
 import { uid } from "@/lib/utils";
+import { useWishlistStore } from "@/store/use-wishlist-store";
 
 interface CartState {
   lines: CartLine[];
@@ -127,10 +129,12 @@ export const useCartStore = create<CartState>()(
       moveToWishlist: (key) => {
         const line = get().lines.find((l) => l.key === key);
         if (!line) return;
-        // Import wishlist store lazily to avoid circular dependency
-        import("@/store/use-wishlist-store").then((mod) => {
-          mod.useWishlistStore.getState().toggle(line.slug);
-        });
+        // Phase 5D: Direct import instead of lazy dynamic import.
+        // Verified no circular dependency exists (use-wishlist-store.ts
+        // doesn't import use-cart-store). The lazy import introduced a
+        // microtask delay on every "move to wishlist" — direct import
+        // is synchronous and simpler.
+        useWishlistStore.getState().toggle(line.slug);
         set((s) => ({
           lines: s.lines.filter((l) => l.key !== key),
         }));
