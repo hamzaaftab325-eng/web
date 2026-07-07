@@ -20,7 +20,7 @@ import { useUIStore } from "@/store/use-ui-store";
 import { hydrateWishlist } from "@/store/use-wishlist-store";
 import { cn } from "@/lib/utils";
 import { login as trackLogin } from "@/lib/analytics/ecommerce";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod schema (no server-side dependency)
@@ -108,6 +108,7 @@ function SlidingToggle({ checked, onChange, label, id }: SlidingToggleProps) {
    ──────────────────────────────────────────────────────────────────────── */
 export function LoginView() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const prefersReducedMotion = useReducedMotion();
   const setUser = useAuthStore((s) => s.setUser);
   const setToken = useAuthStore((s) => s.setToken);
@@ -133,6 +134,7 @@ export function LoginView() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // ensure httpOnly cookies are sent + received
         body: JSON.stringify({ email: values.email, password: values.password }),
       });
       const data = await res.json();
@@ -152,11 +154,20 @@ export function LoginView() {
       // failures don't block the redirect.
       hydrateWishlist().catch(() => {});
 
-      // Redirect: if there's a saved auth redirect, use it.
-      // Otherwise, admins go to /admin, customers go to /.
-      const target = authRedirect ?? (data.user?.role === "admin" ? "/admin" : "/");
+      // Redirect priority:
+      // 1. ?redirect= query param from URL (set by apiFetch when 401 redirects to /login)
+      // 2. authRedirect from UI store (set by other components)
+      // 3. Admin → /admin, Customer → /
+      const urlRedirect = searchParams.get("redirect");
+      const target = urlRedirect ?? authRedirect ?? (data.user?.role === "admin" ? "/admin" : "/");
       setAuthRedirect(null);
-      router.push(target);
+
+      // Use window.location.href for a HARD navigation instead of router.push.
+      // This ensures the admin layout re-mounts fresh and picks up the new
+      // httpOnly cookies. With router.push (client-side navigation), the admin
+      // layout's useEffect might fire before the browser has fully processed
+      // the Set-Cookie headers from the login response.
+      window.location.href = target;
     } catch (e) {
       setServerError(e instanceof Error ? e.message : "Sign in failed");
     }

@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useUIStore } from "@/store/use-ui-store";
 import { useAuthStore } from "@/store/use-auth-store";
+import { api } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 
 const navItems: { label: string; icon: typeof LayoutDashboard; path: string; description: string }[] = [
@@ -57,12 +58,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   // Verify admin access on mount
+  // Phase 5 fix: Use apiFetch (with auto-refresh) instead of raw fetch.
+  // Previously: raw fetch("/api/auth/me") — when the access token expired
+  // (every 15 min), the admin layout would get 401 and redirect to /login.
+  // Now: apiFetch auto-refreshes the access token via /api/auth/refresh
+  // before giving up and redirecting.
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((res) => {
-        if (!res.ok) throw new Error("Not authenticated");
-        return res.json();
-      })
+    api.get<{ user: { role: string } }>("/api/auth/me")
       .then((data) => {
         if (data.user?.role !== "admin") {
           router.push("/");
@@ -71,6 +73,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         setIsAdmin(true);
       })
       .catch(() => {
+        // apiFetch already tried refreshing — if we're here, refresh failed too.
+        // Redirect to login with ?redirect=/admin so user comes back here.
         router.push("/login?redirect=/admin");
       })
       .finally(() => {
