@@ -49,22 +49,26 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button(
-    { className, variant, size, fullWidth, asChild = false, type, ...props },
-    ref
-  ) {
-    const Comp = asChild ? Slot : "button";
-    return (
-      <Comp
-        ref={ref}
-        data-slot="aura-button"
-        type={asChild ? undefined : (type ?? "button")}
-        className={cn(buttonVariants({ variant, size, fullWidth }), className)}
-        {...props}
-      />
-    );
-  }
-);
+export function Button({
+  className,
+  variant,
+  size,
+  fullWidth,
+  asChild = false,
+  type,
+  ref,
+  ...props
+}: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  const Comp = asChild ? Slot : "button";
+  return (
+    <Comp
+      ref={ref}
+      data-slot="aura-button"
+      type={asChild ? undefined : (type ?? "button")}
+      className={cn(buttonVariants({ variant, size, fullWidth }), className)}
+      {...props}
+    />
+  );
+}
 
 export default Button;

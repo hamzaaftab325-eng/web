@@ -4,6 +4,7 @@ import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
 import { FlashSaleBanner } from "@/components/aura/sections/FlashSaleBanner";
+import { EmptyState } from "@/components/aura/ui/EmptyState";
 import * as productService from "@/lib/services/product.service";
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd, offerCatalogJsonLd } from "@/components/seo/JsonLd";
 
@@ -69,20 +70,18 @@ export default async function SalePage() {
               <ProductGrid products={products as never} priorityCount={4} />
             </>
           ) : (
-            <div className="py-20 text-center">
-              <p className="t-headline-md c-ink-muted">
-                No items on sale right now. Check back soon!
-              </p>
-              <p className="t-body c-ink-faint mt-2">
-                In the meantime, explore the full catalogue.
-              </p>
-              <Link
-                href="/shop"
-                className="inline-flex items-center gap-2 mt-6 border border-ink t-label-caps c-ink px-8 py-3.5 hover:bg-ink hover:c-paper transition-colors"
-              >
-                Browse the Shop
-              </Link>
-            </div>
+            <EmptyState
+              title="No items on sale right now. Check back soon!"
+              body="In the meantime, explore the full catalogue."
+              cta={
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center gap-2 border border-ink t-label-caps c-ink px-8 py-3.5 hover:bg-ink hover:c-paper transition-colors"
+                >
+                  Browse the Shop
+                </Link>
+              }
+            />
           )}
         </div>
       </section>
