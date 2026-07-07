@@ -7,6 +7,7 @@
 
 import { db } from "@/lib/db";
 import type { JournalBodyBlock } from "@/types";
+import { parseJournalBody } from "@/lib/validators/journal";
 
 // ── DTO Types ──────────────────────────────────────────────────────────
 
@@ -155,7 +156,7 @@ export async function getArticles(): Promise<JournalArticleDTO[]> {
       category: a.category,
       excerpt: a.excerpt,
       heroImage: a.heroImage,
-      body: (a.body as unknown as JournalBodyBlock[]) ?? [],
+      body: parseJournalBody(a.body) as JournalBodyBlock[],
       author: a.author,
       readTime: a.readTime ?? 0,
       publishedAt: a.publishedAt?.toISOString() ?? new Date().toISOString(),

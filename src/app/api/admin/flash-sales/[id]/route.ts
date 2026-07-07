@@ -20,12 +20,38 @@ const Schema = z.object({
   resetUsesCount: z.boolean().optional(),
 });
 
-function serialize(sale: Record<string, unknown>) {
+// Phase 6A: Same typed serialize as flash-sales/route.ts — replaced Record<string, unknown>.
+function serialize(sale: {
+  id: string;
+  name: string;
+  slug?: string;
+  description: string | null;
+  isActive: boolean;
+  discountPercent: { toNumber: () => number } | number | null;
+  startDate: Date;
+  endDate: Date;
+  maxUses: number | null;
+  usesCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}) {
+  const toNum = (v: { toNumber: () => number } | number | null): number | null => {
+    if (v == null) return null;
+    return typeof v === "number" ? v : v.toNumber();
+  };
   return {
-    ...sale,
-    discountPercent: sale.discountPercent ? Number(sale.discountPercent) : null,
-    startDate: (sale.startDate as Date).toISOString(),
-    endDate: (sale.endDate as Date).toISOString(),
+    id: sale.id,
+    name: sale.name,
+    slug: sale.slug ?? "",
+    description: sale.description,
+    isActive: sale.isActive,
+    discountPercent: toNum(sale.discountPercent),
+    startDate: sale.startDate.toISOString(),
+    endDate: sale.endDate.toISOString(),
+    maxUses: sale.maxUses,
+    usesCount: sale.usesCount,
+    createdAt: sale.createdAt.toISOString(),
+    updatedAt: sale.updatedAt.toISOString(),
   };
 }
 
@@ -81,7 +107,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     },
   });
 
-  return NextResponse.json({ flashSale: serialize(sale as unknown as Record<string, unknown>), message: "Flash sale updated" });
+  return NextResponse.json({ flashSale: serialize(sale), message: "Flash sale updated" });
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

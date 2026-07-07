@@ -17,6 +17,11 @@ export function setCurrencySymbol(symbol: string) {
   currencySymbol = symbol;
 }
 
+// Phase 6F: Exported for testability — allows tests to verify the current symbol.
+export function getCurrencySymbol(): string {
+  return currencySymbol;
+}
+
 /**
  * Format a PKR price with the currency symbol and locale grouping.
  * Returns e.g. "₨5,000" for 5000.

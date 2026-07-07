@@ -21,12 +21,39 @@ const Schema = z.object({
   { message: "End date must be after start date", path: ["endDate"] }
 );
 
-function serialize(sale: Record<string, unknown>) {
+// Phase 6A: Replaced Record<string, unknown> with the actual Prisma FlashSale type.
+// The serialize function now properly types Decimal→number and Date→ISO string.
+function serialize(sale: {
+  id: string;
+  name: string;
+  slug?: string;
+  description: string | null;
+  isActive: boolean;
+  discountPercent: { toNumber: () => number } | number | null;
+  startDate: Date;
+  endDate: Date;
+  maxUses: number | null;
+  usesCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}) {
+  const toNum = (v: { toNumber: () => number } | number | null): number | null => {
+    if (v == null) return null;
+    return typeof v === "number" ? v : v.toNumber();
+  };
   return {
-    ...sale,
-    discountPercent: sale.discountPercent ? Number(sale.discountPercent) : null,
-    startDate: (sale.startDate as Date).toISOString(),
-    endDate: (sale.endDate as Date).toISOString(),
+    id: sale.id,
+    name: sale.name,
+    slug: sale.slug ?? "",
+    description: sale.description,
+    isActive: sale.isActive,
+    discountPercent: toNum(sale.discountPercent),
+    startDate: sale.startDate.toISOString(),
+    endDate: sale.endDate.toISOString(),
+    maxUses: sale.maxUses,
+    usesCount: sale.usesCount,
+    createdAt: sale.createdAt.toISOString(),
+    updatedAt: sale.updatedAt.toISOString(),
   };
 }
 
@@ -67,7 +94,7 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json(
-    { flashSale: serialize(sale as unknown as Record<string, unknown>), message: "Flash sale created" },
+    { flashSale: serialize(sale), message: "Flash sale created" },
     { status: 201 }
   );
 }

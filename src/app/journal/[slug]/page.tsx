@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import { db } from "@/lib/db";
 import { JournalArticleView } from "@/components/aura/sections/JournalArticleView";
 import type { JournalBodyBlock } from "@/types";
+import { parseJournalBody } from "@/lib/validators/journal";
 import { articleMetadata, BASE_URL } from "@/lib/seo-metadata";
 
 interface Props {
@@ -45,7 +47,7 @@ export default async function JournalArticlePage({ params }: Props) {
     slug: raw.slug,
     excerpt: raw.excerpt,
     heroImage: raw.heroImage,
-    body: (raw.body ?? []) as unknown as JournalBodyBlock[],
+    body: parseJournalBody(raw.body) as JournalBodyBlock[],
     author: raw.author,
     readTime: raw.readTime ?? 0,
     publishedAt: raw.publishedAt?.toISOString() ?? "",

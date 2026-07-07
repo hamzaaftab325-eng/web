@@ -38,7 +38,7 @@ export interface UploadOptions {
  * Generate a URL-safe slug from a product name.
  * "Brass Arc Floor Lamp" → "brass-arc-floor-lamp"
  */
-function slugifyName(name: string): string {
+export function slugifyName(name: string): string {
   return name
     .toLowerCase()
     .trim()
@@ -52,7 +52,7 @@ function slugifyName(name: string): string {
  * Auto-generate alt text from product name and context.
  * "Brass Arc Floor Lamp" → "Brass Arc Floor Lamp - Product Image 1"
  */
-function generateAltText(productName: string | undefined, context: string, sortOrder: number, filename?: string): string {
+export function generateAltText(productName: string | undefined, context: string, sortOrder: number, filename?: string): string {
   if (productName) {
     const idx = sortOrder >= 0 ? sortOrder + 1 : 1;
     return `${productName} — Image ${idx}`;
@@ -83,7 +83,7 @@ function generateAltText(productName: string | undefined, context: string, sortO
  * NOTE: No timestamp — the sort order is enough to distinguish multiple
  * images of the same product. This gives clean, predictable URLs.
  */
-function generatePublicId(folder: string, productName: string | undefined, sortOrder: number, context: string): string {
+export function generatePublicId(folder: string, productName: string | undefined, sortOrder: number, context: string): string {
   const slug = productName && productName.trim() ? slugifyName(productName) : context;
   const idx = sortOrder >= 0 ? sortOrder + 1 : 1;
   return `${folder}/${slug}-${idx}`;
@@ -93,7 +93,7 @@ function generatePublicId(folder: string, productName: string | undefined, sortO
  * Build a Cloudinary URL with transformations applied.
  * Cloudinary supports on-the-fly transformations via URL params.
  */
-function buildTransformedUrl(publicId: string, transformations: string): string {
+export function buildTransformedUrl(publicId: string, transformations: string): string {
   if (!CLOUD_NAME) return "";
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${publicId}`;
 }
