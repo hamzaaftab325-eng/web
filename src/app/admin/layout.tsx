@@ -56,26 +56,28 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  // Verify admin access on mount.
-  // Phase 6 fix: Use raw fetch() with manual refresh — NOT apiFetch.
-  // apiFetch's auto-redirect-to-login was causing a redirect loop:
-  //   /admin → 401 → apiFetch refreshes → refresh fails → redirect to /login
-  //   → user logs in → /admin → 401 again → loop
-  //
-  // With raw fetch, we control the flow:
-  //   1. Try /api/auth/me
-  //   2. If 401, try /api/auth/refresh
-  //   3. If refresh succeeds, retry /api/auth/me
-  //   4. If refresh fails, redirect to /login (ONCE — no loop)
+  // Phase 8 fix: Check auth store FIRST (set by LoginView after login).
+  // Only call /api/auth/me if the store is empty (fresh page load / refresh).
+  // This fixes the redirect loop: after login, router.push("/admin") preserves
+  // the auth store, so we can show admin immediately without an API call.
   useEffect(() => {
     let cancelled = false;
 
     async function checkAuth() {
+      // Step 1: Check if auth store already has a user (from client-side login)
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser?.role === "admin") {
+        setIsAdmin(true);
+        setLoading(false);
+        setHydrated(true);
+        return;
+      }
+
+      // Step 2: Fresh page load — verify via API
       try {
-        // Step 1: Try /api/auth/me
         let res = await fetch("/api/auth/me", { credentials: "include" });
 
-        // Step 2: If 401, try refresh
+        // Step 3: If 401, try refresh
         if (res.status === 401) {
           const refreshRes = await fetch("/api/auth/refresh", {
             method: "POST",
@@ -84,7 +86,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           });
 
           if (refreshRes.ok) {
-            // Step 3: Refresh succeeded — retry /api/auth/me
+            // Refresh succeeded — retry /api/auth/me
             res = await fetch("/api/auth/me", { credentials: "include" });
           }
         }
@@ -94,13 +96,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         if (res.ok) {
           const data = await res.json();
           if (data.user?.role === "admin") {
+            // Hydrate auth store for other components
+            useAuthStore.getState().setUser(data.user);
             setIsAdmin(true);
           } else {
-            // Not an admin — send to home
             router.push("/");
           }
         } else {
-          // Still 401 after refresh attempt — redirect to login ONCE
+          // Still 401 after refresh — redirect to login
           router.push("/login?redirect=/admin");
         }
       } catch {
