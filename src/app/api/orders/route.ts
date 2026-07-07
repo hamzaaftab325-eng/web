@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
+import { parseAddress } from "@/lib/validators/address";
 import { createNotification, notifyAdmins } from "@/lib/notifications";
 import { formatPrice } from "@/lib/format/currency";
 import { sendEmail } from "@/lib/email";
@@ -39,7 +41,7 @@ export async function GET(request: NextRequest) {
         id: o.id, orderNumber: o.orderNumber, date: o.createdAt.toISOString().split("T")[0],
         status: o.status, items: o.items.map(i => ({ key: i.id, productId: i.productId ?? "", slug: i.productSlug, name: i.productName, image: i.productImage ?? "", price: Number(i.price), variantLabel: i.variantLabel ?? undefined, quantity: i.quantity })),
         subtotal: Number(o.subtotal), discount: Number(o.discount), shipping: Number(o.shippingCost), tax: Number(o.tax), total: Number(o.total),
-        shippingAddress: (o.shippingAddress ?? {}) as Record<string, string>,
+        shippingAddress: parseAddress(o.shippingAddress) ?? (o.shippingAddress as Record<string, string> ?? {}),
         trackingNumber: o.trackingNumber ?? undefined, carrier: o.carrier ?? undefined, estimatedDelivery: o.estimatedDelivery?.toISOString().split("T")[0] ?? undefined,
       })),
       total, page, limit, totalPages: Math.ceil(total / limit),

@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { ProductDetailPage } from "@/components/aura/commerce/ProductDetailPage";
 import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
 import type { BadgeKind } from "@/types";
+import { parseBadgeKind } from "@/types";
 import type { CategorySlug } from "@/types";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { productMetadata } from "@/lib/seo-metadata";
@@ -53,7 +54,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const transformedProduct = {
     id: product.id, slug: product.slug, name: product.name, subtitle: product.subtitle ?? undefined, description: product.description,
     longDescription: product.longDescription ?? undefined, price: Number(product.price), compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : undefined,
-    category: (product.category?.slug ?? "lamps-lighting") as CategorySlug, images: product.images.map((img) => img.url), badge: (product.badge ?? undefined) as BadgeKind | undefined, inStock: product.inStock && product.stockQuantity > 0, stockQuantity: product.stockQuantity,
+    category: (product.category?.slug ?? "lamps-lighting") as CategorySlug, images: product.images.map((img) => img.url), badge: parseBadgeKind(product.badge), inStock: product.inStock && product.stockQuantity > 0, stockQuantity: product.stockQuantity,
     variants: product.variants.map((v) => ({ id: v.id, label: v.label, swatch: v.swatchColor ?? undefined })),
     materials: product.materials, dimensions: product.dimensions ?? undefined, careInstructions: product.careInstructions ?? undefined, featured: product.featured,
   };

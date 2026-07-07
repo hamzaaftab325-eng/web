@@ -179,7 +179,7 @@ export async function getArticleBySlug(slug: string): Promise<JournalArticleDTO 
       category: article.category,
       excerpt: article.excerpt,
       heroImage: article.heroImage,
-      body: (article.body as unknown as JournalBodyBlock[]) ?? [],
+      body: parseJournalBody(article.body) as JournalBodyBlock[],
       author: article.author,
       readTime: article.readTime ?? 0,
       publishedAt: article.publishedAt?.toISOString() ?? new Date().toISOString(),

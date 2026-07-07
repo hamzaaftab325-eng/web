@@ -15,6 +15,8 @@
  * code from before the cookie migration; removed in Phase 4).
  */
 
+import type { ZodSchema } from "zod";
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -29,6 +31,13 @@ export class ApiError extends Error {
 interface FetchOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;
   retries?: number;
+  /**
+   * Phase 6C: Optional Zod schema for runtime response validation.
+   * When provided, the JSON response is parsed against this schema.
+   * If parsing fails, an ApiError is thrown with code "SCHEMA_VALIDATION_ERROR".
+   * This replaces the unsafe `response.json() as Promise<T>` cast.
+   */
+  schema?: ZodSchema<unknown>;
   /**
    * Internal: set to true to skip the auto-refresh logic (prevents infinite
    * recursion when /api/auth/refresh itself returns 401).
@@ -95,7 +104,7 @@ function redirectToLogin(): void {
 }
 
 export async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
-  const { params, retries = 2, headers, _skipRefresh, ...rest } = options;
+  const { params, retries = 2, headers, schema, _skipRefresh, ...rest } = options;
   const url = buildUrl(path, params);
   const requestHeaders: Record<string, string> = {
     "Content-Type": "application/json",
@@ -164,9 +173,24 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
 
       // ─── Success ────────────────────────────────────────────────────
       const ct = response.headers.get("content-type");
-      return ct?.includes("application/json")
-        ? (response.json() as Promise<T>)
-        : (response.text() as unknown as Promise<T>);
+      if (ct?.includes("application/json")) {
+        const data = await response.json();
+        // Phase 6C: If a Zod schema was provided, validate the response.
+        // This replaces the unsafe `response.json() as Promise<T>` cast.
+        if (schema) {
+          const result = schema.safeParse(data);
+          if (!result.success) {
+            throw new ApiError(
+              `Response validation failed: ${result.error.issues[0]?.message ?? "unknown"}`,
+              response.status,
+              "SCHEMA_VALIDATION_ERROR",
+            );
+          }
+          return result.data as T;
+        }
+        return data as T;
+      }
+      return response.text() as unknown as T;
     } catch (error) {
       // Don't retry 401 errors — they've already been handled above
       if (error instanceof ApiError && error.status === 401) throw error;

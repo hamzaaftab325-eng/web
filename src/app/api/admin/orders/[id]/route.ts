@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
+import { parseAddress } from "@/lib/validators/address";
 import { createNotification } from "@/lib/notifications";
 import { sendEmail } from "@/lib/email";
 import { orderStatusEmail } from "@/lib/email-templates";
@@ -108,7 +110,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         });
 
         // Send email to the customer (fire-and-forget)
-        const customerName = order.user ? order.user.firstName : (order.shippingAddress as Record<string, string>)?.firstName ?? "Customer";
+        // Phase 6B: Use parseAddress instead of `as Record<string, string>` cast
+        const addr = parseAddress(order.shippingAddress);
+        const customerName = order.user ? order.user.firstName : addr?.firstName ?? "Customer";
         const { subject: emailSubject, html: emailHtml } = orderStatusEmail(
           order.orderNumber, data.status, customerName, order.trackingNumber ?? undefined, order.carrier ?? undefined
         );

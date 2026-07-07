@@ -1,13 +1,50 @@
-export type CategorySlug =
-  | "lamps-lighting"
-  | "mirrors"
-  | "indoor-plants"
-  | "planters-pots"
-  | "decorative-accessories"
-  | "wall-art";
+/**
+ * Phase 6D: CategorySlug and CollectionSlug are now `string` aliases
+ * instead of hardcoded literal unions. Categories and collections are
+ * admin-editable via /admin/content/categories — a hardcoded literal union
+ * meant TypeScript wouldn't know about new categories added in production,
+ * causing type errors when the DB returned unknown slugs.
+ *
+ * The known defaults are preserved as constants below for documentation
+ * and use in seed scripts / tests, but the type itself is `string` so
+ * any admin-created category slug is accepted.
+ */
+export type CategorySlug = string;
+export type CollectionSlug = string;
 
-export type CollectionSlug = "warm-tones" | "the-plant-edit" | "gift-guide-under-150";
+/** Known default category slugs (for reference — not enforced at the type level). */
+export const DEFAULT_CATEGORY_SLUGS = [
+  "lamps-lighting",
+  "mirrors",
+  "indoor-plants",
+  "planters-pots",
+  "decorative-accessories",
+  "wall-art",
+] as const;
+
+/** Known default collection slugs (for reference — not enforced at the type level). */
+export const DEFAULT_COLLECTION_SLUGS = [
+  "warm-tones",
+  "the-plant-edit",
+  "gift-guide-under-150",
+] as const;
+
 export type BadgeKind = "New" | "Bestseller" | "Sale" | "Sold Out" | "Limited" | "Back in Stock" | "Featured" | "Exclusive";
+
+/** Known valid badge values — used by parseBadgeKind() for runtime validation. */
+export const BADGE_KINDS: readonly BadgeKind[] = [
+  "New", "Bestseller", "Sale", "Sold Out", "Limited", "Back in Stock", "Featured", "Exclusive",
+] as const;
+
+/**
+ * Phase 6G: Runtime validator for BadgeKind.
+ * Returns the value if it's a valid BadgeKind, undefined otherwise.
+ * Replaces `as BadgeKind` casts that could let invalid DB values through.
+ */
+export function parseBadgeKind(value: string | null | undefined): BadgeKind | undefined {
+  if (value == null) return undefined;
+  return (BADGE_KINDS as readonly string[]).includes(value) ? (value as BadgeKind) : undefined;
+}
 
 export interface ProductVariant {
   id: string;

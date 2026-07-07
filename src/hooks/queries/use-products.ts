@@ -1,7 +1,9 @@
 "use client";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
+
 import { api } from "@/lib/api/client";
-import { getProducts, getFeatured, type ProductFilters } from "@/lib/api/products";
+import { getProducts, getFeatured } from "@/lib/api/products";
+import type { ProductFilters } from "@/lib/services/product.service";
 import type { Product } from "@/types";
 
 export const productKeys = {

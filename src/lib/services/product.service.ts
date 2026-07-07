@@ -11,6 +11,7 @@
 import { db } from "@/lib/db";
 import type { Prisma } from "@prisma/client";
 import type { Product } from "@/types";
+import { parseBadgeKind } from "@/types";
 
 // ── DTO Types ──────────────────────────────────────────────────────────
 
@@ -92,7 +93,7 @@ export function toListItem(
     longDescription: p.longDescription ?? undefined,
     price: typeof p.price === "number" ? p.price : p.price.toNumber(),
     compareAtPrice: p.compareAtPrice ? (typeof p.compareAtPrice === "number" ? p.compareAtPrice : p.compareAtPrice.toNumber()) : undefined,
-    badge: (p.badge ?? undefined) as ProductListItem["badge"],
+    badge: parseBadgeKind(p.badge),
     // Auto-derive inStock: a product is in stock ONLY if inStock=true AND stockQuantity > 0.
     // This prevents showing "Add to Cart" when stockQuantity is 0 even if inStock flag is true,
     // and prevents showing "Sold Out" when stockQuantity > 0 even if inStock flag is false.

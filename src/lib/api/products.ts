@@ -1,7 +1,11 @@
 import { api } from "./client";
-import type { Product } from "@/types";
 
-export interface ProductFilters { category?: string; collection?: string; sort?: string; search?: string; page?: number; limit?: number; }
+import type { Product } from "@/types";
+import type { ProductFilters } from "@/lib/services/product.service";
+
+// Phase 6E: Removed duplicate ProductFilters interface — now imported from
+// src/lib/services/product.service.ts (the canonical source).
+
 export interface ProductListResponse { products: Product[]; total: number; page: number; limit: number; }
 
 export async function getProducts(filters?: ProductFilters): Promise<ProductListResponse> {

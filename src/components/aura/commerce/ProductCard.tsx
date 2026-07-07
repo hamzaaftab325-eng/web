@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Heart, Plus, Check, ShoppingBag } from "lucide-react";
 
 import type { Product } from "@/types";
+import type { ProductListItem } from "@/lib/services/product.service";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 import { useCartStore } from "@/store/use-cart-store";
 import { useToast } from "@/hooks/use-toast";
@@ -14,14 +15,15 @@ import { getCardUrl } from "@/lib/cloudinary-client";
 import { Badge } from "@/components/aura/ui/Badge";
 
 /**
- * Minimal product shape that ProductCard needs.
+ * Phase 6E: Replaced local ProductCardProduct with Pick<ProductListItem, ...>.
+ * Previously this was a standalone `Pick<Product, ...>` — now derived from the
+ * canonical service type so there's a single source of truth for product shapes.
+ *
  * Accepts both the full `Product` type and the lighter `ProductListItem`
- * returned by the product service (which uses `category: string` instead
- * of `category: CategorySlug`). ProductCard doesn't use the category field,
- * so the looser type is safe.
+ * returned by the product service. ProductCard only uses a subset of fields.
  */
 type ProductCardProduct = Pick<
-  Product,
+  ProductListItem,
   "id" | "slug" | "name" | "subtitle" | "price" | "compareAtPrice" | "badge" | "inStock" | "images"
 >;
 
