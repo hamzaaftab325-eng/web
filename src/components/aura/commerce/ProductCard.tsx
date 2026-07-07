@@ -2,6 +2,7 @@
 
 import { memo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Heart, Plus, Check, ShoppingBag } from "lucide-react";
 
@@ -98,18 +99,22 @@ export const ProductCard = memo(function ProductCard({ product, priority = false
       onClick={open}
       aria-label={`${product.name} — view details`}
     >
-      {/* Image */}
+      {/* Image — Phase 7B: Migrated from motion.img to next/image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-cream product-card-image">
         {!imgLoaded && (
           <div className="absolute inset-0 bg-gradient-to-br from-cream to-cream-deep animate-pulse" />
         )}
-        <motion.img
+        <Image
           src={product.images?.[0] ? getCardUrl(product.images[0]) : "/hero/placeholder.webp"}
           alt={product.name}
-          loading={priority ? "eager" : "lazy"}
+          fill
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          priority={priority}
           onLoad={() => setImgLoaded(true)}
+          // unoptimized: Cloudinary URLs already have format/quality transforms
+          unoptimized={product.images?.[0] ? true : false}
           className={cn(
-            "w-full h-full object-cover transition-all duration-700",
+            "object-cover transition-all duration-700",
             imgLoaded ? "opacity-100" : "opacity-0",
             prefersReducedMotion ? "" : "group-hover:scale-[1.03]"
           )}

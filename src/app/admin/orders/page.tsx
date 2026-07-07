@@ -56,9 +56,28 @@ export default function AdminOrders() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => fetchOrders(1), 300);
+    // Phase 7E: Inlined fetchOrders to fix exhaustive-deps warning.
+    const timer = setTimeout(() => {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: "1", limit: "20",
+        ...(filter !== "all" && { status: filter }),
+        ...(search && { search }),
+        ...(dateFrom && { dateFrom }),
+        ...(dateTo && { dateTo }),
+      });
+      fetch(`/api/admin/orders?${params}`)
+        .then(r => r.ok ? r.json() : { orders: [], total: 0, totalPages: 0 })
+        .then(data => {
+          setOrders(data.orders ?? []);
+          setTotal(data.total ?? 0);
+          setTotalPages(data.totalPages ?? 1);
+          setPage(1);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, 300);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, filter, dateFrom, dateTo]);
 
   const filters = [

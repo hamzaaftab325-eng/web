@@ -1,5 +1,15 @@
 import type { NextConfig } from "next";
 
+// Phase 7D: Bundle analyzer — wraps nextConfig when ANALYZE=true
+const withBundleAnalyzer = (config: NextConfig): NextConfig => {
+  if (process.env.ANALYZE === "true") {
+    // Lazy-import only when analyzing — doesn't affect normal builds
+    const { default: analyzer } = require("@next/bundle-analyzer");
+    return analyzer({ enabled: true })(config);
+  }
+  return config;
+};
+
 const nextConfig: NextConfig = {
   // NOTE: do NOT set `output: "standalone"` — Vercel handles trace output
   // itself, and the standalone server.js is a long-running HTTP server
@@ -98,4 +108,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

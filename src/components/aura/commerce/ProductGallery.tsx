@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { cn } from "@/lib/utils";
 
@@ -62,15 +63,18 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               {!imgLoaded[i] && (
                 <div className="absolute inset-0 bg-gradient-to-br from-cream to-cream-deep animate-pulse" />
               )}
-              <img
+              <Image
                 src={src}
                 alt={`${productName} — view ${i + 1}`}
-                loading={i === 0 ? "eager" : "lazy"}
+                fill
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                priority={i === 0}
                 onLoad={() =>
                   setImgLoaded((prev) => ({ ...prev, [i]: true }))
                 }
+                unoptimized={src.includes("cloudinary") || src.includes("unsplash")}
                 className={cn(
-                  "w-full h-full object-cover transition-opacity duration-700",
+                  "object-cover transition-opacity duration-700",
                   imgLoaded[i] ? "opacity-100" : "opacity-0"
                 )}
               />
@@ -88,17 +92,19 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               onClick={() => emblaApi?.scrollTo(i)}
               aria-label={`View image ${i + 1}`}
               className={cn(
-                "flex-shrink-0 w-16 h-20 md:w-20 md:h-24 overflow-hidden border-2 transition-colors",
+                "flex-shrink-0 w-16 h-20 md:w-20 md:h-24 overflow-hidden border-2 transition-colors relative",
                 selectedSlide === i
                   ? "border-gold"
                   : "border-transparent hover:border-hairline-gold"
               )}
             >
-              <img
+              <Image
                 src={src}
                 alt=""
-                className="w-full h-full object-cover"
-                loading="lazy"
+                fill
+                sizes="80px"
+                unoptimized={src.includes("cloudinary") || src.includes("unsplash")}
+                className="object-cover"
               />
             </button>
           ))}

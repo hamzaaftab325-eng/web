@@ -68,9 +68,26 @@ export default function AdminProducts() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => fetchProducts(1), 300);
+    // Phase 7E: Inlined fetchProducts to fix exhaustive-deps warning.
+    // Previously: fetchProducts was defined outside useEffect and called
+    // from inside it, requiring eslint-disable. Now: fetch logic is inline
+    // so deps are correct.
+    const timer = setTimeout(() => {
+      setLoading(true);
+      const params = new URLSearchParams({ page: "1", limit: "20" });
+      if (search) params.set("search", search);
+      if (categoryFilter !== "all") params.set("category", categoryFilter);
+      if (stockFilter !== "all") params.set("stock", stockFilter);
+      if (sort) params.set("sort", sort);
+      if (minPrice) params.set("minPrice", minPrice);
+      if (maxPrice) params.set("maxPrice", maxPrice);
+      fetch(`/api/admin/products?${params}`)
+        .then(r => r.json())
+        .then(data => { setProducts(data.products ?? []); setTotal(data.total ?? 0); })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, 300);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, categoryFilter, stockFilter, sort, minPrice, maxPrice]);
 
   const handleDelete = async (id: string) => {

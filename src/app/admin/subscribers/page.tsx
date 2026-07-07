@@ -43,7 +43,22 @@ export default function AdminSubscribers() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchSubscribers(); // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    // Phase 7E: Inlined fetchSubscribers to fix exhaustive-deps warning.
+    setLoading(true);
+    const params = new URLSearchParams({
+      limit: "1000",
+      ...(sourceFilter !== "all" && { source: sourceFilter }),
+      ...(search.trim() && { search: search.trim() }),
+    });
+    fetch(`/api/admin/subscribers?${params}`)
+      .then(r => r.ok ? r.json() : { subscribers: [], sources: [] })
+      .then(data => {
+        setSubscribers(data.subscribers ?? []);
+        setSources(data.sources ?? []);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [sourceFilter, search]);
 
   const filtered = subscribers.filter(s =>

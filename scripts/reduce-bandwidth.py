@@ -10,7 +10,7 @@ import os
 import shutil
 from PIL import Image
 
-PUBLIC_DIR = "/home/z/my-project/public"
+PUBLIC_DIR = "public"
 ICONS_DIR = f"{PUBLIC_DIR}/icons"
 HERO_DIR = f"{PUBLIC_DIR}/hero"
 

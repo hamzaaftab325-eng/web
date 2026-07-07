@@ -1,12 +1,28 @@
 "use client";
 
 import { motion } from "framer-motion";
-import * as LucideIcons from "lucide-react";
+import {
+  Hammer,
+  Leaf,
+  Clock,
+  Compass,
+  Heart,
+  Award,
+  Gem,
+  Sprout,
+  Recycle,
+  Hand,
+  Globe,
+  Star,
+  Shield,
+  Truck,
+  Package,
+  type LucideIcon,
+} from "lucide-react";
+
 import { useBrandValues } from "@/hooks/queries/use-content";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
-import { Hammer, Leaf, Clock, Compass } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 
 // Fallback values used when DB has no data or fetch fails
 const fallbackValues = [
@@ -16,16 +32,43 @@ const fallbackValues = [
   { icon: "Compass", title: "Thoughtfully Curated", body: "We sell fewer things, more carefully. No catalogue — only the pieces we'd put in our own homes." },
 ];
 
+/**
+ * Phase 7A: Static icon map — replaces `import * as LucideIcons`.
+ *
+ * Previously: `import * as LucideIcons from "lucide-react"` imported the ENTIRE
+ * icon library (~1,500 icons, hundreds of KB) just to resolve icon names by
+ * string. Now: only the icons actually used are imported, saving ~150-300 KB
+ * from the main bundle.
+ *
+ * To add a new icon for admin use: add it to the import list above + the map below.
+ */
+const ICON_MAP: Record<string, LucideIcon> = {
+  Hammer,
+  Leaf,
+  Clock,
+  Compass,
+  Heart,
+  Award,
+  Gem,
+  Sprout,
+  Recycle,
+  Hand,
+  Globe,
+  Star,
+  Shield,
+  Truck,
+  Package,
+};
+
 // Map icon name strings to Lucide icon components
 function getIcon(name: string): LucideIcon {
-  const key = name.charAt(0).toUpperCase() + name.slice(1) as keyof typeof LucideIcons;
-  const Icon = LucideIcons[key];
-  if (typeof Icon === "function") return Icon as LucideIcon;
-  // Fallback icons for common names
-  const fallbacks: Record<string, LucideIcon> = {
-    hammer: Hammer, leaf: Leaf, clock: Clock, compass: Compass,
-  };
-  return fallbacks[name.toLowerCase()] ?? Hammer;
+  // Try exact match first (case-sensitive)
+  if (ICON_MAP[name]) return ICON_MAP[name];
+  // Try capitalized match (e.g., "hammer" → "Hammer")
+  const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+  if (ICON_MAP[capitalized]) return ICON_MAP[capitalized];
+  // Fallback to Hammer
+  return Hammer;
 }
 
 export function BrandValues() {
