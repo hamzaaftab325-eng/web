@@ -51,6 +51,21 @@ test
 prompt
 
 server.log
+
+# Baseline TypeScript snapshot (for diffing during production-hardening)
+.baseline-tsc.log
+
+# Husky internals (only the hooks themselves are committed)
+.husky/_/
+
+# Playwright test artifacts
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# Bundle analyzer output
+/.analyze/
+
 # Skills directory
 /skills/
 # Internal tooling

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Husky pre-push hook — fires `scripts/verify.sh` before any push to remote.
+# Blocks the push if lint / typecheck / inline-style / console.log / any-type checks fail.
+#
+# To bypass in emergencies (NOT recommended):
+#   git push --no-verify
+
+set -e
+
+echo ""
+echo "┌─ pre-push ─────────────────────────────────────────────────┐"
+echo "│  Running Aura Living pre-push verification                 │"
+echo "│  (skip with: git push --no-verify)                         │"
+echo "└────────────────────────────────────────────────────────────┘"
+echo ""
+
+bash "$(dirname -- "$0")/../scripts/verify.sh"
+
+EXIT_CODE=$?
+if [ $EXIT_CODE -ne 0 ]; then
+  echo ""
+  echo "✗ Pre-push verification failed. Push blocked."
+  echo "  Fix the issues above and try again, or use 'git push --no-verify' to bypass (not recommended)."
+  exit 1
+fi
+
+echo ""
+echo "✓ Pre-push verification passed. Proceeding with push."
+exit 0
