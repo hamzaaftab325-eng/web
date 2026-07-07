@@ -1,13 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { verifyPassword, signAccessToken, signRefreshToken, sanitizeUser } from "@/lib/auth";
 import { setAuthCookies } from "@/lib/auth-cookies";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const schema = z.object({ email: z.string().email(), password: z.string().min(1) });
 
+/**
+ * POST /api/auth/login
+ *
+ * Security:
+ *   - Rate limited: 5 attempts per 15 minutes per IP (brute-force protection).
+ *   - Returns identical 401 for "user not found" and "wrong password"
+ *     (prevents email enumeration via timing or message differences).
+ *   - Sets httpOnly + secure + sameSite=strict cookies.
+ */
 export async function POST(request: NextRequest) {
   try {
+    const blocked = await rateLimit(request, 5, "15 m", `login:${getClientIp(request)}`);
+    if (blocked) return blocked;
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: "Invalid input", code: "VALIDATION_ERROR" }, { status: 400 });

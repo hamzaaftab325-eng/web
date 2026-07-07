@@ -1,15 +1,33 @@
 /**
- * Update admin email — uses direct PrismaClient to bypass db.ts config issues.
+ * Update admin email — prompts for new email interactively.
+ *
+ * Usage:
+ *   bun run scripts/update-admin-email.ts <new-email>
+ *   or: ADMIN_EMAIL_TARGET=... bun run scripts/update-admin-email.ts
+ *
+ * Requires DATABASE_URL + DIRECT_URL environment variables (loaded from .env.local).
+ * Never hardcodes credentials.
  */
 import { PrismaClient } from "@prisma/client";
+import { config } from "dotenv";
 
-// Force-set the env var directly (bypass any caching issues)
-process.env.DATABASE_URL = "postgresql://postgres.stekfrfpwnxsczwjsrtc:Cobalt%21Tree%23981@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1";
-process.env.DIRECT_URL = "postgresql://postgres.stekfrfpwnxsczwjsrtc:Cobalt%21Tree%23981@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres";
+config({ path: ".env.local" });
 
-console.log("DATABASE_URL starts with:", process.env.DATABASE_URL?.substring(0, 15) ?? "(not set)");
+if (!process.env.DATABASE_URL) {
+  console.error("✗ DATABASE_URL is not set. Add it to .env.local and re-run.");
+  process.exit(1);
+}
 
 const db = new PrismaClient();
+
+const TARGET_EMAIL = process.argv[2] ?? process.env.ADMIN_EMAIL_TARGET;
+
+if (!TARGET_EMAIL) {
+  console.error("✗ Target email not provided.");
+  console.error("  Usage: bun run scripts/update-admin-email.ts <new-email>");
+  console.error("     or: ADMIN_EMAIL_TARGET=... bun run scripts/update-admin-email.ts");
+  process.exit(1);
+}
 
 async function main() {
   console.log("Looking for admin user...");
@@ -24,18 +42,16 @@ async function main() {
     return;
   }
 
-  console.log("Found admin:", before);
+  console.log("Found admin:", { id: before.id, email: before.email, name: `${before.firstName} ${before.lastName}` });
 
-  // Check if the target email already exists (from an old test account)
   const existing = await db.user.findFirst({
-    where: { email: "hamzaaftab325@gmail.com" },
+    where: { email: TARGET_EMAIL },
     select: { id: true, email: true, role: true, firstName: true },
   });
 
   if (existing) {
     console.log("Found existing user with target email:", existing);
     if (existing.role !== "admin") {
-      // Delete the old non-admin account so we can update the admin's email
       console.log("Deleting old non-admin account to free up email...");
       await db.user.delete({ where: { id: existing.id } });
       console.log("✓ Deleted old account");
@@ -47,7 +63,7 @@ async function main() {
 
   const updated = await db.user.update({
     where: { id: before.id },
-    data: { email: "hamzaaftab325@gmail.com" },
+    data: { email: TARGET_EMAIL },
   });
 
   console.log("✓ Updated admin email:");

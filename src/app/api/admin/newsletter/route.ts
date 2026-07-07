@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
 import { sendBulkEmails } from "@/lib/email";
 import { newsletterEmail } from "@/lib/email-templates";
+import { getSiteUrl } from "@/lib/site-url";
 
 const Schema = z.object({
   subject: z.string().min(1).max(200),
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
 
   const emails = subscribers.map(s => s.email);
   const { subject, bodyHtml } = parsed.data;
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aura-living-1.vercel.app";
+  const baseUrl = getSiteUrl();
 
   // Build the newsletter email with unsubscribe link per recipient
   // For simplicity, we use a generic unsubscribe URL (per-recipient token would be better)

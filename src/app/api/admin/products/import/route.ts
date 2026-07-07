@@ -9,13 +9,33 @@ import { requireAdmin } from "@/lib/auth-guard";
  * slug, name, price, compareAtPrice, stockQuantity, inStock, isActive, featured, category, badge, materials, dimensions, image
  *
  * Accepts CSV as plain text in request body.
+ *
+ * Security:
+ *   - Admin-only (requireAdmin).
+ *   - Body size limited to 5 MB — prevents DoS via multi-GB CSV uploads.
  */
 export async function POST(request: NextRequest) {
   const auth = await requireAdmin(request);
   if (auth instanceof NextResponse) return auth;
 
   try {
+    // Reject oversized bodies early — prevents DoS via huge CSV payloads.
+    const MAX_CSV_BYTES = 5 * 1024 * 1024; // 5 MB
+    const contentLength = request.headers.get("content-length");
+    if (contentLength && Number(contentLength) > MAX_CSV_BYTES) {
+      return NextResponse.json(
+        { error: `CSV too large (max ${MAX_CSV_BYTES / 1024 / 1024} MB)`, code: "PAYLOAD_TOO_LARGE" },
+        { status: 413 },
+      );
+    }
+
     const csv = await request.text();
+    if (csv.length > MAX_CSV_BYTES) {
+      return NextResponse.json(
+        { error: `CSV too large (max ${MAX_CSV_BYTES / 1024 / 1024} MB)`, code: "PAYLOAD_TOO_LARGE" },
+        { status: 413 },
+      );
+    }
     if (!csv.trim()) return NextResponse.json({ error: "No CSV data provided", code: "VALIDATION_ERROR" }, { status: 400 });
 
     const lines = csv.split("\n").filter(l => l.trim());

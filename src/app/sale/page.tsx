@@ -3,7 +3,7 @@ import Link from "next/link";
 import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
-import { FlashSaleBannerLoader } from "@/components/aura/sections/FlashSaleBanner";
+import { FlashSaleBanner } from "@/components/aura/sections/FlashSaleBanner";
 import * as productService from "@/lib/services/product.service";
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd, offerCatalogJsonLd } from "@/components/seo/JsonLd";
 
@@ -38,7 +38,7 @@ export default async function SalePage() {
         headline="On Sale"
       />
 
-      <FlashSaleBannerLoader />
+      <FlashSaleBanner />
 
       <section className="bg-canvas pt-6 md:pt-8">
         <div className="container-aura">

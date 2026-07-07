@@ -332,7 +332,7 @@ export default function AdminFlashSales() {
                     )}
 
                     {/* Warning at 75%+ usage */}
-                    {usageWarning && (
+                    {usageWarning && item.maxUses && (
                       <div className="flex items-center gap-2 mt-2 p-2 rounded-sm bg-warning/10">
                         <AlertTriangle size={14} className="c-warning flex-shrink-0" />
                         <p className="t-caption c-warning">

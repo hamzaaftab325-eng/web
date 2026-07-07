@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
 import { sanitizeHtml } from "@/lib/security";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 /** GET /api/products/[slug]/questions — list answered questions for a product */
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
@@ -32,6 +34,9 @@ const QuestionSchema = z.object({
 /** POST /api/products/[slug]/questions — submit a question */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   try {
+    const blocked = await rateLimit(request, 5, "1 h", `question:${getClientIp(request)}`);
+    if (blocked) return blocked;
+
     const { slug } = await params;
     const product = await db.product.findUnique({ where: { slug } });
     if (!product) return NextResponse.json({ error: "Product not found", code: "NOT_FOUND" }, { status: 404 });

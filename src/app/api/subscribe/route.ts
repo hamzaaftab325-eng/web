@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const Schema = z.object({
   email: z.string().email(),
@@ -10,11 +12,18 @@ const Schema = z.object({
 
 /**
  * POST /api/subscribe — subscribe an email to the newsletter.
+ *
  * Public endpoint (no auth required).
  * Idempotent — if the email already exists, it just returns success.
+ *
+ * Security:
+ *   - Rate limited: 3 subscribes per hour per IP (prevents subscriber spam).
  */
 export async function POST(request: NextRequest) {
   try {
+    const blocked = await rateLimit(request, 3, "1 h", `subscribe:${getClientIp(request)}`);
+    if (blocked) return blocked;
+
     const body = await request.json();
     const parsed = Schema.safeParse(body);
     if (!parsed.success) {

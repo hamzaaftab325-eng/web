@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
 import { notifyAdmins } from "@/lib/notifications";
 import { sanitizeHtml } from "@/lib/security";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const createReviewSchema = z.object({
   rating: z.number().int().min(1, "Rating must be at least 1").max(5, "Rating cannot exceed 5"),
@@ -39,6 +41,9 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ productSlug: string }> }) {
   try {
+    const blocked = await rateLimit(request, 3, "1 h", `review:${getClientIp(request)}`);
+    if (blocked) return blocked;
+
     const { productSlug } = await params;
     const body = await request.json();
 

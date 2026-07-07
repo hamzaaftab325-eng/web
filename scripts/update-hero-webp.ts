@@ -1,10 +1,21 @@
 /**
  * Update hero slide image URLs from .png to .webp in the database.
+ *
+ * Usage:
+ *   bun run scripts/update-hero-webp.ts
+ *
+ * Requires DATABASE_URL + DIRECT_URL environment variables (loaded from .env.local).
+ * Never hardcodes credentials.
  */
 import { PrismaClient } from "@prisma/client";
+import { config } from "dotenv";
 
-process.env.DATABASE_URL = "postgresql://postgres.stekfrfpwnxsczwjsrtc:Cobalt%21Tree%23981@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1";
-process.env.DIRECT_URL = "postgresql://postgres.stekfrfpwnxsczwjsrtc:Cobalt%21Tree%23981@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres";
+config({ path: ".env.local" });
+
+if (!process.env.DATABASE_URL) {
+  console.error("✗ DATABASE_URL is not set. Add it to .env.local and re-run.");
+  process.exit(1);
+}
 
 const db = new PrismaClient();
 

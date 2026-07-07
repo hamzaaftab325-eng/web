@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
 import { db } from "@/lib/db";
-import { requireAdmin } from "@/lib/auth-guard";
+import { requireAdmin, invalidateUserCache } from "@/lib/auth-guard";
 
 const CustomerUpdateSchema = z.object({
   role: z.enum(["customer", "admin"]).optional(),
@@ -108,6 +109,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       },
       select: { id: true, email: true, firstName: true, lastName: true, phone: true, role: true, isActive: true },
     });
+
+    // Invalidate the user cache for this user — without this, the user's stale
+    // role/isActive would persist in the in-memory cache for up to 60 seconds,
+    // allowing a demoted/deactivated admin to retain access briefly.
+    invalidateUserCache(id);
 
     return NextResponse.json({ customer: updated, message: "Customer updated" });
   } catch (error) {

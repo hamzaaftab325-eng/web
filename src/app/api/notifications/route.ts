@@ -1,28 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
-import { getAccessToken, getRefreshToken } from "@/lib/auth-cookies";
+import { requireUser } from "@/lib/auth-guard";
 
 /**
  * GET /api/notifications — list current user's notifications.
  * Supports ?unread=true to get only unread notifications.
+ *
+ * SECURITY: Auth via requireUser (access-token only). Refresh tokens are NEVER
+ * accepted as fallback auth.
  */
 export async function GET(request: NextRequest) {
   try {
-    const accessToken = getAccessToken(request);
-    let payload: { userId: string } | null = null;
-    if (accessToken) {
-      try { payload = verifyToken(accessToken); } catch { /* expired */ }
-    }
-    if (!payload) {
-      const refreshToken = getRefreshToken(request);
-      if (refreshToken) {
-        try { payload = verifyToken(refreshToken); } catch { /* invalid */ }
-      }
-    }
-    if (!payload) {
-      return NextResponse.json({ error: "Authentication required", code: "UNAUTHORIZED" }, { status: 401 });
-    }
+    const auth = await requireUser(request);
+    if (auth instanceof NextResponse) return auth;
 
     const { searchParams } = new URL(request.url);
     const unreadOnly = searchParams.get("unread") === "true";
@@ -30,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     const notifications = await db.notification.findMany({
       where: {
-        userId: payload.userId,
+        userId: auth.id,
         ...(unreadOnly && { read: false }),
       },
       orderBy: { createdAt: "desc" },
@@ -38,11 +29,11 @@ export async function GET(request: NextRequest) {
     });
 
     const unreadCount = await db.notification.count({
-      where: { userId: payload.userId, read: false },
+      where: { userId: auth.id, read: false },
     });
 
     return NextResponse.json({
-      notifications: notifications.map(n => ({
+      notifications: notifications.map((n) => ({
         id: n.id,
         type: n.type,
         title: n.title,
@@ -54,6 +45,10 @@ export async function GET(request: NextRequest) {
       unreadCount,
     });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed", code: "FETCH_ERROR" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Failed";
+    return NextResponse.json(
+      { error: message, code: "FETCH_ERROR" },
+      { status: 500 },
+    );
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { emailWrapper, dataTable } from "@/lib/email-wrapper";
+import { getSiteUrl } from "@/lib/site-url";
 
 /**
  * GET /api/cron/low-stock-alerts
@@ -134,7 +135,7 @@ function buildLowStockEmail(params: {
 }): string {
   const { dateLabel, outOfStock, lowStock, lowStockVariants, threshold } = params;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aura-living-1.vercel.app';
+  const siteUrl = getSiteUrl();
 
   const outOfStockRows = outOfStock.map((p) => [
     `<a href="${siteUrl}/product/${p.slug}" style="color:#1a1714;text-decoration:none;font-weight:500;">${p.name}</a><br><span style="font-size:11px;color:#718096;">${p.category?.name ?? "Uncategorized"} · ₨${Number(p.price).toLocaleString()}</span>`,

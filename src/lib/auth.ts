@@ -69,6 +69,29 @@ export function verifyToken(token: string): JwtPayload {
   return decoded as JwtPayload;
 }
 
-export function sanitizeUser(user: { id: string; email: string; passwordHash: string; firstName: string; lastName: string; phone: string | null; role: string; isActive: boolean; createdAt: Date; }) {
-  return { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, phone: user.phone, role: user.role, isActive: user.isActive, createdAt: user.createdAt.toISOString() };
+/**
+ * Strip sensitive fields (passwordHash) from a user object before returning
+ * it to the client. Accepts the full User shape OR any subset that includes
+ * the public fields — callers don't need to fetch passwordHash just to call this.
+ */
+export function sanitizeUser(user: {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  role: string;
+  isActive: boolean;
+  createdAt: Date | { toISOString: () => string };
+}) {
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    phone: user.phone,
+    role: user.role,
+    isActive: user.isActive,
+    createdAt: user.createdAt.toISOString(),
+  };
 }
