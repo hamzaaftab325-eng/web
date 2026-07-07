@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { AccountLayout } from "./AccountLayout";
+import { DeleteAddressDialog } from "./DeleteAddressDialog";
 import { useRouter } from "next/navigation";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
@@ -683,93 +684,13 @@ export function AccountAddresses() {
         )}
       </AnimatePresence>
 
-      {/* Delete confirmation */}
-      <AnimatePresence>
-        {deleteTarget && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={() => setDeleteTarget(null)}
-              className="fixed inset-0 z-modal overlay-dark"
-              aria-hidden
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.97 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              role="alertdialog"
-              aria-modal="true"
-              aria-labelledby="delete-addr-title"
-              aria-describedby="delete-addr-desc"
-              className="fixed inset-0 z-modal-elevated flex items-center justify-center p-4 pointer-events-none"
-            >
-              <div
-                ref={deleteRef}
-                className="pointer-events-auto w-full max-w-md bg-gradient-card-warm border border-hairline-cream shadow-modal rounded-sm overflow-hidden"
-              >
-                <div className="bg-gradient-to-r from-error/10 to-cream px-6 py-5 border-b border-hairline-cream flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center ring-1 ring-error/20 shrink-0">
-                    <AlertTriangle
-                      size={18}
-                      strokeWidth={1.5}
-                      className="c-error"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="t-label-caps c-error">Confirm deletion</p>
-                    <h3
-                      id="delete-addr-title"
-                      className="t-headline-sm c-ink truncate"
-                    >
-                      Remove {deleteTarget.label || "address"}?
-                    </h3>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p
-                    id="delete-addr-desc"
-                    className="t-body c-ink-muted mb-6"
-                  >
-                    This will permanently remove{" "}
-                    <span className="c-ink font-medium">
-                      {deleteTarget.firstName} {deleteTarget.lastName}
-                    </span>
-                    &apos;s{" "}
-                    <span className="c-ink font-medium">
-                      {deleteTarget.label || "address"}
-                    </span>{" "}
-                    from your address book.
-                    {deleteTarget.isDefault
-                      ? " Your next remaining address will become the default."
-                      : ""}
-                  </p>
-                  <div className="flex items-center justify-end gap-3">
-                    <AuraButton
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setDeleteTarget(null)}
-                    >
-                      Keep address
-                    </AuraButton>
-                    <button
-                      type="button"
-                      onClick={confirmDelete}
-                      className="inline-flex items-center justify-center gap-2 h-10 px-6 rounded-sm t-label-caps bg-error c-paper hover:bg-ink transition-all duration-300 active:scale-[0.98]"
-                    >
-                      <Trash2 size={14} strokeWidth={1.75} />
-                      Delete address
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* Delete confirmation — Phase 5A: Extracted to <DeleteAddressDialog /> */}
+      <DeleteAddressDialog
+        target={deleteTarget}
+        dialogRef={deleteRef}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+      />
 
       {/* Footer hint */}
       <p className="t-caption c-ink-faint mt-10 text-center md:text-left">

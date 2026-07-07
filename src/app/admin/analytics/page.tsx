@@ -35,6 +35,7 @@ import {
 import { cn, formatPrice } from "@/lib/utils";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { ChartCard, ChartLoading, ChartEmpty, StatusBadge } from "./_components";
 
 /* ── API response shape (mirrors /api/admin/analytics?range=…) ──────────── */
 
@@ -149,54 +150,7 @@ function SectionHeader({ title, hint }: { title: string; hint?: string }) {
   );
 }
 
-function ChartCard({ className, children }: { className?: string; children: React.ReactNode }) {
-  return (
-    <div
-      className={cn(
-        "bg-gradient-card-warm border border-hairline-cream rounded-sm p-6",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
-function ChartLoading() {
-  return (
-    <div className="py-16 text-center">
-      <div className="aura-loader-ring mx-auto">
-        <span className="aura-loader-dot" />
-      </div>
-    </div>
-  );
-}
-
-function ChartEmpty({ icon: Icon, message }: { icon: typeof BarChart3; message: string }) {
-  return (
-    <div className="py-16 text-center">
-      <Icon size={32} strokeWidth={1} className="c-ink-faint mx-auto mb-3" />
-      <p className="t-body c-ink-muted">{message}</p>
-    </div>
-  );
-}
-
-/** Status badge for the recent orders table — color-coded per status. */
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    delivered: "bg-success/10 c-success border-success/20",
-    processing: "bg-gold/10 c-gold-deep border-gold/20",
-    shipped: "bg-blue-100 text-blue-700 border-blue-200",
-    cancelled: "bg-error/10 c-error border-error/20",
-    pending: "bg-cream-deep c-ink-muted border-hairline-cream",
-  };
-  const cls = styles[status] ?? styles.pending;
-  return (
-    <span className={cn("inline-block px-2 py-0.5 t-caption rounded-sm border capitalize", cls)}>
-      {status}
-    </span>
-  );
-}
+// Phase 5A: ChartCard, ChartLoading, ChartEmpty, StatusBadge extracted to ./_components.tsx
 
 /** Decorative mini area trend used inside KPI cards. */
 function Sparkline({
