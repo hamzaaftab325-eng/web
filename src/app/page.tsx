@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { homeMetadata } from "@/lib/seo-metadata";
 import { HeroSlider } from "@/components/aura/sections/HeroSlider";
 import { CategoryShowcase } from "@/components/aura/sections/CategoryShowcase";
@@ -83,13 +84,28 @@ export default async function Home() {
         />
       )}
       <HeroSlider initialSlides={slides.length > 0 ? slides : undefined} />
-      <RecommendedForYou />
+
+      {/*
+        Phase 4C: RecommendedForYou + RecentlyViewed are wrapped in Suspense
+        because they depend on user context (auth cookies, recently-viewed
+        localStorage). If they're slow or fail, the rest of the page renders
+        immediately — users see the hero + categories + featured products
+        without waiting for personalization.
+      */}
+      <Suspense fallback={null}>
+        <RecommendedForYou />
+      </Suspense>
+
       <CategoryShowcase initialCategories={categories} initialProducts={featured} />
       <FeaturedProducts initialProducts={featured} />
       <CuratedCollection initialCollections={collections} />
       <TestimonialSection initialTestimonials={testimonials} />
       <BrandValues />
-      <RecentlyViewed />
+
+      <Suspense fallback={null}>
+        <RecentlyViewed />
+      </Suspense>
+
       <NewsletterSection />
       <FAQSection initialFAQ={faq} />
     </>

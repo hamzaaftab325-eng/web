@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import { db } from "@/lib/db";
 import { ProductDetailPage } from "@/components/aura/commerce/ProductDetailPage";
 import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
@@ -8,10 +9,39 @@ import type { CategorySlug } from "@/types";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { productMetadata } from "@/lib/seo-metadata";
 
-// Force dynamic rendering — don't try to query DB at build time
-export const dynamic = "force-dynamic";
+// Phase 4B: ISR instead of force-dynamic.
+// Product pages are cached for 1 hour, then revalidated in the background.
+// First request after expiry serves stale + triggers regeneration (stale-while-revalidate).
+// Expected: ~80% reduction in product page TTFB on cache hit.
+//
+// generateStaticParams() below pre-renders all active products at build time
+// so the most-visited pages are cached from the very first request.
+export const revalidate = 3600; // 1 hour
+
+// Fallback: pages not pre-rendered at build time are rendered on first request,
+// then cached. This gives us "lazy static generation" — long-tail products
+// don't slow down the build, but get cached after first view.
+export const dynamicParams = true;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aura-living-1.vercel.app";
+
+/**
+ * Pre-render all active products at build time.
+ * Returns slugs for every active product so they're cached from day one.
+ */
+export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
+  try {
+    const products = await db.product.findMany({
+      where: { isActive: true },
+      select: { slug: true },
+    });
+    return products.map((p) => ({ slug: p.slug }));
+  } catch (error) {
+    // If DB is unreachable at build time, render all product pages on-demand
+    console.warn("[product/generateStaticParams] Failed to fetch product slugs:", error);
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

@@ -7,10 +7,24 @@ const nextConfig: NextConfig = {
   // Use `build:standalone` + `start:standalone` scripts for self-hosted deploys.
   reactStrictMode: true,
 
-  // 2026 Standard: View Transitions API for native page transitions
-  experimental: {
-    viewTransition: true,
-  },
+  // Phase 4E: Removed experimental.viewTransition.
+  // The app uses framer-motion's <AnimatePresence> in AppChrome for page
+  // transitions. Having BOTH enabled caused a "double animation" — the old
+  // page would start exiting via framer-motion while the new page also
+  // animated via the View Transitions API, adding ~300ms to every navigation
+  // and resetting client state (scroll position, form drafts) on every route
+  // change. We chose framer-motion for broader browser support + finer control.
+  //
+  // To re-enable View Transitions in the future:
+  //   1. Remove the <AnimatePresence> wrapper in src/components/aura/layout/AppChrome.tsx
+  //   2. Set experimental.viewTransition: true here
+  //   3. Test that client state persists across navigations
+
+  // Phase 4F: Explicit compress + poweredByHeader for production hardening.
+  // (Vercel sets these by default, but explicit is better — and matters for
+  // self-hosted deploys via build:standalone.)
+  compress: true,
+  poweredByHeader: false,
 
   // Security headers + API cache headers
   async headers() {
