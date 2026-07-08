@@ -95,13 +95,15 @@ export function invalidateUserCache(userId: string): void {
  * Phase 4A-1: Server Component auth helper.
  *
  * Uses `cookies()` from `next/headers` instead of `NextRequest`.
- * Allows Server Component layouts/pages to verify admin access
- * without a client-side `useEffect` + `fetch` round-trip.
+ *
+ * IMPORTANT: This function does NOT set new cookies (that doesn't work
+ * reliably in Server Component rendering). It only READS cookies to
+ * verify the user. Token refresh is handled client-side by apiFetch.
  *
  * Flow:
  *   1. Try access token from cookie
  *   2. If expired, try refresh token (verify DB session exists)
- *   3. If refresh valid, sign new access token + set cookie
+ *   3. If refresh valid, use its payload (don't set new cookie here)
  *   4. Fetch user from DB for fresh role check
  *   5. If not admin → redirect("/")
  *   6. If not authenticated → redirect("/login?redirect=/admin")
@@ -117,64 +119,51 @@ export async function requireAdminServer(): Promise<{
   const accessToken = cookieStore.get("aura_access")?.value;
   const refreshToken = cookieStore.get("aura_refresh")?.value;
 
-  let payload: { userId: string; email: string; role: string } | null = null;
+  let userId: string | null = null;
 
   // Step 1: Try access token
   if (accessToken) {
     try {
-      payload = verifyToken(accessToken);
+      const payload = verifyToken(accessToken);
+      userId = payload.userId;
     } catch {
       // Access token expired — try refresh below
     }
   }
 
-  // Step 2: If access token failed, try refresh token
-  if (!payload && refreshToken) {
+  // Step 2: If access token failed, try refresh token (read-only — don't set cookie)
+  if (!userId && refreshToken) {
     try {
       const refreshPayload = verifyTokenWithType(refreshToken);
 
       if (refreshPayload.type === "refresh") {
+        // Verify session exists in DB
         const session = await db.userSession.findFirst({
           where: { userId: refreshPayload.userId, refreshToken },
           select: { id: true },
         });
 
         if (session) {
-          const user = await db.user.findUnique({
-            where: { id: refreshPayload.userId },
-            select: { id: true, email: true, role: true, isActive: true },
-          });
-
-          if (user && user.isActive) {
-            const newAccessToken = signAccessToken({
-              userId: user.id,
-              email: user.email,
-              role: user.role,
-            });
-
-            cookieStore.set("aura_access", newAccessToken, {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production",
-              sameSite: "lax",
-              path: "/",
-              maxAge: 15 * 60,
-            });
-
-            payload = { userId: user.id, email: user.email, role: user.role };
-          }
+          userId = refreshPayload.userId;
+          // NOTE: We do NOT set a new access token cookie here.
+          // The client-side apiFetch will handle the refresh on the next
+          // API call. Setting cookies in Server Components during RSC
+          // rendering doesn't work reliably in all Next.js versions.
         }
       }
     } catch {
-      // Refresh token also invalid — will redirect below
+      // Refresh token also invalid
     }
   }
 
-  if (!payload) {
+  // Step 3: Not authenticated — redirect to login
+  if (!userId) {
     redirect("/login?redirect=/admin");
   }
 
+  // Step 4: Fetch full user data from DB
   const user = await db.user.findUnique({
-    where: { id: payload.userId },
+    where: { id: userId },
     select: {
       id: true,
       email: true,

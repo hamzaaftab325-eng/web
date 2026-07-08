@@ -171,11 +171,12 @@ export function LoginView() {
       const target = urlRedirect ?? authRedirect ?? (data.user?.role === "admin" ? "/admin" : "/");
       setAuthRedirect(null);
 
-      // Phase 8 fix: Use router.push (client-side navigation) instead of
-      // window.location.href (full page reload). This preserves the auth
-      // store, so the admin layout can check useAuthStore.getState().user
-      // immediately without needing an API call.
-      router.push(target);
+      // Use HARD navigation (window.location.href) — not router.push.
+      // The admin layout is now a Server Component that reads cookies via
+      // next/headers. A hard navigation ensures the browser sends the
+      // freshly-set httpOnly cookies to the server. Client-side router.push
+      // makes an RSC request that might not include the new cookies reliably.
+      window.location.href = target;
     } catch (e) {
       setServerError(e instanceof Error ? e.message : "Sign in failed");
     }
