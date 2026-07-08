@@ -1,10 +1,11 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useFeaturedProducts } from "@/hooks/queries/use-products";
-import { useUIStore } from "@/store/use-ui-store";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
+import { useFeaturedProducts } from "@/hooks/queries/use-products";
+import { useUIStore } from "@/store/use-ui-store";
 
 interface FeaturedProductsProps {
   initialProducts?: Awaited<ReturnType<typeof import("@/lib/services/product.service").getFeatured>>;

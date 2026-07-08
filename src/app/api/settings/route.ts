@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
 
 // Cache for 60 seconds to avoid DB hits on every page load

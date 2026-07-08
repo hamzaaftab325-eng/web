@@ -1,21 +1,23 @@
-import type { Metadata } from "next";
 import { Suspense } from "react";
-import { homeMetadata } from "@/lib/seo-metadata";
-import { HeroSlider } from "@/components/aura/sections/HeroSlider";
-import { CategoryShowcase } from "@/components/aura/sections/CategoryShowcase";
-import { FeaturedProducts } from "@/components/aura/sections/FeaturedProducts";
-import { CuratedCollection } from "@/components/aura/sections/CuratedCollection";
-import { TestimonialSection } from "@/components/aura/sections/TestimonialSection";
-import { BrandValues } from "@/components/aura/sections/BrandValues";
+
 import { RecentlyViewed } from "@/components/aura/commerce/RecentlyViewed";
-import { NewsletterSection } from "@/components/aura/sections/NewsletterSection";
-import { FAQSection } from "@/components/aura/sections/FAQSection";
 import { RecommendedForYou } from "@/components/aura/personalization/RecommendedForYou";
-import * as heroService from "@/lib/services/hero.service";
-import * as productService from "@/lib/services/product.service";
+import { BrandValues } from "@/components/aura/sections/BrandValues";
+import { CategoryShowcase } from "@/components/aura/sections/CategoryShowcase";
+import { CuratedCollection } from "@/components/aura/sections/CuratedCollection";
+import { FAQSection } from "@/components/aura/sections/FAQSection";
+import { FeaturedProducts } from "@/components/aura/sections/FeaturedProducts";
+import { HeroSlider } from "@/components/aura/sections/HeroSlider";
+import { NewsletterSection } from "@/components/aura/sections/NewsletterSection";
+import { TestimonialSection } from "@/components/aura/sections/TestimonialSection";
+import { homeMetadata } from "@/lib/seo-metadata";
 import * as categoryService from "@/lib/services/category.service";
 import * as collectionService from "@/lib/services/collection.service";
 import * as contentService from "@/lib/services/content.service";
+import * as heroService from "@/lib/services/hero.service";
+import * as productService from "@/lib/services/product.service";
+
+import type { Metadata } from "next";
 
 // Note: BrandValues and InstagramFeed use hardcoded data (no DB fetch needed).
 

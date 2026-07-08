@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+
 import { motion } from "framer-motion";
 import { Truck, Plus, Trash2, X } from "lucide-react";
-import { formatPrice, cn } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { formatPrice, cn } from "@/lib/utils";
 
 interface ShippingMethod {
   id: string; code: string; name: string; description: string | null;

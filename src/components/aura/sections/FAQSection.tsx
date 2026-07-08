@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { useFAQ } from "@/hooks/queries/use-content";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { useFAQ } from "@/hooks/queries/use-content";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "Shipping", "Returns", "Product Care", "Orders"] as const;

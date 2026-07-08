@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
-import { PageHero } from "@/components/aura/layout/PageHero";
+
 import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
+import { PageHero } from "@/components/aura/layout/PageHero";
 import { FlashSaleBanner } from "@/components/aura/sections/FlashSaleBanner";
 import { EmptyState } from "@/components/aura/ui/EmptyState";
-import * as productService from "@/lib/services/product.service";
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd, offerCatalogJsonLd } from "@/components/seo/JsonLd";
+import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
+import * as productService from "@/lib/services/product.service";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("sale", "/sale");
 

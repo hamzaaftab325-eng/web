@@ -1,9 +1,12 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+
 import { motion, useReducedMotion } from "framer-motion";
 import { PenLine, Star } from "lucide-react";
+
 import { cn } from "@/lib/utils";
+
 import { StarRating } from "./StarRating";
 
 /**

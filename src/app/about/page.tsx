@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import { AboutView } from "@/components/aura/sections/AboutView";
 import { JsonLd, aboutPageJsonLd, breadcrumbJsonLd as makeBreadcrumb } from "@/components/seo/JsonLd";
+import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("about", "/about");
 

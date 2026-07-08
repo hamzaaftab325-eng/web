@@ -1,5 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
+
 import { api } from "@/lib/api/client";
 import type { FAQItem, Testimonial, CareGuide, JournalArticle, HeroSlide, BrandValue } from "@/types";
 

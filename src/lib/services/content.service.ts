@@ -6,8 +6,8 @@
  */
 
 import { db } from "@/lib/db";
-import type { JournalBodyBlock } from "@/types";
 import { parseJournalBody } from "@/lib/validators/journal";
+import type { JournalBodyBlock } from "@/types";
 
 // ── DTO Types ──────────────────────────────────────────────────────────
 

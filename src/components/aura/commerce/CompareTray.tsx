@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X,
@@ -13,10 +12,13 @@ import {
   Ruler,
   Layers,
 } from "lucide-react";
-import { cn, formatPrice } from "@/lib/utils";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+
 import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
-import { useUIStore } from "@/store/use-ui-store";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { cn, formatPrice } from "@/lib/utils";
+import { useUIStore } from "@/store/use-ui-store";
 
 const COMPARE_KEY = "aura-living-compare";
 const COMPARE_MAX = 4;

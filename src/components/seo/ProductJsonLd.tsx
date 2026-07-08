@@ -1,5 +1,5 @@
-import type { Product } from "@/types";
 import { getSiteUrl } from "@/lib/site-url";
+import type { Product } from "@/types";
 
 /**
  * ProductJsonLd — renders Product schema.org structured data as

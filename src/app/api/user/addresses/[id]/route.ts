@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
-import { db } from "@/lib/db";
+
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
+import { db } from "@/lib/db";
 
 // Whitelist of fields the user is allowed to update on an address.
 // Critical: userId and id are NOT in this list — they can't be overwritten.

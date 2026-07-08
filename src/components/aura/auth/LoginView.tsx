@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   Mail,
@@ -13,14 +14,18 @@ import {
   AlertCircle,
   ArrowRight,
 } from "lucide-react";
-import { AuthShell } from "./AuthShell";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import { Button } from "@/components/aura/ui/Button";
+import { login as trackLogin } from "@/lib/analytics/ecommerce";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useUIStore } from "@/store/use-ui-store";
 import { hydrateWishlist } from "@/store/use-wishlist-store";
-import { cn } from "@/lib/utils";
-import { login as trackLogin } from "@/lib/analytics/ecommerce";
-import { useRouter, useSearchParams } from "next/navigation";
+
+import { AuthShell } from "./AuthShell";
+
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod schema (no server-side dependency)

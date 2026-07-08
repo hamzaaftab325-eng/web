@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 /**
  * POST /api/user/wishlist/share — generate a shareable wishlist link.

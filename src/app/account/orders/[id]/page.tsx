@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
-import { pageMetadata } from "@/lib/seo-metadata";
 import { AccountOrderDetail } from "@/components/aura/account/AccountOrderDetail";
+import { pageMetadata } from "@/lib/seo-metadata";
+
+import type { Metadata } from "next";
 
 // noindex — private page, canonical doesn't matter but keep it correct
 export const metadata: Metadata = { ...pageMetadata("account-order-detail", "/account/orders"), robots: { index: false, follow: false } };

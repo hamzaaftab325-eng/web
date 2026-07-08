@@ -1,7 +1,8 @@
-import type { MetadataRoute } from "next";
 
 import { db } from "@/lib/db";
 import { getSiteUrl } from "@/lib/site-url";
+
+import type { MetadataRoute } from "next";
 
 /**
  * app/sitemap.ts — dynamic sitemap for search engines.

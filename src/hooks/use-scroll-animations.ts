@@ -25,6 +25,8 @@
 
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 import {
   useScroll,
   useTransform,
@@ -34,7 +36,6 @@ import {
   animate,
   useReducedMotion,
 } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
 
 // ============================================================
 // useParallax — translate an element as the page scrolls

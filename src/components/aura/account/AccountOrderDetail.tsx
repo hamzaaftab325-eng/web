@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+
+import { motion } from "framer-motion";
 import { ArrowLeft, Package, Truck, MapPin, CreditCard, Printer, Check, Clock, Loader2 } from "lucide-react";
-import { AccountLayout } from "./AccountLayout";
-import { formatPrice, cn } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { formatPrice, cn } from "@/lib/utils";
+
+import { AccountLayout } from "./AccountLayout";
 
 interface OrderItem {
   id: string;

@@ -1,16 +1,20 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+
+import { motion } from "framer-motion";
 import { Package, MapPin, Heart, ArrowRight, TrendingUp, Sparkles } from "lucide-react";
-import { AccountLayout } from "./AccountLayout";
+
+import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { formatPrice } from "@/lib/utils";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
-import { formatPrice } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
-import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+
+import { AccountLayout } from "./AccountLayout";
 
 interface OrderItem { key: string; image: string; name: string; quantity: number; }
 interface Order {

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+
 import { Star, StarHalf } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 interface StarRatingProps {

@@ -1,14 +1,16 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import { useRouter } from "next/navigation";
+
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useCollections } from "@/hooks/queries/use-catalog";
-import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
-import { useUIStore } from "@/store/use-ui-store";
+
 import { SplitTextReveal } from "@/components/aura/animation/SplitTextReveal";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { useCollections } from "@/hooks/queries/use-catalog";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
 import { formatPrice } from "@/lib/utils";
+import { useUIStore } from "@/store/use-ui-store";
 
 interface CuratedCollectionProps {
   initialCollections?: Awaited<ReturnType<typeof import("@/lib/services/collection.service").getAll>>;

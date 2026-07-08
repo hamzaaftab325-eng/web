@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+
 import { useRouter, usePathname } from "next/navigation";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { LayoutDashboard, Package, MapPin, Heart, Settings, LogOut, Menu, X, ShoppingBag, ChevronRight, Shield } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
-import { useAuthStore } from "@/store/use-auth-store";
-import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useCartStore } from "@/store/use-cart-store";
+
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/use-auth-store";
+import { useCartStore } from "@/store/use-cart-store";
+import { useUIStore } from "@/store/use-ui-store";
+import { useWishlistStore } from "@/store/use-wishlist-store";
 
 const navItems: { label: string; icon: typeof LayoutDashboard; path: string }[] = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/account" },

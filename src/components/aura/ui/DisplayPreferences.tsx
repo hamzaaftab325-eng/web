@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Settings, X, Sun, Moon, Type, Contrast } from "lucide-react";
 
-import { useThemeStore } from "@/store/use-theme-store";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { cn } from "@/lib/utils";
+import { useThemeStore } from "@/store/use-theme-store";
 
 /**
  * DisplayPreferences — settings panel for accessibility + display options.
@@ -32,6 +33,9 @@ export function DisplayPreferences({ className }: { className?: string }) {
   useEffect(() => {
     if (!open) return;
 
+    // Phase 11C: Copy ref to local variable for cleanup (fixes exhaustive-deps warning)
+    const trigger = triggerRef.current;
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
@@ -42,7 +46,7 @@ export function DisplayPreferences({ className }: { className?: string }) {
     return () => {
       window.removeEventListener("keydown", onKey);
       // Restore focus to the trigger button when modal closes
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [open]);
 

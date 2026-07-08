@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+
 import { Send, Mail, Users } from "lucide-react";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
 const inputCls = "w-full px-4 py-2.5 t-body c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors";

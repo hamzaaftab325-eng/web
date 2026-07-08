@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { useForm, useWatch } from "react-hook-form";
+
+import { useRouter } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   Lock,
@@ -14,10 +15,14 @@ import {
   ArrowLeft,
   Check,
 } from "lucide-react";
-import { AuthShell } from "./AuthShell";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
+
 import { Button } from "@/components/aura/ui/Button";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+
+import { AuthShell } from "./AuthShell";
+
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod

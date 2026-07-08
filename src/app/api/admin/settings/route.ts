@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { db } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+
+import { z } from "zod";
+
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 /**
  * GET /api/admin/settings — returns all settings as a key-value object.

@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Share2, Link2, Mail, ChevronDown, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface ProductShareProps {
   url?: string;

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
 
-import { db } from "@/lib/db";
 import { hashPassword, signAccessToken, signRefreshToken, sanitizeUser } from "@/lib/auth";
 import { setAuthCookies } from "@/lib/auth-cookies";
+import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { welcomeEmail } from "@/lib/email-templates";
-import { sanitizeObject, validatePasswordStrength } from "@/lib/security";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { sanitizeObject, validatePasswordStrength } from "@/lib/security";
 
 const schema = z.object({
   firstName: z.string().min(1).max(60), lastName: z.string().min(1).max(60),

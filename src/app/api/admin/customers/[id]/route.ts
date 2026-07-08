@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
 
-import { db } from "@/lib/db";
 import { requireAdmin, invalidateUserCache } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 const CustomerUpdateSchema = z.object({
   role: z.enum(["customer", "admin"]).optional(),

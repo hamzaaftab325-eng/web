@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import { setCurrencySymbol } from "@/lib/format/currency";
 
 /**

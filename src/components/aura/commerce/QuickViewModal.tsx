@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X,
@@ -12,13 +13,14 @@ import {
   RotateCcw,
   Shield,
 } from "lucide-react";
-import type { Product, ProductVariant } from "@/types";
+
+import AuraChip from "@/components/aura/ui/Chip";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useToast } from "@/hooks/use-toast";
 import { cn, formatPrice, sleep } from "@/lib/utils";
 import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
-import { useFocusTrap } from "@/hooks/use-focus-trap";
-import { useToast } from "@/hooks/use-toast";
-import AuraChip from "@/components/aura/ui/Chip";
+import type { Product, ProductVariant } from "@/types";
 
 interface QuickViewModalProps {
   product: Product | null;

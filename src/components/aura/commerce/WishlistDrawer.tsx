@@ -1,15 +1,18 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
+
 import { useRouter } from "next/navigation";
+
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { X, Heart, ShoppingBag, Check, Trash2 } from "lucide-react";
-import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useCartStore } from "@/store/use-cart-store";
+
 import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
 import { formatPrice } from "@/lib/utils";
-import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useCartStore } from "@/store/use-cart-store";
+import { useWishlistStore } from "@/store/use-wishlist-store";
 import type { Product } from "@/types";
 
 /** Local product type — avoids circular reference from typeof parameter. */

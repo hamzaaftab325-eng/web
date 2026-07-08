@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { useTestimonials } from "@/hooks/queries/use-content";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { useTestimonials } from "@/hooks/queries/use-content";
 import { cn } from "@/lib/utils";
 
 interface TestimonialSectionProps {

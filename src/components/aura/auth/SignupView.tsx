@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { useForm, useWatch } from "react-hook-form";
+
+import { useRouter } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   Lock,
@@ -16,16 +17,20 @@ import {
   Mail,
   ShieldCheck,
 } from "lucide-react";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 
-import { AuthShell } from "./AuthShell";
 import { Button } from "@/components/aura/ui/Button";
-import { SquareToggle } from "./SquareToggle";
-import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
+import { signUp as trackSignUp } from "@/lib/analytics/ecommerce";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useUIStore } from "@/store/use-ui-store";
-import { cn } from "@/lib/utils";
-import { signUp as trackSignUp } from "@/lib/analytics/ecommerce";
-import { useRouter } from "next/navigation";
+
+import { AuthShell } from "./AuthShell";
+import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
+import { SquareToggle } from "./SquareToggle";
+
+
 
 /* ────────────────────────────────────────────────────────────────────────
    Schema — inline Zod

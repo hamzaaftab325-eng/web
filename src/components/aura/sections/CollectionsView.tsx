@@ -1,12 +1,13 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { useCollections } from "@/hooks/queries/use-catalog";
 import { useProducts } from "@/hooks/queries/use-products";
 import { formatPrice, cn } from "@/lib/utils";
+import { useUIStore } from "@/store/use-ui-store";
 
 /**
  * CollectionsView — index of the three curated Aura Living

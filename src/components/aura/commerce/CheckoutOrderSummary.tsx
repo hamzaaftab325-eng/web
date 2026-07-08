@@ -2,7 +2,7 @@
 
 import { X, Tag, ShoppingBag, Package } from "lucide-react";
 
-import { cn, formatPrice } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import type { CartLine } from "@/types";
 
 /**

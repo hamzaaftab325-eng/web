@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+
 import { motion } from "framer-motion";
 import { MessageCircle, Send, Trash2, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { cn } from "@/lib/utils";
 
 interface Question {
   id: string; authorName: string; authorEmail: string | null;

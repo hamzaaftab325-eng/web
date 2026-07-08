@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useRouter, usePathname } from "next/navigation";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Home, Search, ShoppingBag, Heart, User, Tag } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
-import { useCartStore } from "@/store/use-cart-store";
-import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useAuthStore } from "@/store/use-auth-store";
+
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/use-auth-store";
+import { useCartStore } from "@/store/use-cart-store";
+import { useUIStore } from "@/store/use-ui-store";
+import { useWishlistStore } from "@/store/use-wishlist-store";
 
 /**
  * MobileTabBar — persistent bottom navigation for mobile (< lg).

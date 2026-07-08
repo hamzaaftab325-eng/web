@@ -2,11 +2,12 @@
 
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { X, Check } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
-import { LEFT_DRAWER_CONSTRAINTS, leftDrawerDragEnd } from "@/lib/swipe-to-close";
+
 import { useCategories } from "@/hooks/queries/use-catalog";
 import { useAllMaterials } from "@/hooks/queries/use-products";
+import { LEFT_DRAWER_CONSTRAINTS, leftDrawerDragEnd } from "@/lib/swipe-to-close";
 import { cn } from "@/lib/utils";
+import { useUIStore } from "@/store/use-ui-store";
 import type { ActiveFilter, CategorySlug } from "@/types";
 
 const PRICE_BANDS = [

@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
-import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import { CollectionsView } from "@/components/aura/sections/CollectionsView";
-import * as collectionService from "@/lib/services/collection.service";
 import { JsonLd, breadcrumbJsonLd as makeBreadcrumb, collectionPageJsonLd } from "@/components/seo/JsonLd";
+import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
+import * as collectionService from "@/lib/services/collection.service";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("collections", "/collections");
 

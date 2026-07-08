@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+
 import Image from "next/image";
+
 import useEmblaCarousel from "embla-carousel-react";
+
 import { cn } from "@/lib/utils";
 
 /**

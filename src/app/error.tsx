@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { motion, useReducedMotion } from "framer-motion";
 import { AlertCircle, RotateCcw, Home } from "lucide-react";
 

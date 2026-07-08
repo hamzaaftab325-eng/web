@@ -1,13 +1,16 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
+
 import { useRouter, usePathname } from "next/navigation";
+
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { X, ChevronRight } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
-import { cn } from "@/lib/utils";
-import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
+
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
+import { cn } from "@/lib/utils";
+import { useUIStore } from "@/store/use-ui-store";
 
 type MainItem = {
   label: string;

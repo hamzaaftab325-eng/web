@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+
 import { motion } from "framer-motion";
 import { Plus, Trash2, Eye, EyeOff, Pencil, ArrowUp, ArrowDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { cn } from "@/lib/utils";
 
 interface BrandValue { id: string; icon: string; title: string; description: string; sortOrder: number; isActive: boolean; }
 const inputCls = "w-full px-4 py-2.5 t-body c-ink bg-paper border border-hairline-cream rounded-sm outline-none focus:border-gold transition-colors";

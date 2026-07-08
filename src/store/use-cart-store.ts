@@ -3,9 +3,9 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-import type { CartLine, Product, ProductVariant } from "@/types";
 import { uid } from "@/lib/utils";
 import { useWishlistStore } from "@/store/use-wishlist-store";
+import type { CartLine, Product, ProductVariant } from "@/types";
 
 interface CartState {
   lines: CartLine[];

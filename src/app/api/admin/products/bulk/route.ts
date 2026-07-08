@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
-import { db } from "@/lib/db";
+
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 const BulkSchema = z.object({
   ids: z.array(z.string()).min(1),

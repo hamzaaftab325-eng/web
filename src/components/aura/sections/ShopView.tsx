@@ -1,20 +1,23 @@
 "use client";
 
 import { useMemo, useState } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, ChevronDown, ArrowRight } from "lucide-react";
-import { useProducts } from "@/hooks/queries/use-products";
-import type { Product } from "@/types";
-import { useCategories } from "@/hooks/queries/use-catalog";
-import { useCollections } from "@/hooks/queries/use-catalog";
-import { useUIStore, type SortKey } from "@/store/use-ui-store";
-import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
+
 import { FilterSidebar } from "@/components/aura/commerce/FilterSidebar";
+import { ProductGrid } from "@/components/aura/commerce/ProductGrid";
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { PullToRefreshIndicator } from "@/components/aura/ui/PullToRefreshIndicator";
+import { useCollections } from "@/hooks/queries/use-catalog";
+import { useCategories } from "@/hooks/queries/use-catalog";
+import { useProducts } from "@/hooks/queries/use-products";
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import { cn } from "@/lib/utils";
+import { useUIStore, type SortKey } from "@/store/use-ui-store";
+import type { Product } from "@/types";
 
 const PRICE_BANDS: Record<string, { min: number; max: number }> = {
   "under-5000": { min: 0, max: 5000 },

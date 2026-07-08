@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   ChevronDown,
@@ -10,12 +11,15 @@ import {
   X,
   Check,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import AuraChip from "@/components/aura/ui/Chip";
-import { StarRating } from "./StarRating";
-import { RatingSummary } from "./RatingSummary";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import AuraChip from "@/components/aura/ui/Chip";
+import { cn } from "@/lib/utils";
+
+import { RatingSummary } from "./RatingSummary";
+import { StarRating } from "./StarRating";
+
 
 interface Review {
   id: string;

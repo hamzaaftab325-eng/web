@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 
-import { api } from "@/lib/api/client";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { api } from "@/lib/api/client";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");

@@ -1,11 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { randomUUID } from "crypto";
 
-import { db } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+
+import { z } from "zod";
+
 import { verifyTokenWithType, hashPassword } from "@/lib/auth";
-import { validatePasswordStrength } from "@/lib/security";
+import { db } from "@/lib/db";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { validatePasswordStrength } from "@/lib/security";
 
 const schema = z.object({ token: z.string().min(1), newPassword: z.string().min(8) });
 

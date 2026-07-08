@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+
 import { motion } from "framer-motion";
 import { HelpCircle, Plus, Trash2, ChevronDown, ChevronUp, Pencil, ArrowUp, ArrowDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { cn } from "@/lib/utils";
 
 interface FaqItem {
   id: string; question: string; answer: string;

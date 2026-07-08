@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+
 import { Volume2, Square } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 /**

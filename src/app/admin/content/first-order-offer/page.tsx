@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+
 import { Gift, Save, Eye, EyeOff } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { cn } from "@/lib/utils";
 
 interface Offer {
   id?: string;

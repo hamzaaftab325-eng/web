@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { emailWrapper, dataTable } from "@/lib/email-wrapper";

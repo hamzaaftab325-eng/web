@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, BookOpen, Check } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { useCareGuides } from "@/hooks/queries/use-content";
 import type { CareGuide } from "@/types";

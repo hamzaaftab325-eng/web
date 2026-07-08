@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { motion } from "framer-motion";
 import {
   Package,
@@ -15,10 +17,11 @@ import {
   Plus,
   ChevronRight,
 } from "lucide-react";
-import { formatPrice, cn } from "@/lib/utils";
-import { statusConfig } from "@/lib/order-status";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { statusConfig } from "@/lib/order-status";
+import { formatPrice, cn } from "@/lib/utils";
 
 interface DashboardStats {
   totalProducts: number;

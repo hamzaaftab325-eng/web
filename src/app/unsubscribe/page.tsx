@@ -1,7 +1,9 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+
 import { useSearchParams } from "next/navigation";
+
 import { Check, AlertCircle } from "lucide-react";
 
 function UnsubscribeContent() {

@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
-import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import { ShopView } from "@/components/aura/sections/ShopView";
-import * as productService from "@/lib/services/product.service";
+import { JsonLd, breadcrumbJsonLd as makeBreadcrumb, collectionPageJsonLd } from "@/components/seo/JsonLd";
+import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import * as categoryService from "@/lib/services/category.service";
 import * as collectionService from "@/lib/services/collection.service";
-import { JsonLd, breadcrumbJsonLd as makeBreadcrumb, collectionPageJsonLd } from "@/components/seo/JsonLd";
+import * as productService from "@/lib/services/product.service";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("shop", "/shop");
 

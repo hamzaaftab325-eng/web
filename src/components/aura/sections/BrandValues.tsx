@@ -20,9 +20,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import { useBrandValues } from "@/hooks/queries/use-content";
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { useBrandValues } from "@/hooks/queries/use-content";
 
 // Fallback values used when DB has no data or fetch fails
 const fallbackValues = [

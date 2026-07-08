@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
+
+import { useRouter } from "next/navigation";
+
 import { motion } from "framer-motion";
 import { Download, Loader2, AlertTriangle, Trash2, Shield, Check, FileJson } from "lucide-react";
-import { AccountLayout } from "./AccountLayout";
+
 import { useAuthStore } from "@/store/use-auth-store";
-import { useRouter } from "next/navigation";
+
+import { AccountLayout } from "./AccountLayout";
 
 export function AccountPrivacy() {
   const user = useAuthStore((s) => s.user);

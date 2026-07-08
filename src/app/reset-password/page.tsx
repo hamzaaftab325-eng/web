@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
-import { pageMetadata } from "@/lib/seo-metadata";
 import { ResetPasswordView } from "@/components/aura/auth/ResetPasswordView";
+import { pageMetadata } from "@/lib/seo-metadata";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("reset-password", "/reset-password");
 

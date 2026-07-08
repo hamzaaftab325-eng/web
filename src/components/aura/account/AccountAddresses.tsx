@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+
+import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
@@ -9,22 +12,22 @@ import {
   Trash2,
   X,
   Check,
-  AlertTriangle,
   Star,
   Phone,
   Mail,
   Gift,
   Sparkles,
 } from "lucide-react";
+
+import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { AuraInput } from "@/components/aura/ui/AuraInput";
+import AuraButton from "@/components/aura/ui/Button";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useToast } from "@/hooks/use-toast";
+
 import { AccountLayout } from "./AccountLayout";
 import { DeleteAddressDialog } from "./DeleteAddressDialog";
-import { useRouter } from "next/navigation";
-import { useFocusTrap } from "@/hooks/use-focus-trap";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
-import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
-import AuraButton from "@/components/aura/ui/Button";
-import { AuraInput } from "@/components/aura/ui/AuraInput";
-import { useToast } from "@/hooks/use-toast";
 
 /**
  * AccountAddresses — full CRUD for shipping addresses.

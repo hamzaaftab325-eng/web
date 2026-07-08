@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+
 import type { ActiveFilter, CategorySlug, ViewKey } from "@/types";
 
 export type SortKey = "featured" | "newest" | "price-asc" | "price-desc" | "best-selling";

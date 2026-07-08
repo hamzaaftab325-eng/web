@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { useRouter } from "next/navigation";
-import { useUIStore } from "@/store/use-ui-store";
+
 import { useCartStore } from "@/store/use-cart-store";
+import { useUIStore } from "@/store/use-ui-store";
 import { useWishlistStore } from "@/store/use-wishlist-store";
 
 /**

@@ -1,13 +1,16 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
+
 import { useRouter } from "next/navigation";
+
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "framer-motion";
 import { X, ShoppingBag, Plus, Minus, Trash2, Heart, Clock, ArrowRight, Check } from "lucide-react";
-import { useCartStore } from "@/store/use-cart-store";
-import { formatPrice } from "@/lib/utils";
-import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
+
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { RIGHT_DRAWER_CONSTRAINTS, rightDrawerDragEnd } from "@/lib/swipe-to-close";
+import { formatPrice } from "@/lib/utils";
+import { useCartStore } from "@/store/use-cart-store";
 
 export function CartDrawer() {
   const router = useRouter();

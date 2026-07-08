@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+
 import { motion } from "framer-motion";
 import { Tag, Plus, Trash2, X, Check } from "lucide-react";
-import { formatPrice, cn } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { formatPrice, cn } from "@/lib/utils";
 
 interface PromoCode {
   id: string; code: string; type: string; value: number;

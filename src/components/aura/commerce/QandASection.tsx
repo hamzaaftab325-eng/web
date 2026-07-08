@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, ChevronDown, Send, User } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface Question {
   id: string;

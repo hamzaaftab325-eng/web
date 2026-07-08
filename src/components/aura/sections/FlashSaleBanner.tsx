@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+
 import { Copy, Check } from "lucide-react";
 
 interface FlashSaleData {

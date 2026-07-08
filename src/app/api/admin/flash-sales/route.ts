@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
-import { db } from "@/lib/db";
+
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 const Schema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name too long (max 100)"),

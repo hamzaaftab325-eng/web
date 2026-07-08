@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { db } from "@/lib/db";
-import { requireUser } from "@/lib/auth-guard";
-import { sanitizeUser } from "@/lib/auth";
 import { z } from "zod";
+
+import { sanitizeUser } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
+
 
 /**
  * GET /api/auth/me — returns the currently authenticated user.

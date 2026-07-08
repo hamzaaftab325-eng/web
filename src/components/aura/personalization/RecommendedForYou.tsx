@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo } from "react";
+
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import { useProducts } from "@/hooks/queries/use-products";
-import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
-import { ProductCard } from "@/components/aura/commerce/ProductCard";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { ProductCard } from "@/components/aura/commerce/ProductCard";
+import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
+import { useProducts } from "@/hooks/queries/use-products";
 import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
 
 /**

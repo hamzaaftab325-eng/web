@@ -1,18 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+
 import { motion, useReducedMotion } from "framer-motion";
 import { Search, Heart, ShoppingBag, Menu, User } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
-import { useCartStore } from "@/store/use-cart-store";
-import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useAuthStore } from "@/store/use-auth-store";
-import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
+
 import { DisplayPreferences } from "@/components/aura/ui/DisplayPreferences";
+import { ThemeToggle } from "@/components/aura/ui/ThemeToggle";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/use-auth-store";
+import { useCartStore } from "@/store/use-cart-store";
 import { useThemeStore } from "@/store/use-theme-store";
+import { useUIStore } from "@/store/use-ui-store";
+import { useWishlistStore } from "@/store/use-wishlist-store";
 
 export function Header() {
   const router = useRouter();

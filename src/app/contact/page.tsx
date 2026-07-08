@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Loader2, Check, Send } from "lucide-react";
+
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { useSettings } from "@/hooks/use-settings";
 

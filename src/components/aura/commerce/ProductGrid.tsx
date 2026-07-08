@@ -1,9 +1,11 @@
 "use client";
 
-import type { Product } from "@/types";
-import { ProductCard } from "./ProductCard";
-import { EmptyState } from "@/components/aura/ui/EmptyState";
 import { motion } from "framer-motion";
+
+import { EmptyState } from "@/components/aura/ui/EmptyState";
+import type { Product } from "@/types";
+
+import { ProductCard } from "./ProductCard";
 
 interface ProductGridProps {
   products: Product[];

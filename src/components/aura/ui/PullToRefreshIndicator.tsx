@@ -1,8 +1,10 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+
 import { motion } from "framer-motion";
 import { Loader2, ArrowDown } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 /**

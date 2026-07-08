@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { db } from "@/lib/db";
 import { JournalArticleView } from "@/components/aura/sections/JournalArticleView";
-import type { JournalBodyBlock } from "@/types";
-import { parseJournalBody } from "@/lib/validators/journal";
+import { db } from "@/lib/db";
 import { articleMetadata, BASE_URL } from "@/lib/seo-metadata";
+import { parseJournalBody } from "@/lib/validators/journal";
+import type { JournalBodyBlock } from "@/types";
+
+import type { Metadata } from "next";
 
 interface Props {
   params: Promise<{ slug: string }>;

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+
 import { verifyToken, signAccessToken, signRefreshToken, sanitizeUser } from "@/lib/auth";
 import { getRefreshToken, setAuthCookies, clearAuthCookies } from "@/lib/auth-cookies";
+import { db } from "@/lib/db";
 
 /**
  * POST /api/auth/refresh

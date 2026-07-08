@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Cookie, X } from "lucide-react";
 

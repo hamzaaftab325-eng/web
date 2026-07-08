@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
 
 import { CartView } from "@/components/aura/commerce/CartView";
 import { getSiteUrl } from "@/lib/site-url";
+
+import type { Metadata } from "next";
 
 // Phase 10E: Absolute canonical URL (was relative "/cart")
 const BASE_URL = getSiteUrl();

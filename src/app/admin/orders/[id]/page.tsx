@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+
 import Link from "next/link";
+import { useParams } from "next/navigation";
+
 import { ArrowLeft, MapPin, Package, Download, User, AlertTriangle, Check } from "lucide-react";
 
-import { formatPrice, cn } from "@/lib/utils";
-import { statusConfig, statusFlow as sharedStatusFlow } from "@/lib/order-status";
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { statusConfig } from "@/lib/order-status";
+import { formatPrice, cn } from "@/lib/utils";
 
 interface OrderDetail {
   id: string; orderNumber: string; date: string; createdAt: string; updatedAt: string;

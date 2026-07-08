@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+
+import { useRouter } from "next/navigation";
+
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -11,14 +14,15 @@ import {
   Package,
   AlertTriangle,
 } from "lucide-react";
-import { AccountLayout } from "./AccountLayout";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/use-auth-store";
-import { cn } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/use-auth-store";
 import type { AuthUser } from "@/store/use-auth-store";
+
+import { AccountLayout } from "./AccountLayout";
 
 /**
  * AccountPreferences — email preferences + danger zone.

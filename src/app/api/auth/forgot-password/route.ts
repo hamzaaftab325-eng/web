@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
 
-import { db } from "@/lib/db";
 import { signResetToken } from "@/lib/auth";
+import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email-templates";
 import { rateLimit } from "@/lib/rate-limit";

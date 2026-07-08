@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
+
 import { useHeroSlides } from "@/hooks/queries/use-content";
 
 const FALLBACK_SLIDES = [

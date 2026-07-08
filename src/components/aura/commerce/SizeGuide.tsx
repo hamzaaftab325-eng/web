@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Ruler, Scissors, Lightbulb } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { cn } from "@/lib/utils";
 
 interface SizeGuideProps {
   open: boolean;

@@ -1,7 +1,8 @@
+import type { ProductFilters } from "@/lib/services/product.service";
+import type { Product } from "@/types";
+
 import { api } from "./client";
 
-import type { Product } from "@/types";
-import type { ProductFilters } from "@/lib/services/product.service";
 
 // Phase 6E: Removed duplicate ProductFilters interface — now imported from
 // src/lib/services/product.service.ts (the canonical source).

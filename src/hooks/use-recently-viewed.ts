@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { create } from "zustand";
 
 const STORAGE_KEY = "aura-recently-viewed";

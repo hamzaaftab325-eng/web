@@ -1,10 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
+
+import { motion } from "framer-motion";
 import { Image, HelpCircle, Users, BookOpen, FileText, Sparkles, ArrowRight, Zap, Gift } from "lucide-react";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
 const contentSections = [
   { label: "Hero Slides", description: "Manage the home page carousel — featured collections and seasonal campaigns.", icon: Image, href: "/admin/content/hero-slides" },

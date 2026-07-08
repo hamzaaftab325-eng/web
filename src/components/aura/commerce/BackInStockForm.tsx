@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Check, Loader2 } from "lucide-react";
-import { cn, sleep } from "@/lib/utils";
+
 import { useToast } from "@/hooks/use-toast";
+import { cn, sleep } from "@/lib/utils";
 
 interface BackInStockFormProps {
   productName?: string;

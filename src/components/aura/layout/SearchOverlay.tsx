@@ -1,14 +1,17 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
+
 import { useProductSearch } from "@/hooks/queries/use-products";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { search as trackSearch } from "@/lib/analytics/ecommerce";
 import { formatPrice } from "@/lib/utils";
-import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useUIStore } from "@/store/use-ui-store";
 
 export function SearchOverlay() {
   const router = useRouter();

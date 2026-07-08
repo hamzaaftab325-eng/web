@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
+
+import { statusConfig } from "@/lib/order-status";
+import { cn } from "@/lib/utils";
+
 import type { LucideIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { statusConfig } from "@/lib/order-status";
 
 /**
  * Shared chart helper components for the admin analytics dashboard.

@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ArrowLeft, Clock, Calendar } from "lucide-react";
-import { useUIStore } from "@/store/use-ui-store";
-import { useFocusTrap } from "@/hooks/use-focus-trap";
+
 import { useArticles } from "@/hooks/queries/use-content";
-import { formatPrice } from "@/lib/utils";
 import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { formatPrice } from "@/lib/utils";
+import { useUIStore } from "@/store/use-ui-store";
 import type { JournalBodyBlock } from "@/types";
 
 /**

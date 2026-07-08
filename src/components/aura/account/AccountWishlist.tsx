@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+
+import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -14,18 +17,19 @@ import {
   ArrowDown,
   Sparkles,
 } from "lucide-react";
-import { AccountLayout } from "./AccountLayout";
-import { useRouter } from "next/navigation";
-import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useCartStore } from "@/store/use-cart-store";
-import { cn, formatPrice } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
-import AuraButton from "@/components/aura/ui/Button";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { ProductCard } from "@/components/aura/commerce/ProductCard";
-import { useToast } from "@/hooks/use-toast";
+import AuraButton from "@/components/aura/ui/Button";
 import { useProductsBySlugs } from "@/hooks/queries/use-product-by-slug";
+import { useToast } from "@/hooks/use-toast";
+import { cn, formatPrice } from "@/lib/utils";
+import { useCartStore } from "@/store/use-cart-store";
+import { useWishlistStore } from "@/store/use-wishlist-store";
 import type { Product } from "@/types";
+
+import { AccountLayout } from "./AccountLayout";
 
 /**
  * AccountWishlist — grid of saved products with sorting, bulk-add-to-cart,

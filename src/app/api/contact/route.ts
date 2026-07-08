@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
-import { sanitizeObject } from "@/lib/security";
-import { sendContactNotificationEmail } from "@/lib/email-templates";
 import { sendEmail } from "@/lib/email";
+import { sendContactNotificationEmail } from "@/lib/email-templates";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { sanitizeObject } from "@/lib/security";
 
 /**
  * POST /api/contact

@@ -1,7 +1,8 @@
+import { getSiteUrl } from "@/lib/site-url";
+import type { ViewKey } from "@/types";
+
 import type { Metadata } from "next";
 
-import type { ViewKey } from "@/types";
-import { getSiteUrl } from "@/lib/site-url";
 
 /**
  * SEO metadata library — single source of truth for per-page metadata.

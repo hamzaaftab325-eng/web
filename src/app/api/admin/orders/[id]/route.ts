@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
 
-import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-guard";
-import { parseAddress } from "@/lib/validators/address";
-import { createNotification } from "@/lib/notifications";
+import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { orderStatusEmail } from "@/lib/email-templates";
+import { createNotification } from "@/lib/notifications";
+import { parseAddress } from "@/lib/validators/address";
 
 const OrderUpdateSchema = z.object({
   status: z.enum(["processing", "packed", "shipped", "delivered", "cancelled"]).optional(),

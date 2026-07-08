@@ -1,12 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+
+import { motion } from "framer-motion";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
-import type { JournalArticle as JournalArticleType, JournalBodyBlock } from "@/types";
+
 import { PageHero } from "@/components/aura/layout/PageHero";
 import { useScrollProgress } from "@/hooks/use-scroll-animations";
+import type { JournalArticle as JournalArticleType, JournalBodyBlock } from "@/types";
 
 interface Props {
   article: JournalArticleType;

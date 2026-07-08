@@ -1,9 +1,12 @@
 "use client";
 
 import * as React from "react";
+
 import { useRouter } from "next/navigation";
+
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { cn } from "@/lib/utils";
 

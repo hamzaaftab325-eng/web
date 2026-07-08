@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState, useCallback, type FormEvent } from "react";
+
 import { motion } from "framer-motion";
 import { Plus, Trash2, X, Check, Zap, RotateCcw, AlertTriangle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface Sale {
   id: string;

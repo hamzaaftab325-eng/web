@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { db } from "@/lib/db";
-import type { Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
+
+import type { Prisma } from "@prisma/client";
 
 /**
  * GET /api/admin/orders — list orders with search, filter, pagination.

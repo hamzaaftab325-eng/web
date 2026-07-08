@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
 
 /** GET /api/content/flash-sales — returns currently active flash sale */

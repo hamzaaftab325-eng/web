@@ -1,7 +1,9 @@
 "use client";
 
 import { type ElementType } from "react";
+
 import { motion, useReducedMotion } from "framer-motion";
+
 import { cn } from "@/lib/utils";
 
 interface SplitTextRevealProps {

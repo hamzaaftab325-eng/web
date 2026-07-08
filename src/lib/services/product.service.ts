@@ -9,9 +9,10 @@
  */
 
 import { db } from "@/lib/db";
-import type { Prisma } from "@prisma/client";
 import type { Product } from "@/types";
 import { parseBadgeKind } from "@/types";
+
+import type { Prisma } from "@prisma/client";
 
 // ── DTO Types ──────────────────────────────────────────────────────────
 

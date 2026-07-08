@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 /** GET /api/admin/products/export — CSV export of all products */
 export async function GET(request: NextRequest) {

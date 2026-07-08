@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
 
-import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
-import { parseAddress } from "@/lib/validators/address";
-import { createNotification, notifyAdmins } from "@/lib/notifications";
-import { formatPrice } from "@/lib/format/currency";
+import { requireUser } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { orderConfirmationEmail } from "@/lib/email-templates";
-import { requireUser } from "@/lib/auth-guard";
+import { formatPrice } from "@/lib/format/currency";
+import { createNotification, notifyAdmins } from "@/lib/notifications";
+import { parseAddress } from "@/lib/validators/address";
 
 /**
  * GET /api/orders — user's order history (requires auth, paginated)

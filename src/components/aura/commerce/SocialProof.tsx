@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Users, Eye } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 interface SocialProofProps {

@@ -1,6 +1,7 @@
+import { getSiteUrl } from "@/lib/site-url";
+
 import type { MetadataRoute } from "next";
 
-import { getSiteUrl } from "@/lib/site-url";
 
 /**
  * app/robots.ts — dynamic robots.txt.

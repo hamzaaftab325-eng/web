@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import { JournalView } from "@/components/aura/sections/JournalView";
+import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import * as contentService from "@/lib/services/content.service";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("journal", "/journal");
 

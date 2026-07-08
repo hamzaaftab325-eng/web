@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import Link from "next/link";
+
 import { Instagram, Mail, Facebook, Twitter, Loader2 } from "lucide-react";
+
 import { useCategories, useCollections } from "@/hooks/queries/use-catalog";
 import { useSettings } from "@/hooks/use-settings";
 import { useThemeStore } from "@/store/use-theme-store";

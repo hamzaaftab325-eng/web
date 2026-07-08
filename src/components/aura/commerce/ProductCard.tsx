@@ -1,19 +1,20 @@
 "use client";
 
 import { memo, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 import { motion, useReducedMotion } from "framer-motion";
 import { Heart, Plus, Check, ShoppingBag } from "lucide-react";
 
-import type { Product } from "@/types";
-import type { ProductListItem } from "@/lib/services/product.service";
-import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useCartStore } from "@/store/use-cart-store";
-import { useToast } from "@/hooks/use-toast";
-import { formatPrice, cn } from "@/lib/utils";
-import { getCardUrl } from "@/lib/cloudinary-client";
 import { Badge } from "@/components/aura/ui/Badge";
+import { useToast } from "@/hooks/use-toast";
+import { getCardUrl } from "@/lib/cloudinary-client";
+import type { ProductListItem } from "@/lib/services/product.service";
+import { formatPrice, cn } from "@/lib/utils";
+import { useCartStore } from "@/store/use-cart-store";
+import { useWishlistStore } from "@/store/use-wishlist-store";
 
 /**
  * Phase 6E: Replaced local ProductCardProduct with Pick<ProductListItem, ...>.

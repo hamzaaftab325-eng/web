@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+
 import Link from "next/link";
+import { useParams } from "next/navigation";
+
 import { motion } from "framer-motion";
 import { Heart, ShoppingBag, ArrowRight } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { getCardUrl } from "@/lib/cloudinary-client";
+import { formatPrice } from "@/lib/utils";
 
 interface WishlistProduct {
   id: string; slug: string; name: string; price: number;

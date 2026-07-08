@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
 import { Suspense } from "react";
-import { pageMetadata } from "@/lib/seo-metadata";
+
 import { LoginView } from "@/components/aura/auth/LoginView";
+import { pageMetadata } from "@/lib/seo-metadata";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("login", "/login");
 

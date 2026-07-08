@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
-import { db } from "@/lib/db";
+
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 const PromoCodeUpdateSchema = z.object({
   type: z.enum(["percent", "fixed", "shipping"]).optional(),

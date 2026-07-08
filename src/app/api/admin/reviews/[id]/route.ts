@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
-import { db } from "@/lib/db";
+
 import { requireAdmin } from "@/lib/auth-guard";
-import { createNotification } from "@/lib/notifications";
+import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { reviewApprovedEmail } from "@/lib/email-templates";
+import { createNotification } from "@/lib/notifications";
 
 const ReviewUpdateSchema = z.object({
   status: z.enum(["pending", "approved", "rejected"]).optional(),

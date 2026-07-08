@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
+
+import { motion, useReducedMotion } from "framer-motion";
 
 type Direction = "up" | "down" | "left" | "right" | "none" | "scale" | "blur";
 

@@ -2,11 +2,12 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+
+import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { useCategories } from "@/hooks/queries/use-catalog";
 import { useProducts } from "@/hooks/queries/use-products";
 import { useUIStore } from "@/store/use-ui-store";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
-import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
 
 interface CategoryShowcaseProps {
   initialCategories?: Awaited<ReturnType<typeof import("@/lib/services/category.service").getAll>>;

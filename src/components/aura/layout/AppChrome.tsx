@@ -1,23 +1,28 @@
 "use client";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useEffect } from "react";
+
 import dynamic from "next/dynamic";
-import { useUIStore } from "@/store/use-ui-store";
-import { useAuthStore } from "@/store/use-auth-store";
-import { Header } from "./Header";
-import { Footer } from "./Footer";
-import { MobileNav } from "./MobileNav";
-import { MobileTabBar } from "./MobileTabBar";
-import { SearchOverlay } from "./SearchOverlay";
+import { usePathname } from "next/navigation";
+
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { CookieConsent } from "@/components/analytics/CookieConsent";
 import { CustomCursor } from "@/components/aura/ui/CustomCursor";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useProductBySlug } from "@/hooks/queries/use-product-by-slug";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useSettings } from "@/hooks/use-settings";
+import { useAuthStore } from "@/store/use-auth-store";
+import { useUIStore } from "@/store/use-ui-store";
 import { hydrateWishlist } from "@/store/use-wishlist-store";
+
+import { Footer } from "./Footer";
+import { Header } from "./Header";
+import { MobileNav } from "./MobileNav";
+import { MobileTabBar } from "./MobileTabBar";
+import { SearchOverlay } from "./SearchOverlay";
+
 
 // Lazy-load heavy overlay components — only loaded when needed
 // This reduces initial bundle size by ~40KB+ (CheckoutFlow, ProductDetailPage, etc.)

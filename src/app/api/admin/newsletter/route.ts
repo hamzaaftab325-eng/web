@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
-import { db } from "@/lib/db";
+
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 import { sendBulkEmails } from "@/lib/email";
 import { newsletterEmail } from "@/lib/email-templates";
 import { getSiteUrl } from "@/lib/site-url";

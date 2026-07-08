@@ -1,7 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode, ElementType } from "react";
+
+import { motion, useReducedMotion } from "framer-motion";
+
 import { cn } from "@/lib/utils";
 
 interface TextBlurRevealProps {

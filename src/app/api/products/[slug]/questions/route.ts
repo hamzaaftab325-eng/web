@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
 
-import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
-import { sanitizeHtml } from "@/lib/security";
+import { db } from "@/lib/db";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { sanitizeHtml } from "@/lib/security";
 
 /** GET /api/products/[slug]/questions — list answered questions for a product */
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {

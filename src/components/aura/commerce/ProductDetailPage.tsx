@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   ChevronLeft,
@@ -18,29 +21,30 @@ import {
   ShoppingBag,
   FolderOpen,
 } from "lucide-react";
-import type { Product, ProductVariant } from "@/types";
-import { cn, formatPrice, sleep } from "@/lib/utils";
-import { useUIStore } from "@/store/use-ui-store";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useCartStore } from "@/store/use-cart-store";
-import { useWishlistStore } from "@/store/use-wishlist-store";
-import { useToast } from "@/hooks/use-toast";
-import { useProducts } from "@/hooks/queries/use-products";
+
+import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { Badge } from "@/components/aura/ui/Badge";
 import AuraChip from "@/components/aura/ui/Chip";
 import { ReadAloud } from "@/components/aura/ui/ReadAloud";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
-import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { useProducts } from "@/hooks/queries/use-products";
+import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
+import { useToast } from "@/hooks/use-toast";
+import { cn, formatPrice, sleep } from "@/lib/utils";
+import { useCartStore } from "@/store/use-cart-store";
+import { useUIStore } from "@/store/use-ui-store";
+import { useWishlistStore } from "@/store/use-wishlist-store";
+import type { Product, ProductVariant } from "@/types";
+
+import { BackInStockForm } from "./BackInStockForm";
 import { ProductCard } from "./ProductCard";
 import { ProductGallery } from "./ProductGallery";
 import { ProductShare } from "./ProductShare";
-import { Badge } from "@/components/aura/ui/Badge";
-import { SocialProof } from "./SocialProof";
-import { SizeGuide } from "./SizeGuide";
-import { ReviewsSection } from "./ReviewsSection";
 import { QandASection } from "./QandASection";
-import { BackInStockForm } from "./BackInStockForm";
 import { RecentlyViewed } from "./RecentlyViewed";
+import { ReviewsSection } from "./ReviewsSection";
+import { SizeGuide } from "./SizeGuide";
+import { SocialProof } from "./SocialProof";
 import { StickyMobileAddToCart } from "./StickyMobileAddToCart";
 
 interface ProductDetailPageProps {

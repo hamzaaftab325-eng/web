@@ -1,7 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+
 import { motion, useReducedMotion } from "framer-motion";
+import {
+  BarChart3,
+  Download,
+  Gem,
+  Package,
+  Percent,
+  Repeat,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -15,17 +27,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import {
-  BarChart3,
-  Download,
-  Gem,
-  Package,
-  Percent,
-  Repeat,
-  ShoppingBag,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+
+import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import {
   ChartContainer,
   ChartTooltip,
@@ -33,8 +37,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { cn, formatPrice } from "@/lib/utils";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
-import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+
 import { ChartCard, ChartLoading, ChartEmpty, StatusBadge } from "./_components";
 
 /* ── API response shape (mirrors /api/admin/analytics?range=…) ──────────── */

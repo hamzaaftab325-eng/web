@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Sparkles, ArrowRight, Gift } from "lucide-react";
 

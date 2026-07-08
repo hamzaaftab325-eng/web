@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Plus, Loader2, ShoppingBag } from "lucide-react";
-import type { Product } from "@/types";
+
+import { useToast } from "@/hooks/use-toast";
 import { cn, formatPrice, sleep } from "@/lib/utils";
 import { useCartStore } from "@/store/use-cart-store";
-import { useToast } from "@/hooks/use-toast";
+import type { Product } from "@/types";
 
 interface StickyMobileAddToCartProps {
   product: Product;

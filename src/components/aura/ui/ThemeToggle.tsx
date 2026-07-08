@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
-import { useThemeStore } from "@/store/use-theme-store";
+
 import { cn } from "@/lib/utils";
+import { useThemeStore } from "@/store/use-theme-store";
 
 /**
  * ThemeToggle — sun/moon icon button that toggles dark/light mode.

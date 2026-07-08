@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { initGA4, GA4_MEASUREMENT_ID } from "@/lib/analytics/ga4";
 import { initMetaPixel, META_PIXEL_ID } from "@/lib/analytics/meta-pixel";
 

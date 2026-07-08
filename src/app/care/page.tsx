@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
-import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
 import { CareView } from "@/components/aura/sections/CareView";
-import * as contentService from "@/lib/services/content.service";
 import { JsonLd, breadcrumbJsonLd as makeBreadcrumb } from "@/components/seo/JsonLd";
+import { pageMetadata, BASE_URL } from "@/lib/seo-metadata";
+import * as contentService from "@/lib/services/content.service";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMetadata("care", "/care");
 

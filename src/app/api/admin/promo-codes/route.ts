@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { z } from "zod";
-import { db } from "@/lib/db";
+
 import { requireAdmin } from "@/lib/auth-guard";
+import { db } from "@/lib/db";
 
 const PromoCodeSchema = z.object({
   code: z.string().min(2).max(50).regex(/^[A-Z0-9-_]+$/, "Code must be uppercase letters, numbers, dashes"),

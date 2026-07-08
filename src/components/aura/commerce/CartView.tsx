@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   ShoppingBag,
@@ -15,9 +16,10 @@ import {
   RotateCcw,
   Check,
 } from "lucide-react";
+
+import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
-import { formatPrice } from "@/lib/utils";
 
 /** Estimated delivery: 3-5 business days from today. */
 function getEstimatedDelivery(): string {

@@ -1,28 +1,29 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+
+import { useRouter } from "next/navigation";
+
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X,
   Check,
   ChevronLeft,
   Truck,
-  Tag,
   ShieldCheck,
   Loader2,
-  ShoppingBag,
   Wallet,
-  Package,
 } from "lucide-react";
+
+import { AuraInput } from "@/components/aura/ui/AuraInput";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useSettings } from "@/hooks/use-settings";
+import { useToast } from "@/hooks/use-toast";
+import { beginCheckout, purchase } from "@/lib/analytics/ecommerce";
 import { cn, formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/use-cart-store";
 import { useUIStore } from "@/store/use-ui-store";
-import { useRouter } from "next/navigation";
-import { useFocusTrap } from "@/hooks/use-focus-trap";
-import { useToast } from "@/hooks/use-toast";
-import { useSettings } from "@/hooks/use-settings";
-import { beginCheckout, purchase } from "@/lib/analytics/ecommerce";
-import { AuraInput } from "@/components/aura/ui/AuraInput";
+
 import { CheckoutOrderSummary } from "./CheckoutOrderSummary";
 
 const STEPS = ["Information", "Shipping", "Payment"] as const;

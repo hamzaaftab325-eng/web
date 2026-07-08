@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+
 import { Tag, Zap, ArrowRight } from "lucide-react";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 
 export default function PromotionsHubPage() {

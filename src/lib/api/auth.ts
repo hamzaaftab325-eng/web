@@ -1,5 +1,6 @@
-import { api } from "./client";
 import type { AuthUser } from "@/store/use-auth-store";
+
+import { api } from "./client";
 export interface LoginRequest { email: string; password: string; }
 export interface SignupRequest { firstName: string; lastName: string; email: string; password: string; joinNewsletter: boolean; }
 export interface AuthResponse { user: AuthUser; token: string; }

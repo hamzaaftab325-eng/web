@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import { PageHero } from "@/components/aura/layout/PageHero";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Aura Living - Shipping Information & Delivery",

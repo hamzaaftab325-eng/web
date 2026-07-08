@@ -1,10 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+
+import { motion } from "framer-motion";
 import { ArrowRight, Hammer, Leaf, Compass, Heart } from "lucide-react";
-import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+
 import { RevealOnScroll } from "@/components/aura/animation/RevealOnScroll";
+import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
 import { PageHero } from "@/components/aura/layout/PageHero";
 
 export function AboutView() {

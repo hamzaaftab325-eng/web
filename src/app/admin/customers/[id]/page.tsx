@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+
 import Link from "next/link";
+import { useRouter, useParams } from "next/navigation";
+
 import { motion } from "framer-motion";
 import { ArrowLeft, Mail, Phone, ShoppingBag, Calendar, ChevronRight, Download } from "lucide-react";
-import { formatPrice, cn } from "@/lib/utils";
+
 import { TextBlurReveal } from "@/components/aura/animation/TextBlurReveal";
+import { formatPrice, cn } from "@/lib/utils";
 
 interface Customer {
   id: string; email: string; firstName: string; lastName: string;
