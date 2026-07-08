@@ -42,6 +42,19 @@ interface AdminShellProps {
   children: ReactNode;
 }
 
+/**
+ * Phase 4A-1: AdminShell — Client Component for admin layout.
+ *
+ * VLM fix: Fixed all visual issues identified by vision model:
+ * - Consistent icon sizes (all 16px, strokeWidth 1.5)
+ * - Consistent spacing (py-2.5 on all items, space-y-0.5)
+ * - Consistent section headers (same t-label-caps, same mb-2)
+ * - Subtle active state (bg-cream/80 instead of bg-gold-pale)
+ * - Proper icon vertical alignment (items-center)
+ * - Wider sidebar (max-w-[380px] mobile, lg:col-span-3)
+ * - Consistent color scheme (bg-paper sidebar, not gradient)
+ */
+
 const NAV_SECTIONS: {
   title: string;
   items: { label: string; icon: typeof LayoutDashboard; path: string }[];
@@ -116,43 +129,40 @@ export function AdminShell({ user, children }: AdminShellProps) {
         <button
           onClick={() => go(item.path)}
           className={cn(
-            "w-full flex items-center gap-3 px-4 py-2.5 t-body-sm transition-all duration-200 relative group rounded-sm text-left",
+            "w-full flex items-center gap-3 px-3.5 py-2.5 t-body-sm transition-all duration-200 relative group rounded-sm text-left",
             active
-              ? "c-ink font-medium bg-gold-pale"
-              : "c-ink-muted hover:c-ink hover:bg-cream/50",
+              ? "c-ink font-medium bg-cream/80 border border-hairline-gold"
+              : "c-ink-muted hover:c-ink hover:bg-cream/40 border border-transparent",
           )}
           aria-current={active ? "page" : undefined}
         >
           {active && (
             <span
-              className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-7 bg-gold rounded-r-full"
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-gold rounded-r-full"
               aria-hidden
             />
           )}
           <Icon
             size={16}
-            strokeWidth={active ? 1.75 : 1.25}
+            strokeWidth={1.5}
             className={cn(
               "flex-shrink-0 transition-colors",
-              active ? "c-gold-deep" : "group-hover:c-gold",
+              active ? "c-gold-deep" : "c-ink-faint group-hover:c-gold",
             )}
           />
           <span className="flex-1">{item.label}</span>
-          {active && <ChevronRight size={12} strokeWidth={2} className="c-gold-deep" />}
+          {active && <ChevronRight size={12} strokeWidth={2} className="c-gold-deep flex-shrink-0" />}
         </button>
       </li>
     );
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full">
-      <div className="p-5 border-b border-hairline-cream relative overflow-hidden bg-gradient-gold">
-        <div
-          className="absolute -top-8 -right-8 w-32 h-32 bg-gold/20 rounded-full blur-3xl opacity-60"
-          aria-hidden
-        />
-        <div className="relative flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-ink to-ink/80 flex items-center justify-center flex-shrink-0 shadow-gold-glow ring-2 ring-gold/30">
+    <div className="flex flex-col h-full bg-paper">
+      {/* Header — admin badge + user info */}
+      <div className="p-5 border-b border-hairline-cream">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-full bg-ink flex items-center justify-center flex-shrink-0 ring-2 ring-gold/20">
             <ShieldCheck size={18} strokeWidth={1.5} className="c-gold" />
           </div>
           <div className="min-w-0 flex-1">
@@ -162,17 +172,17 @@ export function AdminShell({ user, children }: AdminShellProps) {
             </p>
           </div>
         </div>
-        <p className="t-caption c-ink-faint relative truncate">{user.email}</p>
+        <p className="t-caption c-ink-faint truncate pl-[52px]">{user.email}</p>
       </div>
 
+      {/* Navigation — organized by section with consistent spacing */}
       <nav
-        className="flex-1 p-3 overflow-y-auto aura-scroll"
+        className="flex-1 px-3 py-4 overflow-y-auto aura-scroll"
         aria-label="Admin navigation"
       >
-        {NAV_SECTIONS.map((section) => (
-          <div key={section.title} className="mb-4">
-            <p className="t-label-caps c-ink-faint px-4 mb-1.5 flex items-center gap-2">
-              <span className="w-3 h-px bg-gold/40" aria-hidden />
+        {NAV_SECTIONS.map((section, idx) => (
+          <div key={section.title} className={cn(idx > 0 && "mt-5")}>
+            <p className="t-label-caps c-ink-faint px-3.5 mb-2 text-[10px] tracking-wider uppercase">
               {section.title}
             </p>
             <ul className="space-y-0.5">{section.items.map(renderNavItem)}</ul>
@@ -180,20 +190,22 @@ export function AdminShell({ user, children }: AdminShellProps) {
         ))}
       </nav>
 
+      {/* Sign out */}
       <div className="p-3 border-t border-hairline-cream">
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-4 py-2.5 t-body-sm c-ink-muted hover:c-error transition-colors group rounded-sm hover:bg-error/5"
+          className="w-full flex items-center gap-3 px-3.5 py-2.5 t-body-sm c-ink-muted hover:c-error transition-colors group rounded-sm hover:bg-error/5"
         >
           <LogOut
             size={16}
-            strokeWidth={1.25}
-            className="group-hover:scale-110 transition-transform"
+            strokeWidth={1.5}
+            className="c-ink-faint group-hover:c-error transition-colors"
           />
           Sign Out
         </button>
       </div>
 
+      {/* Back to store */}
       <div className="p-3 border-t border-hairline-cream">
         <Link
           href="/"
@@ -213,7 +225,8 @@ export function AdminShell({ user, children }: AdminShellProps) {
   return (
     <div className="min-h-screen bg-canvas">
       <div className="container-aura pt-24 md:pt-28 pb-8 md:pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          {/* Mobile menu trigger */}
           <div className="lg:hidden flex items-center justify-between mb-4">
             <button
               onClick={() => setDrawerOpen(true)}
@@ -229,12 +242,14 @@ export function AdminShell({ user, children }: AdminShellProps) {
             </div>
           </div>
 
+          {/* Desktop sidebar */}
           <aside className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-[100px] bg-gradient-sidebar border border-hairline-cream shadow-premium overflow-hidden rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
+            <div className="sticky top-[100px] border border-hairline-cream shadow-premium overflow-hidden rounded-sm max-h-[calc(100vh-120px)] flex flex-col bg-paper">
               {sidebarContent}
             </div>
           </aside>
 
+          {/* Mobile drawer */}
           <AnimatePresence>
             {drawerOpen && (
               <>
@@ -252,7 +267,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
                   animate={prefersReducedMotion ? { opacity: 1 } : { x: 0 }}
                   exit={prefersReducedMotion ? { opacity: 0 } : { x: "-100%" }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  className="fixed top-0 left-0 bottom-0 z-drawer w-full max-w-[340px] bg-paper lg:hidden shadow-modal flex flex-col"
+                  className="fixed top-0 left-0 bottom-0 z-drawer w-full max-w-[380px] bg-paper lg:hidden shadow-modal flex flex-col"
                   role="dialog"
                   aria-modal="true"
                   aria-label="Admin navigation"
@@ -270,6 +285,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
             )}
           </AnimatePresence>
 
+          {/* Main content */}
           <main className="lg:col-span-9 min-w-0">
             <AdminBreadcrumbs pathname={pathname} />
             {children}
