@@ -11,18 +11,20 @@ import { Selectors } from "./helpers/selectors";
  * This makes admin tests 10x faster (one login vs N logins).
  */
 
+const BASE_URL = "https://aura-living-1.vercel.app";
 const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL ?? "admin@auraliving.com";
 const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD ?? "admin2026";
 const STORAGE_STATE_PATH = "e2e/.auth/admin.json";
 
 export default async function globalSetup(config: FullConfig) {
   const browser = await chromium.launch();
-  const context = await browser.newContext();
+  const context = await browser.newContext({ baseURL: BASE_URL });
   const page = await context.newPage();
 
   console.log("[global-setup] Logging in as admin...");
 
-  await page.goto("/login?redirect=/admin");
+  // Use full URL for globalSetup (Playwright context doesn't inherit baseURL from config here)
+  await page.goto(`${BASE_URL}/login?redirect=/admin`);
 
   await page.locator(Selectors.auth.emailInput).fill(ADMIN_EMAIL);
   await page.locator(Selectors.auth.passwordInput).fill(ADMIN_PASSWORD);
