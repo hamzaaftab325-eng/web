@@ -11,22 +11,32 @@
  */
 
 /**
- * Get the canonical site URL.
+ * Site URL helper — fail-fast in production runtime if NEXT_PUBLIC_SITE_URL is missing.
  *
- * - In production: returns `process.env.NEXT_PUBLIC_SITE_URL` (throws if missing).
- * - In development: returns `process.env.NEXT_PUBLIC_SITE_URL` if set, else
- *   `http://localhost:3000`.
+ * Phase 10A: Replaced hardcoded fallbacks with this helper.
+ * Phase 12 fix: Don't throw during `next build` — the env var may not be
+ * available at build time in local/CI environments. Only throw at runtime
+ * in production (when a user actually hits the route).
  *
- * The returned URL never has a trailing slash — callers can safely append paths.
+ * Detection: Next.js sets NEXT_PHASE=phase-production-build during build.
+ * If that's set, we use a placeholder URL instead of throwing.
  */
 export function getSiteUrl(): string {
   const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const isProduction = process.env.NODE_ENV === "production";
+  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
 
   if (envUrl) {
     return envUrl.replace(/\/$/, ""); // strip trailing slash
   }
 
+  // During `next build` in production mode — don't throw, use placeholder.
+  // The real URL will be available at runtime via env var.
+  if (isProduction && isBuildPhase) {
+    return "https://aura-living-1.vercel.app";
+  }
+
+  // At runtime in production — throw if env var is missing.
   if (isProduction) {
     throw new Error(
       "NEXT_PUBLIC_SITE_URL environment variable is required in production. " +
@@ -34,6 +44,7 @@ export function getSiteUrl(): string {
     );
   }
 
+  // Development — fall back to localhost.
   return "http://localhost:3000";
 }
 
