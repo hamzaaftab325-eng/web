@@ -1,6 +1,8 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
-import { verifyToken } from "@/lib/auth";
+import { verifyToken, verifyTokenWithType, signAccessToken } from "@/lib/auth";
 import { getAccessToken } from "@/lib/auth-cookies";
 import { db } from "@/lib/db";
 
@@ -54,18 +56,14 @@ export async function requireUser(request: NextRequest): Promise<{ id: string; e
   }
 
   // Check in-memory cache first (60s TTL).
-  // On cache miss AND on stale hit, evict the entry — prevents the Map from
-  // growing unboundedly across the serverless isolate's lifetime (memory leak).
   const cached = userCache.get(payload.userId);
   if (cached) {
     if (Date.now() - cached.cachedAt < CACHE_TTL) {
       return { id: cached.id, email: cached.email, role: cached.role };
     }
-    // Stale entry — delete it before falling through to the DB lookup.
     userCache.delete(payload.userId);
   }
 
-  // Fetch the CURRENT user from the database (role may have changed since JWT was issued)
   const user = await db.user.findUnique({
     where: { id: payload.userId },
     select: { id: true, email: true, role: true, isActive: true },
@@ -75,16 +73,11 @@ export async function requireUser(request: NextRequest): Promise<{ id: string; e
     return NextResponse.json({ error: "Account not found or inactive", code: "UNAUTHORIZED" }, { status: 401 });
   }
 
-  // Cache for 60 seconds. Set overwrites any stale entry that wasn't deleted above.
   userCache.set(payload.userId, { id: user.id, email: user.email, role: user.role, cachedAt: Date.now() });
 
   return { id: user.id, email: user.email, role: user.role };
 }
 
-/**
- * Require an admin user. Returns the user object if admin, or a 401/403
- * NextResponse if not authenticated / not admin.
- */
 export async function requireAdmin(request: NextRequest): Promise<{ id: string; email: string; role: string } | NextResponse> {
   const result = await requireUser(request);
   if (result instanceof NextResponse) return result;
@@ -94,9 +87,117 @@ export async function requireAdmin(request: NextRequest): Promise<{ id: string; 
   return result;
 }
 
-/**
- * Invalidate the user cache for a specific user (call on logout).
- */
 export function invalidateUserCache(userId: string): void {
   userCache.delete(userId);
+}
+
+/**
+ * Phase 4A-1: Server Component auth helper.
+ *
+ * Uses `cookies()` from `next/headers` instead of `NextRequest`.
+ * Allows Server Component layouts/pages to verify admin access
+ * without a client-side `useEffect` + `fetch` round-trip.
+ *
+ * Flow:
+ *   1. Try access token from cookie
+ *   2. If expired, try refresh token (verify DB session exists)
+ *   3. If refresh valid, sign new access token + set cookie
+ *   4. Fetch user from DB for fresh role check
+ *   5. If not admin → redirect("/")
+ *   6. If not authenticated → redirect("/login?redirect=/admin")
+ */
+export async function requireAdminServer(): Promise<{
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("aura_access")?.value;
+  const refreshToken = cookieStore.get("aura_refresh")?.value;
+
+  let payload: { userId: string; email: string; role: string } | null = null;
+
+  // Step 1: Try access token
+  if (accessToken) {
+    try {
+      payload = verifyToken(accessToken);
+    } catch {
+      // Access token expired — try refresh below
+    }
+  }
+
+  // Step 2: If access token failed, try refresh token
+  if (!payload && refreshToken) {
+    try {
+      const refreshPayload = verifyTokenWithType(refreshToken);
+
+      if (refreshPayload.type === "refresh") {
+        const session = await db.userSession.findFirst({
+          where: { userId: refreshPayload.userId, refreshToken },
+          select: { id: true },
+        });
+
+        if (session) {
+          const user = await db.user.findUnique({
+            where: { id: refreshPayload.userId },
+            select: { id: true, email: true, role: true, isActive: true },
+          });
+
+          if (user && user.isActive) {
+            const newAccessToken = signAccessToken({
+              userId: user.id,
+              email: user.email,
+              role: user.role,
+            });
+
+            cookieStore.set("aura_access", newAccessToken, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              path: "/",
+              maxAge: 15 * 60,
+            });
+
+            payload = { userId: user.id, email: user.email, role: user.role };
+          }
+        }
+      }
+    } catch {
+      // Refresh token also invalid — will redirect below
+    }
+  }
+
+  if (!payload) {
+    redirect("/login?redirect=/admin");
+  }
+
+  const user = await db.user.findUnique({
+    where: { id: payload.userId },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+      isActive: true,
+    },
+  });
+
+  if (!user || !user.isActive) {
+    redirect("/login?redirect=/admin");
+  }
+
+  if (user.role !== "admin") {
+    redirect("/");
+  }
+
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    role: user.role,
+  };
 }
