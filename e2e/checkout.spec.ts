@@ -1,57 +1,98 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures/base";
+import { ShopPage } from "../page-objects/ShopPage";
+import { Selectors } from "../helpers/selectors";
 
 /**
  * E2E: Checkout flow
  *
- * Tests: cart view, checkout flow opens, form validation
- * Note: Full order placement requires real DB — tests up to form submission only
+ * Tests: cart page, checkout flow, contact form
+ *
+ * Enterprise refactor:
+ * - No arbitrary waitForTimeout — uses expect().toBeVisible()
+ * - Proper assertions on cart state, form fields, and success messages
+ * - Uses base fixture for error monitoring
+ * - Contact form test verifies actual submission success
  */
 
-test.describe("Checkout Flow", () => {
-  test("cart page loads with empty state", async ({ page }) => {
+test.describe("Cart page", () => {
+  test("cart page loads with main content", async ({ page }) => {
     await page.goto("/cart");
 
-    // Should show cart page (either items or empty state)
-    await expect(page.locator("h1").or(page.locator("[class*='display']")).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator(Selectors.common.main)).toBeVisible({ timeout: 10000 });
   });
 
-  test("checkout flow can be opened from cart", async ({ page }) => {
-    // Go to shop and add an item first
-    await page.goto("/shop");
-    await expect(page.locator("[class*='product-card-compact']").first()).toBeVisible({ timeout: 10000 });
+  test("cart page shows empty state or items", async ({ page }) => {
+    await page.goto("/cart");
 
-    const quickAddBtn = page.locator("text=Quick Add").first();
-    if (await quickAddBtn.isVisible()) {
-      await quickAddBtn.click();
-      await page.waitForTimeout(1000);
-    }
+    // Either shows "Your cart is empty" or shows cart items
+    const emptyState = page.locator("text=/cart is empty/i");
+    const cartItems = page.locator('[class*="cart"], [role="dialog"]').first();
 
-    // Go to cart
+    // One of these should be visible within 5s
+    await expect(emptyState.or(cartItems)).toBeVisible({ timeout: 5000 });
+  });
+});
+
+test.describe("Add to cart → checkout", () => {
+  test("can add product and open checkout flow", async ({ page }) => {
+    const shop = new ShopPage(page);
+    await shop.goto();
+    await shop.addFirstProductToCart();
+
+    // Wait for toast
+    await expect(page.locator(Selectors.commerce.toast).first()).toBeVisible({ timeout: 5000 });
+
+    // Navigate to cart page
     await page.goto("/cart");
 
     // If items exist, try checkout
-    const checkoutBtn = page.locator("text=Checkout").first();
-    if (await checkoutBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await checkoutBtn.click();
+    const checkoutButton = page.locator(Selectors.commerce.checkout).first();
+    const isCheckoutVisible = await checkoutButton.isVisible({ timeout: 3000 }).catch(() => false);
 
-      // Checkout flow should open
-      await expect(page.locator("text=Information").or(page.locator("[class*='checkout']")).first()).toBeVisible({ timeout: 5000 });
+    if (isCheckoutVisible) {
+      await checkoutButton.click();
+
+      // Checkout flow should show step indicator or form
+      const infoStep = page.locator("text=/information/i").first();
+      const checkoutForm = page.locator('[role="dialog"], [class*="checkout"]').first();
+      await expect(infoStep.or(checkoutForm)).toBeVisible({ timeout: 5000 });
     }
   });
+});
 
-  test("contact form submits", async ({ page }) => {
+test.describe("Contact form", () => {
+  test("submits contact form successfully", async ({ page }) => {
     await page.goto("/contact");
 
-    // Fill contact form
-    await page.fill('input[name="name"], input[placeholder*="name"]', "Test User");
-    await page.fill('input[type="email"]', "test@example.com");
-    await page.fill('textarea', "This is a test message that is long enough to pass validation.");
+    // Fill form fields by label/placeholder
+    const nameInput = page.locator('input[name="name"], input[placeholder*="name"]').first();
+    const emailInput = page.locator('input[type="email"]').first();
+    const messageTextarea = page.locator("textarea").first();
+    const submitButton = page.locator('button[type="submit"]').first();
 
-    // Submit
-    const submitBtn = page.locator('button[type="submit"]').first();
-    await submitBtn.click();
+    await expect(nameInput).toBeVisible();
+    await expect(emailInput).toBeVisible();
+    await expect(messageTextarea).toBeVisible();
+    await expect(submitButton).toBeEnabled();
 
-    // Should show success (or at least not error)
-    await page.waitForTimeout(2000);
+    await nameInput.fill("E2E Test User");
+    await emailInput.fill("e2e-test@example.com");
+    await messageTextarea.fill("This is an automated E2E test message that meets the minimum length requirement of 10 characters.");
+
+    await submitButton.click();
+
+    // Should show success message (not error)
+    const successMessage = page.locator("text=/success/i, text=/thank you/i, text=/sent/i").first();
+    await expect(successMessage).toBeVisible({ timeout: 10000 });
+  });
+
+  test("validates required fields", async ({ page }) => {
+    await page.goto("/contact");
+
+    const submitButton = page.locator('button[type="submit"]').first();
+    await submitButton.click();
+
+    // Should stay on contact page (no navigation)
+    await expect(page).toHaveURL(/\/contact/);
   });
 });

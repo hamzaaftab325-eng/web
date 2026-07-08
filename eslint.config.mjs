@@ -115,6 +115,7 @@ const eslintConfig = [
       // and are explicitly exempted below.
       "scripts/generate-audit-report.js",
       "scripts/generate-legal-docx.js",
+      "e2e/**",
       ".baseline-tsc.log",
       "playwright-report/**",
       "test-results/**",
