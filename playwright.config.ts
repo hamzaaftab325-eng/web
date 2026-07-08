@@ -6,16 +6,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Playwright E2E test configuration for Aura Living.
- *
- * Enterprise refactor:
- * - globalSetup logs in ONCE and saves storageState
- * - Admin tests reuse the saved session (10x faster)
- * - 3 projects: desktop chromium, mobile chrome, desktop firefox
- * - Retries on CI, single worker on CI for deterministic results
- * - HTML + list reporter
  */
 export default defineConfig({
   testDir: "./e2e",
+  testMatch: /.*\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
