@@ -1,221 +1,135 @@
-# Aura Living — Production Frontend
+# Aura Living — Production-Grade E-Commerce
 
-A premium home décor e-commerce website built with Next.js 16, React 19, TypeScript, Tailwind CSS 4, and Framer Motion.
+A premium home décor e-commerce platform built with Next.js 16, React 19, TypeScript, Tailwind CSS 4, Prisma, and Upstash Redis.
 
 ## Live Site
 
-**URL:** https://aura-living-1.vercel.app/
+**URL:** https://aura-living-1.vercel.app
 
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Framework | Next.js 16 (App Router, webpack) |
-| Language | TypeScript (strict mode, `noImplicitAny`, `noImplicitOverride`) |
+| Language | TypeScript (strict mode, zero `any`, zero `@ts-ignore`) |
 | Styling | Tailwind CSS 4 (CSS-first config) + design tokens |
 | Animation | Framer Motion |
 | State | Zustand (persisted) |
-| Data Fetching | Server Components (SSR) + TanStack Query (client updates) |
+| Data Fetching | Server Components (SSR) + TanStack Query (client) |
 | Database | PostgreSQL via Prisma 6 (Supabase) |
 | Auth | JWT (jose for Edge, jsonwebtoken for Node) + httpOnly cookies |
-| Rate Limiting | Supabase Postgres RPC (atomic, serverless-safe) |
+| Rate Limiting | Upstash Redis (sliding window, atomic across serverless) |
 | Forms | React Hook Form + Zod |
-| Icons | Lucide React |
+| Icons | Lucide React (static imports, no wildcard) |
 | Fonts | Playfair Display (display) + Inter (body) |
+| Testing | Vitest (unit) + Playwright (E2E) |
+| Error Reporting | Sentry (optional, via SENTRY_DSN) |
+| Logging | Pino (structured JSON in production) |
+| CI/CD | GitHub Actions + Vercel |
+| Security Headers | CSP, HSTS, X-Frame-Options DENY, Permissions-Policy |
 
 ## Getting Started
 
 ```bash
 # Install dependencies
-bun install
+bun install   # or: npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your real credentials
+
+# Generate Prisma client
+bunx prisma generate   # or: npx prisma generate
 
 # Run dev server
-bun run dev
+bun run dev   # or: npm run dev
 
 # Production build
-bun run build
-
-# Start production server
-bun run start
-
-# Lint (0 errors, 0 warnings expected)
-bun run lint
-
-# Push Prisma schema to DB
-bun run db:migrate
-
-# Regenerate Prisma client
-bun run db:generate
+bun run build   # or: npm run build
 ```
 
-## Project Structure
+## Available Scripts
 
-```
-src/
-├── app/                    # Next.js App Router routes
-│   ├── layout.tsx          # Root layout (fonts, metadata, AppChrome)
-│   ├── page.tsx            # Home page (SSR)
-│   ├── shop/               # /shop (SSR)
-│   ├── about/              # /about
-│   ├── journal/            # /journal + /[slug] (SSR)
-│   ├── collections/        # /collections (SSR)
-│   ├── care/               # /care
-│   ├── sale/               # /sale (SSR)
-│   ├── product/[slug]/     # Product detail (SSG)
-│   ├── account/            # Account dashboard + sub-pages
-│   ├── admin/              # Admin panel (admin-only)
-│   ├── login/ signup/      # Auth pages
-│   ├── forgot-password/ reset-password/
-│   ├── api/                # API routes (60+ endpoints)
-│   │   ├── auth/           # login, register, refresh, reset-password
-│   │   ├── admin/          # admin CRUD for products, orders, content
-│   │   ├── orders/         # customer order history + detail
-│   │   ├── products/       # public product API
-│   │   ├── reviews/        # public review API
-│   │   ├── cron/           # daily-digest, low-stock-alerts, cleanup
-│   │   └── track/          # page-view, product-view, cart-event
-│   ├── error.tsx           # Global 500 error boundary
-│   ├── admin/error.tsx     # Admin-specific error boundary
-│   ├── admin/loading.tsx   # Admin loading skeleton
-│   ├── loading.tsx         # Global loading skeleton
-│   ├── not-found.tsx       # 404 page
-│   ├── sitemap.ts          # Dynamic sitemap (excludes private pages)
-│   ├── robots.ts           # Dynamic robots.txt (disallows /admin, /api, etc.)
-│   └── manifest.ts         # PWA manifest
-├── components/
-│   ├── aura/               # Custom Aura components
-│   │   ├── layout/         # Header, Footer, MobileNav, AppChrome, PageHero
-│   │   ├── sections/       # Home page sections + page views
-│   │   ├── commerce/       # ProductCard, CartDrawer, CheckoutFlow, etc.
-│   │   ├── account/        # Account pages
-│   │   ├── auth/           # Login, Signup, etc.
-│   │   ├── ui/             # AuraInput, Button, Chip, EmptyState, etc.
-│   │   └── animation/      # RevealOnScroll, TextBlurReveal
-│   ├── analytics/          # AnalyticsProvider, CookieConsent, InstallPrompt
-│   ├── seo/                # JSON-LD structured data components
-│   └── ui/                 # shadcn/ui primitives (toast, toaster, chart only)
-├── store/                  # Zustand stores (cart, wishlist, auth, theme, UI)
-├── hooks/                  # Custom hooks (recently-viewed, focus-trap, etc.)
-├── lib/
-│   ├── services/           # Service layer (5 files: hero, product, category, collection, content)
-│   ├── api/                # API client + endpoint wrappers
-│   ├── auth-guard.ts       # requireUser / requireAdmin (DB-backed)
-│   ├── auth-cookies.ts     # httpOnly cookie helpers
-│   ├── rate-limit.ts       # Supabase RPC rate limiting
-│   ├── cloudinary.ts       # Image upload + deletion
-│   ├── email.ts            # Resend email sending
-│   └── db.ts               # Prisma client singleton
-├── types/                  # TypeScript type definitions
-└── app/globals.css         # Design system tokens + global styles
+| Script | Description |
+|--------|-------------|
+| `dev` | Start dev server on port 3000 |
+| `build` | Production build |
+| `start` | Start production server |
+| `lint` | ESLint (0 errors, 0 warnings) |
+| `typecheck` | TypeScript check (0 errors) |
+| `verify` | Full pre-push verification (lint + tsc + inline-styles + console.log + any + ts-ignore) |
+| `test` | Run unit tests (102 tests) |
+| `test:watch` | Run tests in watch mode |
+| `test:coverage` | Run tests with coverage report |
+| `test:e2e` | Run Playwright E2E tests |
+| `analyze` | Bundle analyzer (ANALYZE=true next build) |
+| `db:migrate` | Create + apply Prisma migration |
+| `db:generate` | Regenerate Prisma client |
+| `db:push` | Push schema to DB (emergencies only) |
 
-prisma/
-└── schema.prisma           # 25+ models (Product, Order, User, UsedResetToken, RateLimitCounter, etc.)
+## Code Quality Gates
 
-supabase/
-└── migrations/
-    └── 001_rate_limit_function.sql  # increment_rate_limit RPC function
+This project enforces:
+
+- **Zero ESLint errors + zero warnings** (including jsx-a11y accessibility rules)
+- **Zero TypeScript errors** (strict mode, noImplicitAny, noImplicitOverride)
+- **Zero `@ts-ignore` / `@ts-expect-error` / `@ts-nocheck`**
+- **Zero `any` types** in client code
+- **Zero `console.log`** in app code (use `logger` from `@/lib/logger`)
+- **Zero inline styles** (except `global-error.tsx` and documented dynamic values)
+- **Zero TODO/FIXME/HACK** comments
+- **Pre-push hook** runs `verify.sh` automatically
+
+## Testing
+
+### Unit Tests (102 tests)
+
+```bash
+bun run test   # or: npx vitest run
 ```
 
-## Key Features
+Covers: utils, security, escape-html, currency, cloudinary, order-status, auth.
 
-- **Real Next.js App Router** — 18 route pages + SSG product pages
-- **SSR Data Fetching** — home, shop, sale, collections, journal all fetch server-side (no spinners on initial load)
-- **PKR Currency** — all prices in Pakistani Rupee (₨)
-- **Cash on Delivery** — only payment method (no online payment gateway)
-- **JWT Auth** — access (15min) + refresh (7day) tokens in httpOnly cookies
-- **Rate Limiting** — Supabase Postgres RPC, atomic across serverless instances
-- **Password Reset** — single-use JWT tokens with replay protection (UsedResetToken table)
-- **Wishlist Sync** — wishlist persists to DB for logged-in users, hydrates on login
-- **Admin Panel** — full CRUD for products, orders, content, customers
-- **Admin Self-Lock Protection** — admins can't demote/deactivate themselves or the last admin
-- **Transaction Safety** — all multi-table mutations wrapped in `db.$transaction`
-- **Dark Mode** — theme toggle with no-flash inline script
-- **Accessibility** — skip-to-content link, keyboard shortcuts, focus traps, ARIA, screen reader support
-- **PWA** — installable with offline manifest
-- **SEO** — per-page metadata, JSON-LD structured data (Organization, WebSite, FAQPage, BlogPosting, BreadcrumbList, CollectionPage), sitemap, robots.txt
-- **Analytics** — GA4 + Meta Pixel (consent-gated)
-- **Mobile UX** — bottom tab bar, swipe-to-close drawers, sticky add-to-cart
-- **Nightly Crons** — daily order digest, low-stock alerts, expired token cleanup
+### E2E Tests (Playwright)
 
-## Design System
+```bash
+npx playwright install --with-deps chromium   # first time only
+bun run test:e2e   # or: npx playwright test
+```
 
-- **Canvas:** #FAF7F0 (warm cream)
-- **Gold:** #D4AF37 (accent)
-- **Ink:** #1A1714 (text)
-- **Font:** Playfair Display (headings) + Inter (body)
-- All tokens in `src/app/globals.css` as CSS custom properties
-- Dark mode tokens via `[data-theme="dark"]` selector
+Covers: auth flow, browse + cart, checkout, admin panel, accessibility.
+
+## Documentation
+
+- [Architecture](docs/architecture.md) — System design, data flow, key decisions
+- [Security](docs/security.md) — Auth, rate limiting, XSS/CSRF prevention, incident response
+- [Contributing](docs/contributing.md) — Setup, rules, PR process, testing
+- [Deployment](docs/deployment.md) — Vercel setup, env vars, cron jobs, rollback
 
 ## Environment Variables
 
 See `.env.example` for the full list. Critical ones:
 
-```env
-# Database (Supabase Postgres)
-DATABASE_URL="postgresql://...supabase.co:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://...supabase.co:5432/postgres"
-
-# Supabase (for rate limiting via PostgREST RPC)
-NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
-SUPABASE_SERVICE_ROLE_KEY="eyJ..." (server-side only, bypasses RLS)
-
-# Auth
-JWT_SECRET=generate-with-openssl-rand-base64-48
-JWT_ACCESS_EXPIRY=15m
-JWT_REFRESH_EXPIRY=7d
-
-# Cloudinary (image uploads)
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=...
-CLOUDINARY_API_KEY=...
-CLOUDINARY_API_SECRET=...
-
-# Email (Resend)
-RESEND_API_KEY=re_...
-EMAIL_FROM="Aura Living <noreply@auraliving.com>"
-
-# Cron auth
-CRON_SECRET=generate-with-openssl-rand-base64-32
-
-# Site URL
-NEXT_PUBLIC_SITE_URL=https://aura-living-1.vercel.app
-```
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | Supabase Postgres (with pgbouncer=true) |
+| `DIRECT_URL` | Supabase Postgres direct connection (for migrations) |
+| `JWT_SECRET` | JWT signing secret (use `openssl rand -base64 48`) |
+| `UPSTASH_REDIS_REST_URL` | Upstash Redis for rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis auth token |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL (required in production) |
+| `CRON_SECRET` | Vercel cron auth secret |
+| `SENTRY_DSN` | Sentry error reporting (optional) |
 
 ## Database Setup
 
 1. Create a Supabase project at https://supabase.com
-2. Run the migration in `supabase/migrations/001_rate_limit_function.sql` via Supabase SQL Editor
-3. Push the Prisma schema:
+2. Copy `DATABASE_URL` and `DIRECT_URL` from Supabase dashboard
+3. Run migrations:
    ```bash
-   bun run db:migrate
+   bun run db:migrate   # or: npx prisma migrate dev
    ```
-4. Set `DATABASE_URL` and `DIRECT_URL` in `.env` and on Vercel
 
-## Conventions
+## License
 
-- **Zero inline styles** — enforced by ESLint (`react/forbid-component-props`)
-- **Zero `any` types** — `noImplicitAny: true` in tsconfig
-- **Zero `console.log`** — use `console.warn` / `console.error` (enforced by ESLint)
-- **Zero `@ts-ignore`** — fix the type, don't suppress
-- **Zero ESLint warnings** — 0 errors, 0 warnings expected
-- **All hover states use `c-gold-deep`**
-- **All cards use `bg-gradient-card-warm` with `border-hairline-cream`**
-- **Zod validation on every API route**
-- **Service layer returns DTOs, not raw Prisma models**
-- **Multi-table mutations wrapped in `db.$transaction`**
-- **Soft delete only** — never hard-delete data (set `isActive: false`)
-- **Commit after every phase** — prevents sandbox rollback
-
-## Code Quality Gates
-
-Before committing, verify:
-
-```bash
-# 1. Build passes
-bun run build
-
-# 2. Lint passes (0 errors, 0 warnings)
-bun run lint
-
-# 3. Prisma client is up to date
-bun run db:generate
-```
+Private — © Aura Living
