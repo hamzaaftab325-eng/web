@@ -10,14 +10,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  * Vitest configuration for Aura Living.
  *
  * Phase 12: Testing Foundation.
- * Phase 12 fix: Use fileURLToPath for Windows compatibility.
+ * Phase 12 fix: Removed setupFiles — was breaking on Windows paths with spaces.
+ * jest-dom matchers will be added when we write component tests.
  */
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "jsdom",
+    environment: "node",
     globals: true,
-    setupFiles: [path.resolve(__dirname, "src/test/setup.ts")],
     include: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
     exclude: ["node_modules/**", ".next/**", "e2e/**"],
     coverage: {
