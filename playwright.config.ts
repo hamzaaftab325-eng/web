@@ -1,11 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Playwright E2E test configuration for Aura Living.
+ *
+ * Option B: Tests run against the LIVE production site.
+ * No local dev server or database needed — just run `npx playwright test`.
+ *
+ * The globalSetup logs in as admin ONCE and saves the session.
+ * All admin tests reuse that saved session (storageState).
  */
 export default defineConfig({
   testDir: "./e2e",
@@ -18,13 +20,14 @@ export default defineConfig({
     ["html", { open: "never" }],
     ["list"],
   ],
+  globalSetup: "./e2e/global-setup.ts",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "https://aura-living-1.vercel.app",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
-    actionTimeout: 10_000,
-    navigationTimeout: 15_000,
+    actionTimeout: 15_000,
+    navigationTimeout: 20_000,
   },
   projects: [
     {
@@ -38,10 +41,5 @@ export default defineConfig({
       testMatch: "browse.spec.ts",
     },
   ],
-  webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  // No webServer — testing against live production site
 });

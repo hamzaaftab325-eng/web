@@ -76,3 +76,4 @@ tool-results/
 public/upload/
 # Lockfile (project uses bun.lock)
 package-lock.json
+e2e/.auth/
