@@ -158,7 +158,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-paper">
+    <div className="flex flex-col bg-paper">
       {/* Header — admin badge + user info */}
       <div className="p-5 border-b border-hairline-cream">
         <div className="flex items-center gap-3 mb-2">
@@ -175,9 +175,9 @@ export function AdminShell({ user, children }: AdminShellProps) {
         <p className="t-caption c-ink-faint truncate pl-[52px]">{user.email}</p>
       </div>
 
-      {/* Navigation — organized by section with consistent spacing */}
+      {/* Navigation — all items visible, no max-height clipping */}
       <nav
-        className="flex-1 px-3 py-4 overflow-y-auto aura-scroll"
+        className="px-3 py-4"
         aria-label="Admin navigation"
       >
         {NAV_SECTIONS.map((section, idx) => (
@@ -244,7 +244,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
 
           {/* Desktop sidebar */}
           <aside className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-[100px] border border-hairline-cream shadow-premium overflow-hidden rounded-sm max-h-[calc(100vh-120px)] flex flex-col bg-paper">
+            <div className="sticky top-[100px] border border-hairline-cream shadow-premium rounded-sm bg-paper">
               {sidebarContent}
             </div>
           </aside>
@@ -267,7 +267,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
                   animate={prefersReducedMotion ? { opacity: 1 } : { x: 0 }}
                   exit={prefersReducedMotion ? { opacity: 0 } : { x: "-100%" }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  className="fixed top-0 left-0 bottom-0 z-drawer w-full max-w-[380px] bg-paper lg:hidden shadow-modal flex flex-col"
+                  className="fixed top-0 left-0 bottom-0 z-drawer w-full max-w-[380px] bg-paper lg:hidden shadow-modal overflow-y-auto aura-scroll"
                   role="dialog"
                   aria-modal="true"
                   aria-label="Admin navigation"
