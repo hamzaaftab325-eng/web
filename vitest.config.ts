@@ -1,27 +1,23 @@
 import path from "path";
+import { fileURLToPath } from "url";
 
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Vitest configuration for Aura Living.
  *
  * Phase 12: Testing Foundation.
- *
- * Coverage thresholds:
- *   - src/lib/services/**: 80% (critical business logic)
- *   - src/lib/**: 60% (utilities + helpers)
- *   - Overall: 40% (we'll raise this as we add more tests)
- *
- * Environment: jsdom (for React component testing)
- * Setup: src/test/setup.ts (adds jest-dom matchers)
+ * Phase 12 fix: Use fileURLToPath for Windows compatibility.
  */
 export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./src/test/setup.ts"],
+    setupFiles: [path.resolve(__dirname, "src/test/setup.ts")],
     include: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
     exclude: ["node_modules/**", ".next/**", "e2e/**"],
     coverage: {
